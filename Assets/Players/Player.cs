@@ -63,6 +63,7 @@ public class Player : NetworkComponent
         canE = true;
         canR = true;
         tiles = new List<Vector2[]>();
+        tiles.Add(new Vector2[] { new Vector2(0, 4), new Vector2(2, 0) });
         activeTile = 0;
     }
 
