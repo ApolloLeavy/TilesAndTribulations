@@ -55,9 +55,7 @@ public class PlayerNetworkManager : NetworkComponent
 
     public override void NetworkedStart()
     {
-        isReady = false;
-        gameMaster = GameObject.FindGameObjectWithTag("GameMaster").GetComponent<GameMaster>();
-        gameMaster.players.Add(this.gameObject);
+        
     }
 
     public override IEnumerator SlowUpdate()
@@ -86,7 +84,15 @@ public class PlayerNetworkManager : NetworkComponent
     // Start is called before the first frame update
     void Start()
     {
-        
+        transform.parent = GameObject.Find("Players").transform;
+        isReady = false;
+        gameMaster = GameObject.FindGameObjectWithTag("GameMaster").GetComponent<GameMaster>();
+        gameMaster.players.Add(this.gameObject);
+        if (IsClient && !IsLocalPlayer)
+        {
+            ReadyButton.interactable = false;
+            NameField.interactable = false;
+        }
     }
 
     // Update is called once per frame

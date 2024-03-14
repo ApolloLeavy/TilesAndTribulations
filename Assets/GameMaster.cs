@@ -6,19 +6,29 @@ public class GameMaster : NetworkComponent
 {
     public bool canPlay;
     public List<GameObject> players;
+    public GameObject gameCanvas;
     public override void HandleMessage(string flag, string value)
     {
-        throw new System.NotImplementedException();
     }
 
     public override void NetworkedStart()
     {
-        throw new System.NotImplementedException();
     }
 
     public override IEnumerator SlowUpdate()
     {
-        throw new System.NotImplementedException();
+        if(IsConnected)
+        {
+            while(IsServer)
+            {
+                if(IsDirty)
+                {
+                    IsDirty = false;
+                }
+                yield return new WaitForSeconds(MyId.UpdateFrequency);
+            }
+            yield return new WaitForSeconds(MyId.UpdateFrequency);
+        }
     }
     public void ReadyCheck()
     {
@@ -35,11 +45,23 @@ public class GameMaster : NetworkComponent
             }
 
         }
+        if(canPlay)
+        {
+            StartGame();
+        }
+    }
+    public void StartGame()
+    {
+        gameCanvas.GetComponent<CanvasGroup>().alpha = 0;
+        foreach(GameObject player in players)
+        {
+            player.GetComponent<Player>().SpawnCharacter();
+        }
     }
     // Start is called before the first frame update
     void Start()
     {
-        
+        gameCanvas = GameObject.Find("GameCanvas");
     }
 
     // Update is called once per frame

@@ -24,7 +24,7 @@ public class Player : NetworkComponent
     public bool canE;
     public bool canR;
     public List<Vector2[]> tiles;
-    public List<Vector2[]> genericTiles; 
+    public List<Vector2[]> tileLibrary; 
     public int activeTile;
 
     public override void HandleMessage(string flag, string value)
@@ -53,18 +53,7 @@ public class Player : NetworkComponent
 
     public override void NetworkedStart()
     {
-        maxTiles = 5;
-        tileCount = 0;
-        tileGainSec = 2;
-        canAttack = true;
-        canPlace = true;
-        canQ = true;
-        canW = true;
-        canE = true;
-        canR = true;
-        tiles = new List<Vector2[]>();
-        tiles.Add(new Vector2[] { new Vector2(0, 4), new Vector2(2, 0) });
-        activeTile = 0;
+        
     }
 
     public override IEnumerator SlowUpdate()
@@ -121,11 +110,26 @@ public class Player : NetworkComponent
             canPlace = true;
         }
     }
-
+    public void SpawnCharacter()
+    {
+        MyCore.NetCreateObject(0, NetId, new Vector3(0, 0, 0), new Quaternion());
+    }
     // Start is called before the first frame update
     void Start()
     {
         myRig = GetComponent<Rigidbody>();
+        maxTiles = 5;
+        tileCount = 0;
+        tileGainSec = 2;
+        canAttack = true;
+        canPlace = true;
+        canQ = true;
+        canW = true;
+        canE = true;
+        canR = true;
+        tiles = new List<Vector2[]>();
+        tiles.Add(new Vector2[] { new Vector2(0, 4), new Vector2(2, 0) });
+        activeTile = 0;
     }
 
     // Update is called once per frame

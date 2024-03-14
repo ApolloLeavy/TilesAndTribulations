@@ -8,17 +8,17 @@ public class Rogue : Player
     // Start is called before the first frame update
     void Start()
     {
-        
-    }
-    public override void NetworkedStart()
-    {
-        base.NetworkedStart();
         hp = 10;
         speed = 1;
         qcd = 5;
         wcd = 5;
         ecd = 5;
         rcd = 5;
+    }
+    public override void NetworkedStart()
+    {
+        base.NetworkedStart();
+        
     }
     // Update is called once per frame
     void Update()

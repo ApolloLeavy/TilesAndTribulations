@@ -453,7 +453,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &408156393
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -473,11 +473,10 @@ MonoBehaviour:
   DisconnectScreen: {fileID: 0}
   ObjectCounter: 0
   SpawnPrefab:
-  - {fileID: 4895261531722059112, guid: 65c6788d814bc6042ab9be2becf90947, type: 3}
-  - {fileID: 9016508206923068361, guid: ae5092b5fc6ed5f4fad314ea2e6f35a7, type: 3}
-  - {fileID: 0}
-  - {fileID: 0}
-  NetworkPlayerManager: {fileID: 8878283038974221577, guid: 65c6788d814bc6042ab9be2becf90947, type: 3}
+  - {fileID: 8876078422322473741, guid: 48086ca8033a4654c9dbb31ee17e596d, type: 3}
+  - {fileID: 4358895378099611330, guid: ab110e8e37637d544bc76bcbcfd88902, type: 3}
+  - {fileID: -2738328465177091387, guid: c4e1b666fce46e24797c8931d62d1669, type: 3}
+  NetworkPlayerManager: {fileID: 1629511964002254459, guid: c4e1b666fce46e24797c8931d62d1669, type: 3}
   DefaultReturnScene: 0
 --- !u!4 &408156394
 Transform:
@@ -722,16 +721,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 50
-    m_Right: 50
-    m_Top: 50
-    m_Bottom: 50
+    m_Left: -160
+    m_Right: 0
+    m_Top: -160
+    m_Bottom: 0
   m_ChildAlignment: 0
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 350, y: 250}
-  m_Spacing: {x: 100, y: 100}
-  m_Constraint: 1
+  m_CellSize: {x: 970, y: 750}
+  m_Spacing: {x: -450, y: -350}
+  m_Constraint: 0
   m_ConstraintCount: 2
 --- !u!114 &832305386
 MonoBehaviour:
@@ -783,6 +782,7 @@ GameObject:
   - component: {fileID: 985833344}
   - component: {fileID: 985833343}
   - component: {fileID: 985833342}
+  - component: {fileID: 985833346}
   m_Layer: 5
   m_Name: GameCanvas
   m_TagString: Untagged
@@ -874,6 +874,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!225 &985833346
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 985833341}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &1098080409
 GameObject:
   m_ObjectHideFlags: 0
