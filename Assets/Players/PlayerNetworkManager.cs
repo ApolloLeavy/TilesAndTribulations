@@ -10,6 +10,8 @@ public class PlayerNetworkManager : NetworkComponent
     public InputField NameField;
     public Toggle ReadyButton;
     public GameMaster gameMaster;
+    public List<GameObject> classButtons;
+    public int classIndex = 0;
 
     public override void HandleMessage(string flag, string value)
     {
@@ -30,7 +32,10 @@ public class PlayerNetworkManager : NetworkComponent
 
                 if (IsLocalPlayer)
                 {
-                    ReadyButton.interactable = true;
+                    if (playerName != "")
+                        ReadyButton.interactable = true;
+                    else
+                        ReadyButton.interactable = false;
                 }
             }
         }
@@ -51,13 +56,78 @@ public class PlayerNetworkManager : NetworkComponent
 
             }
         }
+        if (flag == "CLASS")
+        {
+            
+            int i = int.Parse(value);
+            if (IsServer)
+            {
+                IsDirty = true;
+                gameMaster.classesTaken.Remove(classIndex);
+                gameMaster.classesTaken.Add(i);
+                classIndex = i;
+                SendUpdate("CLASS", value);
+                SendUpdate("CLASSUP", "");
+            }
+            if (IsClient)
+            {
+                
+                if (classIndex != -1)
+                {
+                    
+                    gameMaster.classesTaken.Remove(classIndex);
+                    classButtons[classIndex].GetComponent<Image>().color = Color.white;
+                }
+                gameMaster.classesTaken.Add(i);
+                classButtons[i].GetComponent<Image>().color = Color.green;
+                classIndex = i;
+                
+            }
+            if (IsLocalPlayer)
+            {
+                for (int j = 0; j < 4; j++)
+                {
+                    if (gameMaster.classesTaken.Contains(j))
+                        classButtons[j].GetComponent<Button>().interactable = false;
+                    else
+                        classButtons[j].GetComponent<Button>().interactable = true;
+                }
+
+            }
+        }
+
     }
 
     public override void NetworkedStart()
     {
-        
+        if (IsClient && !IsLocalPlayer)
+        {
+            ReadyButton.interactable = false;
+            NameField.interactable = false;
+            foreach (GameObject cb in classButtons)
+            {
+                cb.GetComponent<Button>().interactable = false;
+            }
+        }
     }
-
+    public void Name(string value)
+    {
+        IsDirty = true;
+        playerName = value;
+        SendUpdate("NAME", value);
+    }
+    public void Ready(bool value)
+    {
+        IsDirty = true;
+        isReady = value;
+        NameField.interactable = false;
+        SendUpdate("RDY", value.ToString());
+    }
+    public void ClassSelect(int i)
+    {
+        IsDirty = true;
+        SendCommand("CLASS", i.ToString());
+    }
     public override IEnumerator SlowUpdate()
     {
         while (IsConnected)
@@ -70,6 +140,7 @@ public class PlayerNetworkManager : NetworkComponent
                 {
                     SendUpdate("NAME", playerName);
                     SendUpdate("RDY", isReady.ToString());
+                    SendUpdate("CLASS", classIndex.ToString());
                     IsDirty = false;
                 }
 
@@ -84,20 +155,19 @@ public class PlayerNetworkManager : NetworkComponent
     // Start is called before the first frame update
     void Start()
     {
-        transform.parent = GameObject.Find("Players").transform;
+        transform.SetParent(GameObject.Find("Players").transform);
         isReady = false;
         gameMaster = GameObject.FindGameObjectWithTag("GameMaster").GetComponent<GameMaster>();
         gameMaster.players.Add(this.gameObject);
-        if (IsClient && !IsLocalPlayer)
-        {
-            ReadyButton.interactable = false;
-            NameField.interactable = false;
-        }
+        gameMaster.IsDirty = true;
+        ReadyButton.interactable = false;
+
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 }

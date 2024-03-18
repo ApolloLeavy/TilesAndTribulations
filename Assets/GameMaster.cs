@@ -7,8 +7,10 @@ public class GameMaster : NetworkComponent
     public bool canPlay;
     public List<GameObject> players;
     public GameObject gameCanvas;
+    public List<int> classesTaken;
     public override void HandleMessage(string flag, string value)
     {
+        
     }
 
     public override void NetworkedStart()
@@ -23,10 +25,12 @@ public class GameMaster : NetworkComponent
             {
                 if(IsDirty)
                 {
+                   
                     IsDirty = false;
                 }
                 yield return new WaitForSeconds(MyId.UpdateFrequency);
             }
+            
             yield return new WaitForSeconds(MyId.UpdateFrequency);
         }
     }
@@ -62,6 +66,8 @@ public class GameMaster : NetworkComponent
     void Start()
     {
         gameCanvas = GameObject.Find("GameCanvas");
+        classesTaken.Add(0);
+        classesTaken.Add(0);
     }
 
     // Update is called once per frame
