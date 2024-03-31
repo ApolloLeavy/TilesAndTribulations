@@ -11,7 +11,8 @@ public class PlayerNetworkManager : NetworkComponent
     public Toggle ReadyButton;
     public GameMaster gameMaster;
     public List<GameObject> classButtons;
-    public int classIndex = 0;
+    public GameObject gameCanvas;
+    public int classIndex = -1;
 
     public override void HandleMessage(string flag, string value)
     {
@@ -62,40 +63,47 @@ public class PlayerNetworkManager : NetworkComponent
             int i = int.Parse(value);
             if (IsServer)
             {
-                IsDirty = true;
-                gameMaster.classesTaken.Remove(classIndex);
-                gameMaster.classesTaken.Add(i);
-                classIndex = i;
-                SendUpdate("CLASS", value);
-                SendUpdate("CLASSUP", "");
+                
+                if (!gameMaster.classesTaken.Contains(i))
+                {
+                    gameMaster.SelectClass(i, classIndex);
+                    
+                    classIndex = i;
+                    SendUpdate("CLASS", value);
+                    gameCanvas.GetComponent<CanvasGroup>().alpha = 0;
+                }
+                    
             }
             if (IsClient)
             {
-                
-                if (classIndex != -1)
-                {
-                    
-                    gameMaster.classesTaken.Remove(classIndex);
-                    classButtons[classIndex].GetComponent<Image>().color = Color.white;
-                }
-                gameMaster.classesTaken.Add(i);
-                classButtons[i].GetComponent<Image>().color = Color.green;
                 classIndex = i;
+                if(!gameMaster.classesTaken.Contains(i))
+                gameMaster.classesTaken.Add(i);
                 
             }
             if (IsLocalPlayer)
             {
-                for (int j = 0; j < 4; j++)
-                {
-                    if (gameMaster.classesTaken.Contains(j))
-                        classButtons[j].GetComponent<Button>().interactable = false;
-                    else
-                        classButtons[j].GetComponent<Button>().interactable = true;
-                }
-
+                
+                
             }
         }
-
+        if(flag == "CLSBUT")
+        {
+            
+            if(IsClient)
+            {
+                int k = int.Parse(value);
+                if (gameMaster.classesTaken.Contains(k)) 
+                    gameMaster.classesTaken.Remove(k);
+                foreach (int o in gameMaster.classesTaken)
+                {
+                    classButtons[o].GetComponent<Button>().interactable = false;
+                    if (k != -1)
+                        classButtons[k].GetComponent<Button>().interactable = false;
+                }
+                   
+            }
+        }
     }
 
     public override void NetworkedStart()
@@ -141,6 +149,7 @@ public class PlayerNetworkManager : NetworkComponent
                     SendUpdate("NAME", playerName);
                     SendUpdate("RDY", isReady.ToString());
                     SendUpdate("CLASS", classIndex.ToString());
+                    SendUpdate("CLSBUT", "");
                     IsDirty = false;
                 }
 
@@ -159,8 +168,8 @@ public class PlayerNetworkManager : NetworkComponent
         isReady = false;
         gameMaster = GameObject.FindGameObjectWithTag("GameMaster").GetComponent<GameMaster>();
         gameMaster.players.Add(this.gameObject);
-        gameMaster.IsDirty = true;
         ReadyButton.interactable = false;
+        gameCanvas = GameObject.Find("GameCanvas");
 
 
     }
