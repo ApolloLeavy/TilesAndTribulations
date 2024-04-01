@@ -108,6 +108,7 @@ public class NetworkCore     : GenericNetworkCore
     public override IEnumerator OnClientDisconnect(int id)
     {
         OnClientDisc(id);
+        
         yield break;
     }
     

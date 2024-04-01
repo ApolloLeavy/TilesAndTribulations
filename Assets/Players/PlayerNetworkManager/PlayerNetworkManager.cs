@@ -6,6 +6,7 @@ using NETWORK_ENGINE;
 public class PlayerNetworkManager : NetworkComponent
 {
     public bool isReady;
+    public bool gameStarted = false;
     public string playerName = "";
     public InputField NameField;
     public Toggle ReadyButton;
@@ -40,21 +41,33 @@ public class PlayerNetworkManager : NetworkComponent
                 }
             }
         }
+        if(flag == "START")
+        {
+            gameStarted = true;
+        }
         if (flag == "RDY")
         {
+            isReady = bool.Parse(value);
+            ReadyButton.isOn = isReady;
             if (IsServer)
             {
-
-                isReady = bool.Parse(value);
                 gameMaster.GetComponent<GameMaster>().ReadyCheck();
-                ReadyButton.isOn = isReady;
                 SendUpdate("RDY", value);
             }
-            if (IsClient)
+            if(IsLocalPlayer)
             {
-                isReady = bool.Parse(value);
-                ReadyButton.isOn = isReady;
-
+                if(isReady)
+                {
+                    NameField.interactable = false;
+                    foreach(GameObject b in classButtons)
+                    {
+                        b.GetComponent<Button>().interactable = false;
+                    }
+                }
+                else
+                {
+                    NameField.interactable = true;
+                }
             }
         }
         if (flag == "CLASS")
@@ -70,6 +83,7 @@ public class PlayerNetworkManager : NetworkComponent
                     
                     classIndex = i;
                     SendUpdate("CLASS", value);
+                    SendUpdate("CLSBUT", string.Join(',', gameMaster.classesTaken));
                     gameCanvas.GetComponent<CanvasGroup>().alpha = 0;
                 }
                     
@@ -77,32 +91,25 @@ public class PlayerNetworkManager : NetworkComponent
             if (IsClient)
             {
                 classIndex = i;
-                if(!gameMaster.classesTaken.Contains(i))
-                gameMaster.classesTaken.Add(i);
                 
             }
-            if (IsLocalPlayer)
-            {
-                
-                
-            }
+            
         }
         if(flag == "CLSBUT")
         {
-            
+            string[] i = value.Split(',');
+            gameMaster.classesTaken.Clear();
             if(IsClient)
             {
-                int k = int.Parse(value);
-                if (gameMaster.classesTaken.Contains(k)) 
-                    gameMaster.classesTaken.Remove(k);
-                foreach (int o in gameMaster.classesTaken)
+                foreach (string s in i)
                 {
-                    classButtons[o].GetComponent<Button>().interactable = false;
-                    if (k != -1)
-                        classButtons[k].GetComponent<Button>().interactable = false;
+                    gameMaster.classesTaken.Add(int.Parse(s));
+                    
                 }
-                   
+                
+
             }
+            
         }
     }
 
@@ -118,18 +125,21 @@ public class PlayerNetworkManager : NetworkComponent
             }
         }
     }
+    private void OnDestroy()
+    {
+        gameMaster.classesTaken.Remove(classIndex);
+        gameMaster.players.Remove(gameObject);
+    }
     public void Name(string value)
     {
         IsDirty = true;
         playerName = value;
-        SendUpdate("NAME", value);
+        SendCommand("NAME", value);
     }
     public void Ready(bool value)
     {
         IsDirty = true;
-        isReady = value;
-        NameField.interactable = false;
-        SendUpdate("RDY", value.ToString());
+        SendCommand("RDY", value.ToString());
     }
     public void ClassSelect(int i)
     {
@@ -141,20 +151,43 @@ public class PlayerNetworkManager : NetworkComponent
         while (IsConnected)
         {
 
-            while (IsServer)
+            while(!gameStarted)
             {
+                while (IsServer)
+                {
 
+                    if (IsDirty)
+                    {
+                        SendUpdate("NAME", playerName);
+                        SendUpdate("RDY", isReady.ToString());
+                        SendUpdate("CLASS", classIndex.ToString());
+                        SendUpdate("CLSBUT", string.Join(',', gameMaster.classesTaken));
+                        IsDirty = false;
+                    }
+
+                    yield return new WaitForSeconds(.1f);
+
+                }
+                if (IsLocalPlayer && !isReady)
+                {
+                    for (int o = 0; o < 4; o++)
+                    {
+                        if (gameMaster.classesTaken.Contains(o))
+                            classButtons[o].GetComponent<Button>().interactable = false;
+                        else
+                            classButtons[o].GetComponent<Button>().interactable = true;
+                    }
+                }
+                yield return new WaitForSeconds(.1f);
+            }
+            while(IsServer)
+            {
                 if (IsDirty)
                 {
-                    SendUpdate("NAME", playerName);
-                    SendUpdate("RDY", isReady.ToString());
-                    SendUpdate("CLASS", classIndex.ToString());
-                    SendUpdate("CLSBUT", "");
+                    
                     IsDirty = false;
                 }
-
                 yield return new WaitForSeconds(.1f);
-
             }
 
             yield return new WaitForSeconds(.1f);

@@ -36,6 +36,7 @@ public class GameMaster : NetworkComponent
             yield return new WaitForSeconds(MyId.UpdateFrequency);
         }
     }
+    
     public void ReadyCheck()
     {
         foreach (GameObject player in players)
@@ -64,13 +65,17 @@ public class GameMaster : NetworkComponent
         {
             if(k != -1)
             classesTaken.Remove(k);
-            o.GetComponent<PlayerNetworkManager>().SendUpdate("CLSBUT", k.ToString());
+            o.GetComponent<PlayerNetworkManager>().SendUpdate("CLSBUT", string.Join(',',classesTaken));
         }
     }
     public void StartGame()
     {
-        
-        
+        foreach (GameObject o in players)
+        {
+            o.GetComponent<PlayerNetworkManager>().SendCommand("START", "");
+        }
+
+
     }
     // Start is called before the first frame update
     void Start()
