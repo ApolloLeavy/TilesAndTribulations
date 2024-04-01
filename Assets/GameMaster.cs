@@ -72,7 +72,8 @@ public class GameMaster : NetworkComponent
     {
         foreach (GameObject o in players)
         {
-            o.GetComponent<PlayerNetworkManager>().SendCommand("START", "");
+            o.GetComponent<PlayerNetworkManager>().SpawnCharacter();
+            
         }
 
 

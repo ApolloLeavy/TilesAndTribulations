@@ -43,7 +43,13 @@ public class PlayerNetworkManager : NetworkComponent
         }
         if(flag == "START")
         {
+            if(IsServer)
+            {
+               
+            }
+            
             gameStarted = true;
+            
         }
         if (flag == "RDY")
         {
@@ -112,7 +118,12 @@ public class PlayerNetworkManager : NetworkComponent
             
         }
     }
-
+    public void SpawnCharacter()
+    {
+        gameStarted = true;
+        SendUpdate("START", "");
+        MyCore.NetCreateObject(classIndex, Owner, Vector3.zero, Quaternion.identity);
+    }
     public override void NetworkedStart()
     {
         if (IsClient && !IsLocalPlayer)
@@ -172,7 +183,7 @@ public class PlayerNetworkManager : NetworkComponent
                 {
                     for (int o = 0; o < 4; o++)
                     {
-                        if (gameMaster.classesTaken.Contains(o))
+                        if (gameMaster.classesTaken.Contains(o+3))
                             classButtons[o].GetComponent<Button>().interactable = false;
                         else
                             classButtons[o].GetComponent<Button>().interactable = true;
