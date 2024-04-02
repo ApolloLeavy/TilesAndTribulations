@@ -466,9 +466,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: faa3c0b1ce93b53448f5d6edda383bee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  OutputConsole: {fileID: 0}
+  MaxConsoleLogSize: 1024
   UsingUDP: 0
+  IsListening: 0
+  IsServer: 0
+  IsClient: 0
+  IsConnected: 0
+  AppNumber: 0
+  conCounter: 0
+  IP: 
+  PortNumber: 0
+  MaxConnections: 0
   MasterTimer: 0.05
   LocalConnectionID: -1
+  CycleTrigger: 3
   UseMenuManager: 1
   DisconnectScreen: {fileID: 0}
   ObjectCounter: 0

@@ -92,6 +92,7 @@ public class PlayerNetworkManager : NetworkComponent
                     SendUpdate("CLSBUT", string.Join(',', gameMaster.classesTaken));
                     gameCanvas.GetComponent<CanvasGroup>().alpha = 0;
                 }
+                
                     
             }
             if (IsClient)
@@ -116,6 +117,25 @@ public class PlayerNetworkManager : NetworkComponent
 
             }
             
+        }
+        if(flag == "CANCEL")
+        {
+            if(IsServer)
+            {
+                if(classIndex != -1)
+                {
+                    SendUpdate("CANCEL", classIndex.ToString());
+                    gameMaster.classesTaken.Remove(classIndex);
+                    classIndex = -1;
+                    
+                    IsDirty = true;
+                }
+            }
+            if(IsClient)
+            {
+                gameMaster.classesTaken.Remove(int.Parse(value));
+                classIndex = -1;
+            }
         }
     }
     public void SpawnCharacter()
@@ -155,7 +175,10 @@ public class PlayerNetworkManager : NetworkComponent
     public void ClassSelect(int i)
     {
         IsDirty = true;
-        SendCommand("CLASS", i.ToString());
+        if (i != -1)
+            SendCommand("CLASS", i.ToString());
+        else
+            SendCommand("CANCEL", "");
     }
     public override IEnumerator SlowUpdate()
     {
