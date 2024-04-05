@@ -16,7 +16,7 @@ public class Player : NetworkComponent
     public int rcd;
     public Rigidbody myRig;
     public float speed;
-    Vector2 lastInput;
+    public Vector2 lastInput;
     public bool canPlace;
     public bool canAttack;
     public bool canQ;
@@ -26,7 +26,12 @@ public class Player : NetworkComponent
     public List<Vector2[]> tiles;
     public List<Vector2[]> tileLibrary; 
     public int activeTile;
-
+    public bool isInvincible;
+    public int kills;
+    public int deaths;
+    public int assists;
+    public bool isDead;
+    public float deathTimer;
     public override void HandleMessage(string flag, string value)
     {
         if (IsServer)
@@ -50,7 +55,7 @@ public class Player : NetworkComponent
 
         }
     }
-
+ 
     public override void NetworkedStart()
     {
         
@@ -114,6 +119,7 @@ public class Player : NetworkComponent
     {
         MyCore.NetCreateObject(0, NetId, new Vector3(0, 0, 0), new Quaternion());
     }
+    
     // Start is called before the first frame update
     void Start()
     {

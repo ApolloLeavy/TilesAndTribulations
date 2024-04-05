@@ -9,6 +9,9 @@ public class GameMaster : NetworkComponent
     public List<GameObject> players;
     public GameObject gameCanvas;
     public List<int> classesTaken;
+    public bool gameOver;
+    public GameObject[] monsters;
+    public int timer;
     public override void HandleMessage(string flag, string value)
     {
         
