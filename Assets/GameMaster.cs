@@ -11,6 +11,7 @@ public class GameMaster : NetworkComponent
     public List<int> classesTaken;
     public bool gameOver;
     public GameObject[] monsters;
+    public GameObject scoreboard;
     public int timer;
     public override void HandleMessage(string flag, string value)
     {
@@ -24,10 +25,10 @@ public class GameMaster : NetworkComponent
 
     public override IEnumerator SlowUpdate()
     {
-        if(IsConnected)
-        {
+        
             while(IsServer)
             {
+                
                 if(IsDirty)
                 {
                    
@@ -37,7 +38,7 @@ public class GameMaster : NetworkComponent
             }
             
             yield return new WaitForSeconds(MyId.UpdateFrequency);
-        }
+        
     }
     
     public void ReadyCheck()
@@ -81,11 +82,27 @@ public class GameMaster : NetworkComponent
 
 
     }
+    public void EndGame()
+    {
+        int i = 0;
+        foreach(GameObject o in players)
+        {
+            i++;
+            GameObject t;
+            t = GameObject.Find("P"+i+"Entry");
+            t.transform.GetChild(0).GetComponent<Text>().text = o.GetComponent<PlayerNetworkManager>().playerName;
+            t.transform.GetChild(1).GetComponent<Text>().text = o.GetComponent<PlayerNetworkManager>().character.kills.ToString();
+            t.transform.GetChild(2).GetComponent<Text>().text = o.GetComponent<PlayerNetworkManager>().character.deaths.ToString();
+            t.transform.GetChild(3).GetComponent<Text>().text = o.GetComponent<PlayerNetworkManager>().character.assists.ToString();
+        }
+        scoreboard.GetComponent<CanvasRenderer>().SetAlpha(1);
+    }
     // Start is called before the first frame update
     void Start()
     {
         gameCanvas = GameObject.Find("GameCanvas");
-
+        scoreboard = GameObject.Find("Scoreboard");
+        scoreboard.GetComponent<CanvasRenderer>().SetAlpha(0);
     }
 
     // Update is called once per frame
