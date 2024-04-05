@@ -215,17 +215,30 @@ public class PlayerNetworkManager : NetworkComponent
                 }
                 yield return new WaitForSeconds(.1f);
             }
-            while(IsServer)
+            while (!gameMaster.gameOver)
             {
-                if (IsDirty)
+                while (IsServer)
                 {
-                    
-                    IsDirty = false;
+                    if (IsDirty)
+                    {
+
+                        IsDirty = false;
+                    }
+                    yield return new WaitForSeconds(.1f);
                 }
+
                 yield return new WaitForSeconds(.1f);
             }
+            while(gameMaster.gameOver)
+            {
+                while (IsServer)
+                {
+                    
+                    yield return new WaitForSeconds(.1f);
+                }
 
-            yield return new WaitForSeconds(.1f);
+                yield return new WaitForSeconds(.1f);
+            }
         }
     }
 

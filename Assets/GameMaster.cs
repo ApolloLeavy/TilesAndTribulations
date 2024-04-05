@@ -25,20 +25,45 @@ public class GameMaster : NetworkComponent
 
     public override IEnumerator SlowUpdate()
     {
-        
-            while(IsServer)
+        while (!canPlay)
+        {
+            while (IsServer)
             {
-                
-                if(IsDirty)
+
+                if (IsDirty)
                 {
-                   
+
                     IsDirty = false;
                 }
                 yield return new WaitForSeconds(MyId.UpdateFrequency);
             }
-            
             yield return new WaitForSeconds(MyId.UpdateFrequency);
-        
+        }
+            
+        while (!gameOver)
+        {
+            while (IsServer)
+            {
+                if (IsDirty)
+                {
+
+                    IsDirty = false;
+                }
+                yield return new WaitForSeconds(.1f);
+            }
+
+            yield return new WaitForSeconds(.1f);
+        }
+        while (gameOver)
+        {
+            while (IsServer)
+            {
+
+                yield return new WaitForSeconds(.1f);
+            }
+
+            yield return new WaitForSeconds(.1f);
+        }
     }
     
     public void ReadyCheck()
@@ -59,6 +84,7 @@ public class GameMaster : NetworkComponent
         if(canPlay)
         {
             StartGame();
+
         }
     }
     public void SelectClass(int i, int k)
