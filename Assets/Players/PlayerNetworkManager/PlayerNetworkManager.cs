@@ -15,6 +15,9 @@ public class PlayerNetworkManager : NetworkComponent
     public GameObject gameCanvas;
     public int classIndex = -1;
     public Player character;
+    public int kills;
+    public int deaths;
+    public int assists;
 
     public override void HandleMessage(string flag, string value)
     {
@@ -144,6 +147,7 @@ public class PlayerNetworkManager : NetworkComponent
         gameStarted = true;
         SendUpdate("START", "");
         character =  MyCore.NetCreateObject(classIndex, Owner, Vector3.zero, Quaternion.identity).GetComponent<Player>();
+        character.npm = gameObject;
     }
     public override void NetworkedStart()
     {

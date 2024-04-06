@@ -94,6 +94,7 @@ MonoBehaviour:
   NetId: -10
   IsInit: 0
   IsLocalPlayer: 0
+  UseLobby: 0
   UpdateFrequency: 0.1
   MyCore: {fileID: 0}
 --- !u!114 &935137070848024340
@@ -114,3 +115,8 @@ MonoBehaviour:
   canPlay: 0
   players: []
   gameCanvas: {fileID: 0}
+  classesTaken: 
+  gameOver: 0
+  monsters: []
+  scoreboard: {fileID: 8952970769675844287, guid: e001c23d85c81444ca6c5a78fdc4b3f8, type: 3}
+  timer: 0

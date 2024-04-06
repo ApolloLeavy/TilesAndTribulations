@@ -32,6 +32,7 @@ public class Player : NetworkComponent
     public int assists;
     public bool isDead;
     public float deathTimer;
+    public GameObject npm;
     public override void HandleMessage(string flag, string value)
     {
         if (IsServer)
@@ -115,10 +116,7 @@ public class Player : NetworkComponent
             canPlace = true;
         }
     }
-    public void SpawnCharacter()
-    {
-        MyCore.NetCreateObject(0, NetId, new Vector3(0, 0, 0), new Quaternion());
-    }
+    
     
     // Start is called before the first frame update
     void Start()

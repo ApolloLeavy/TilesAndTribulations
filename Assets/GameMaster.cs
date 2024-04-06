@@ -13,9 +13,24 @@ public class GameMaster : NetworkComponent
     public GameObject[] monsters;
     public GameObject scoreboard;
     public int timer;
+    public GameObject playersPanel;
     public override void HandleMessage(string flag, string value)
     {
-        
+        if(flag == "PLAY")
+        {
+            if(IsClient)
+            {
+                canPlay = bool.Parse(value);
+                playersPanel.SetActive(false);
+            }
+        }
+        if (flag == "OVER")
+        {
+            if (IsClient)
+            {
+                gameOver = bool.Parse(value);
+            }
+        }
     }
 
     public override void NetworkedStart()
@@ -32,21 +47,26 @@ public class GameMaster : NetworkComponent
 
                 if (IsDirty)
                 {
-
                     IsDirty = false;
                 }
                 yield return new WaitForSeconds(MyId.UpdateFrequency);
             }
             yield return new WaitForSeconds(MyId.UpdateFrequency);
         }
-            
+        playersPanel.SetActive(false);
+        StartCoroutine(Delay());
         while (!gameOver)
         {
+            
             while (IsServer)
             {
+                
+                Debug.Log("1");
+
+                
                 if (IsDirty)
                 {
-
+                    SendUpdate("OVER", gameOver.ToString());
                     IsDirty = false;
                 }
                 yield return new WaitForSeconds(.1f);
@@ -54,18 +74,24 @@ public class GameMaster : NetworkComponent
 
             yield return new WaitForSeconds(.1f);
         }
+        Debug.Log("2");
+        StartCoroutine(EndGame());
         while (gameOver)
         {
             while (IsServer)
             {
-
+                
                 yield return new WaitForSeconds(.1f);
             }
 
             yield return new WaitForSeconds(.1f);
         }
     }
-    
+    public IEnumerator Delay()
+    {
+        yield return new WaitForSeconds(5);
+        gameOver = true;
+    }
     public void ReadyCheck()
     {
         foreach (GameObject player in players)
@@ -83,6 +109,8 @@ public class GameMaster : NetworkComponent
         }
         if(canPlay)
         {
+            IsDirty = true;
+            SendUpdate("PLAY", canPlay.ToString());
             StartGame();
 
         }
@@ -100,6 +128,7 @@ public class GameMaster : NetworkComponent
     }
     public void StartGame()
     {
+        
         foreach (GameObject o in players)
         {
             o.GetComponent<PlayerNetworkManager>().SpawnCharacter();
@@ -108,8 +137,12 @@ public class GameMaster : NetworkComponent
 
 
     }
-    public void EndGame()
+    public IEnumerator EndGame()
     {
+        scoreboard = GameObject.Instantiate(scoreboard,gameCanvas.transform);
+        
+        Debug.Log("3");
+        
         int i = 0;
         foreach(GameObject o in players)
         {
@@ -117,18 +150,20 @@ public class GameMaster : NetworkComponent
             GameObject t;
             t = GameObject.Find("P"+i+"Entry");
             t.transform.GetChild(0).GetComponent<Text>().text = o.GetComponent<PlayerNetworkManager>().playerName;
-            t.transform.GetChild(1).GetComponent<Text>().text = o.GetComponent<PlayerNetworkManager>().character.kills.ToString();
-            t.transform.GetChild(2).GetComponent<Text>().text = o.GetComponent<PlayerNetworkManager>().character.deaths.ToString();
-            t.transform.GetChild(3).GetComponent<Text>().text = o.GetComponent<PlayerNetworkManager>().character.assists.ToString();
+            t.transform.GetChild(1).GetComponent<Text>().text = o.GetComponent<PlayerNetworkManager>().kills.ToString();
+            t.transform.GetChild(2).GetComponent<Text>().text = o.GetComponent<PlayerNetworkManager>().deaths.ToString();
+            t.transform.GetChild(3).GetComponent<Text>().text = o.GetComponent<PlayerNetworkManager>().assists.ToString();
+            yield return new WaitForSeconds(.1f);
         }
-        scoreboard.GetComponent<CanvasRenderer>().SetAlpha(1);
+        yield return new WaitForSeconds(10);
+        MyCore.UI_Quit();
     }
     // Start is called before the first frame update
     void Start()
     {
         gameCanvas = GameObject.Find("GameCanvas");
-        scoreboard = GameObject.Find("Scoreboard");
-        scoreboard.GetComponent<CanvasRenderer>().SetAlpha(0);
+        gameOver = false;
+        playersPanel = GameObject.FindGameObjectWithTag("playerPanel");
     }
 
     // Update is called once per frame
