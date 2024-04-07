@@ -21,7 +21,7 @@ public class PlayerNetworkManager : NetworkComponent
 
     public override void HandleMessage(string flag, string value)
     {
-        if (flag == "NAME" && !(value.Equals("")))
+        if (flag == "NAME")
         {
             if (IsServer)
             {
@@ -38,7 +38,7 @@ public class PlayerNetworkManager : NetworkComponent
 
                 if (IsLocalPlayer)
                 {
-                    if (playerName != "")
+                    if (playerName != "" && classIndex != -1)
                         ReadyButton.interactable = true;
                     else
                         ReadyButton.interactable = false;
@@ -57,28 +57,32 @@ public class PlayerNetworkManager : NetworkComponent
         }
         if (flag == "RDY")
         {
-            isReady = bool.Parse(value);
-            ReadyButton.isOn = isReady;
-            if (IsServer)
+            if(playerName != "" && classIndex != -1)
             {
-                gameMaster.GetComponent<GameMaster>().ReadyCheck();
-                SendUpdate("RDY", value);
-            }
-            if(IsLocalPlayer)
-            {
-                if(isReady)
+                isReady = bool.Parse(value);
+                ReadyButton.isOn = isReady;
+                if (IsServer)
                 {
-                    NameField.interactable = false;
-                    foreach(GameObject b in classButtons)
+                    gameMaster.GetComponent<GameMaster>().ReadyCheck();
+                    SendUpdate("RDY", value);
+                }
+                if (IsLocalPlayer)
+                {
+                    if (isReady)
                     {
-                        b.GetComponent<Button>().interactable = false;
+                        NameField.interactable = false;
+                        foreach (GameObject b in classButtons)
+                        {
+                            b.GetComponent<Button>().interactable = false;
+                        }
+                    }
+                    else
+                    {
+                        NameField.interactable = true;
                     }
                 }
-                else
-                {
-                    NameField.interactable = true;
-                }
             }
+            
         }
         if (flag == "CLASS")
         {
@@ -98,6 +102,13 @@ public class PlayerNetworkManager : NetworkComponent
                 }
                 
                     
+            }
+            if (IsLocalPlayer)
+            {
+                if (playerName != "" && classIndex != -1)
+                    ReadyButton.interactable = true;
+                else
+                    ReadyButton.interactable = false;
             }
             if (IsClient)
             {
@@ -146,7 +157,7 @@ public class PlayerNetworkManager : NetworkComponent
     {
         gameStarted = true;
         SendUpdate("START", "");
-        character =  MyCore.NetCreateObject(classIndex, Owner, Vector3.zero, Quaternion.identity).GetComponent<Player>();
+        MyCore.NetCreateObject(classIndex, Owner, Vector3.zero, Quaternion.identity).GetComponent<Player>();
         character.npm = gameObject;
     }
     public override void NetworkedStart()
@@ -255,7 +266,7 @@ public class PlayerNetworkManager : NetworkComponent
         gameMaster.players.Add(this.gameObject);
         ReadyButton.interactable = false;
         gameCanvas = GameObject.Find("GameCanvas");
-
+        classIndex = -1;
 
     }
 

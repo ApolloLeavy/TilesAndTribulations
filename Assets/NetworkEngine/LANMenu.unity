@@ -487,10 +487,10 @@ MonoBehaviour:
   - {fileID: 8876078422322473741, guid: 48086ca8033a4654c9dbb31ee17e596d, type: 3}
   - {fileID: 4358895378099611330, guid: ab110e8e37637d544bc76bcbcfd88902, type: 3}
   - {fileID: -2738328465177091387, guid: c4e1b666fce46e24797c8931d62d1669, type: 3}
-  - {fileID: -568182568632565362, guid: 95bd5d774e3f77748a2fa83bccebcb91, type: 3}
-  - {fileID: 7453446448658089940, guid: 5390f47645d0d1c469ccaa122e839603, type: 3}
-  - {fileID: 7453446448658089940, guid: 30f1ac1030d403e44bdbca2d53e2385d, type: 3}
-  - {fileID: 7453446448658089940, guid: 9e6ea785446ee6349b4d0b41b48687c8, type: 3}
+  - {fileID: -568182568632565362, guid: 91a4a96ccad9b364b9b6258e4735a3c2, type: 3}
+  - {fileID: 3349473431781313618, guid: a99cffbc74321a646b657374ca8ce666, type: 3}
+  - {fileID: 1578708105382566860, guid: 2ac8e10638f825f4fb935d7cd06db71c, type: 3}
+  - {fileID: 8165884018824267063, guid: ddf7aebc3ed49834a8d3b6a0340aeee8, type: 3}
   NetworkPlayerManager: {fileID: 1629511964002254459, guid: c4e1b666fce46e24797c8931d62d1669, type: 3}
   DefaultReturnScene: 0
 --- !u!4 &408156394
@@ -1496,7 +1496,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 1000
+  far clip plane: 9.2
   field of view: 60
   orthographic: 0
   orthographic size: 5
@@ -1524,7 +1524,7 @@ Transform:
   m_GameObject: {fileID: 1565329976}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

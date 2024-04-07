@@ -13,7 +13,7 @@ public class GameMaster : NetworkComponent
     public GameObject[] monsters;
     public GameObject scoreboard;
     public int timer;
-    public GameObject playersPanel;
+
     public override void HandleMessage(string flag, string value)
     {
         if(flag == "PLAY")
@@ -21,7 +21,6 @@ public class GameMaster : NetworkComponent
             if(IsClient)
             {
                 canPlay = bool.Parse(value);
-                playersPanel.SetActive(false);
             }
         }
         if (flag == "OVER")
@@ -53,7 +52,6 @@ public class GameMaster : NetworkComponent
             }
             yield return new WaitForSeconds(MyId.UpdateFrequency);
         }
-        playersPanel.SetActive(false);
         StartCoroutine(Delay());
         while (!gameOver)
         {
@@ -61,7 +59,6 @@ public class GameMaster : NetworkComponent
             while (IsServer)
             {
                 
-                Debug.Log("1");
 
                 
                 if (IsDirty)
@@ -74,7 +71,7 @@ public class GameMaster : NetworkComponent
 
             yield return new WaitForSeconds(.1f);
         }
-        Debug.Log("2");
+
         StartCoroutine(EndGame());
         while (gameOver)
         {
@@ -89,8 +86,10 @@ public class GameMaster : NetworkComponent
     }
     public IEnumerator Delay()
     {
-        yield return new WaitForSeconds(5);
+        gameCanvas.GetComponent<Canvas>().enabled = false;
+        yield return new WaitForSeconds(60);
         gameOver = true;
+        gameCanvas.GetComponent<Canvas>().enabled = true;
     }
     public void ReadyCheck()
     {
@@ -163,7 +162,6 @@ public class GameMaster : NetworkComponent
     {
         gameCanvas = GameObject.Find("GameCanvas");
         gameOver = false;
-        playersPanel = GameObject.FindGameObjectWithTag("playerPanel");
     }
 
     // Update is called once per frame

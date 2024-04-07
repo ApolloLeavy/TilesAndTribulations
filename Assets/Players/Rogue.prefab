@@ -13,9 +13,10 @@ GameObject:
   - component: {fileID: 7673556332054809495}
   - component: {fileID: 1466596360305206391}
   - component: {fileID: 662579270354901463}
-  - component: {fileID: -8379228882385601999}
+  - component: {fileID: -568182568632565362}
+  - component: {fileID: -2543828206256491466}
   m_Layer: 0
-  m_Name: Ranger
+  m_Name: Rogue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -129,12 +130,12 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 1
+  m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &-8379228882385601999
+--- !u!114 &-568182568632565362
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -143,6 +144,55 @@ MonoBehaviour:
   m_GameObject: {fileID: 7582327490012109634}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a28dc387df00e964f9e14d2c3d90cc55, type: 3}
+  m_Script: {fileID: 11500000, guid: f34ca87a457962d459c49c36b9753ca5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Type: 0
+  Owner: -10
+  NetId: -10
+  IsInit: 0
+  IsLocalPlayer: 0
+  UseLobby: 0
+  UpdateFrequency: 0.1
+  MyCore: {fileID: 0}
+--- !u!114 &-2543828206256491466
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7582327490012109634}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4b05fac4b6d85840aab4d221123ec79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MyCore: {fileID: 0}
+  MyId: {fileID: 0}
+  IsDirty: 0
+  hp: 0
+  tileCount: 0
+  maxTiles: 0
+  tileGainSec: 0
+  isGenerating: 0
+  qcd: 0
+  wcd: 0
+  ecd: 0
+  rcd: 0
+  myRig: {fileID: 0}
+  speed: 0
+  lastInput: {x: 0, y: 0}
+  canPlace: 0
+  canAttack: 0
+  canQ: 0
+  canW: 0
+  canE: 0
+  canR: 0
+  activeTile: 0
+  isInvincible: 0
+  kills: 0
+  deaths: 0
+  assists: 0
+  isDead: 0
+  deathTimer: 0
+  npm: {fileID: 0}

@@ -82,6 +82,7 @@ public class Player : NetworkComponent
     {
         if (IsServer && ev.performed && canPlace)
         {
+            Debug.Log("Place");
             canPlace = false;
             StartCoroutine(Move(tiles[activeTile]));
         }
@@ -92,6 +93,7 @@ public class Player : NetworkComponent
         {
             if (ev.started || ev.performed)
             {
+                Debug.Log("Input");
                 Vector2 tempCmd = ev.ReadValue<Vector2>();
                 SendCommand("MV", tempCmd.x + "," + tempCmd.y);
 
@@ -106,7 +108,8 @@ public class Player : NetworkComponent
     {
         if (IsServer)
         {
-            for(int i = 0; i < dir.Length;i++)
+            Debug.Log("Move");
+            for (int i = 0; i < dir.Length;i++)
             {
                 myRig.velocity = new Vector3(lastInput.x, 0, lastInput.y);
                 yield return new WaitForSeconds(dir[i].magnitude / speed);
@@ -150,7 +153,7 @@ public class Player : NetworkComponent
         if (IsLocalPlayer)
         {
 
-            Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, myRig.position, speed / 2 * Time.deltaTime);
+            Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position + new Vector3(0,0, -9), myRig.position, speed / 2 * Time.deltaTime);
 
         }
     }
