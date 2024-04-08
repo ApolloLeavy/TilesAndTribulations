@@ -6,8 +6,9 @@ using UnityEngine.InputSystem;
 public class Ranger : Player
 {
     // Start is called before the first frame update
-    void Start()
+    public void Start()
     {
+        base.Start();
         hp = 10;
         speed = 1;
         qcd = 5;
@@ -21,8 +22,8 @@ public class Ranger : Player
 
     }
     // Update is called once per frame
-    void Update()
+    public void Update()
     {
-
-    }
+        base.Update();
+     }
 }

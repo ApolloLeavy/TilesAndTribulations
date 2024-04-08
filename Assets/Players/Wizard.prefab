@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 662579270354901463}
   - component: {fileID: 1578708105382566860}
   - component: {fileID: -3831004274665527372}
+  - component: {fileID: 2923946472919753007}
   m_Layer: 0
   m_Name: Wizard
   m_TagString: Untagged
@@ -196,3 +197,22 @@ MonoBehaviour:
   isDead: 0
   deathTimer: 0
   npm: {fileID: 0}
+--- !u!114 &2923946472919753007
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7582327490012109634}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fa5d0f21d84ddb48a46a7686c04ea38, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MyCore: {fileID: 0}
+  MyId: {fileID: 0}
+  IsDirty: 0
+  threshold: 0.1
+  adaptVelocity: {x: 0, y: 0, z: 0}
+  eThreshold: 1
+  useAdapt: 0

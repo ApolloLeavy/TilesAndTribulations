@@ -9,7 +9,7 @@ public class NetworkRigidbody : NetworkComponent
     Vector3 syncRotation;
     Vector3 syncVelocity;
     Vector3 syncAngVelocity;
-    Rigidbody myRig;
+    public Rigidbody MyRig;
     public Vector3 adaptVelocity;
     public float eThreshold = 1f;
     public bool useAdapt = false;
@@ -25,13 +25,13 @@ public class NetworkRigidbody : NetworkComponent
             if (IsClient)
             {
                 syncPosition = NetworkCore.Vector3FromString(value);
-                if ((syncPosition - myRig.position).magnitude > eThreshold)
+                if ((syncPosition - MyRig.position).magnitude > eThreshold)
                 {
-                    myRig.position = syncPosition;
+                    MyRig.position = syncPosition;
                 }
-                else if ((syncPosition - myRig.position).magnitude > threshold)
+                else if ((syncPosition - MyRig.position).magnitude > threshold)
                 {
-                    adaptVelocity = (syncPosition - myRig.position) / .1f;
+                    adaptVelocity = (syncPosition - MyRig.position) / .1f;
                 }
                 else
                 {
@@ -63,7 +63,7 @@ public class NetworkRigidbody : NetworkComponent
             if (IsClient)
             {
                 syncRotation = NetworkCore.Vector3FromString(value);
-                if ((syncRotation - myRig.rotation.eulerAngles).magnitude > eThreshold && useAdapt)
+                if ((syncRotation - MyRig.rotation.eulerAngles).magnitude > eThreshold && useAdapt)
                 {
 
                 }
@@ -92,27 +92,27 @@ public class NetworkRigidbody : NetworkComponent
         {
             
             
-                SendUpdate("POS", myRig.position.ToString());
-                syncPosition = myRig.position;
+                SendUpdate("POS", MyRig.position.ToString());
+                syncPosition = MyRig.position;
             
             
-                SendUpdate("VEL", myRig.velocity.ToString());
-                syncVelocity = myRig.velocity;
+                SendUpdate("VEL", MyRig.velocity.ToString());
+                syncVelocity = MyRig.velocity;
             
             
-                SendUpdate("ROT", myRig.rotation.eulerAngles.ToString());
-                syncRotation = myRig.rotation.eulerAngles;
+                SendUpdate("ROT", MyRig.rotation.eulerAngles.ToString());
+                syncRotation = MyRig.rotation.eulerAngles;
             
             
-                SendUpdate("ANG", myRig.angularVelocity.ToString());
-                syncAngVelocity = myRig.angularVelocity;
+                SendUpdate("ANG", MyRig.angularVelocity.ToString());
+                syncAngVelocity = MyRig.angularVelocity;
             
             if (IsDirty)
             {
-                SendUpdate("POS", myRig.position.ToString());
-                SendUpdate("VEL", myRig.velocity.ToString());
-                SendUpdate("ROT", myRig.rotation.ToString());
-                SendUpdate("ANG", myRig.angularVelocity.ToString());
+                SendUpdate("POS", MyRig.position.ToString());
+                SendUpdate("VEL", MyRig.velocity.ToString());
+                SendUpdate("ROT", MyRig.rotation.ToString());
+                SendUpdate("ANG", MyRig.angularVelocity.ToString());
                 IsDirty = false;
             }
             yield return new WaitForSeconds(MyId.UpdateFrequency);
@@ -124,16 +124,18 @@ public class NetworkRigidbody : NetworkComponent
     // Start is called before the first frame update
     void Start()
     {
-        myRig = GetComponent<Rigidbody>();
+        MyRig = GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (IsClient)
+        if(MyCore && IsClient)
         {
-            myRig.velocity = syncVelocity;
-            myRig.angularVelocity = syncAngVelocity;
+            MyRig.velocity = syncVelocity;
+            MyRig.angularVelocity = syncAngVelocity;
         }
+            
+        
     }
 }

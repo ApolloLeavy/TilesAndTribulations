@@ -6,18 +6,18 @@ using NETWORK_ENGINE;
 public class PlayerNetworkManager : NetworkComponent
 {
     public bool isReady;
-    public bool gameStarted = false;
+    public bool gameStarted;
     public string playerName = "";
     public InputField NameField;
     public Toggle ReadyButton;
     public GameMaster gameMaster;
     public List<GameObject> classButtons;
     public GameObject gameCanvas;
-    public int classIndex = -1;
-    public Player character;
+    public int classIndex;
     public int kills;
     public int deaths;
     public int assists;
+    
 
     public override void HandleMessage(string flag, string value)
     {
@@ -103,17 +103,17 @@ public class PlayerNetworkManager : NetworkComponent
                 
                     
             }
-            if (IsLocalPlayer)
-            {
-                if (playerName != "" && classIndex != -1)
-                    ReadyButton.interactable = true;
-                else
-                    ReadyButton.interactable = false;
-            }
+            
             if (IsClient)
             {
                 classIndex = i;
-                
+                if (IsLocalPlayer)
+                {
+                    if (playerName != "" && classIndex != -1)
+                        ReadyButton.interactable = true;
+                    else
+                        ReadyButton.interactable = false;
+                }
             }
             
         }
@@ -158,7 +158,6 @@ public class PlayerNetworkManager : NetworkComponent
         gameStarted = true;
         SendUpdate("START", "");
         MyCore.NetCreateObject(classIndex, Owner, Vector3.zero, Quaternion.identity).GetComponent<Player>();
-        character.npm = gameObject;
     }
     public override void NetworkedStart()
     {
@@ -267,7 +266,7 @@ public class PlayerNetworkManager : NetworkComponent
         ReadyButton.interactable = false;
         gameCanvas = GameObject.Find("GameCanvas");
         classIndex = -1;
-
+        
     }
 
     // Update is called once per frame

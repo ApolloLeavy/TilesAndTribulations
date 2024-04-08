@@ -33,28 +33,63 @@ public class Player : NetworkComponent
     public bool isDead;
     public float deathTimer;
     public GameObject npm;
+    public bool isFlipped;
     public override void HandleMessage(string flag, string value)
     {
-        if (IsServer)
+        
+        if (flag == "MV")
         {
-            if (flag == "MV")
+            if (IsServer && canPlace)
             {
+                Debug.Log("Input");
                 string[] tmp = value.Split(',');
                 lastInput = new Vector2(float.Parse(tmp[0]), float.Parse(tmp[1]));
                 IsDirty = true;
-                if ((lastInput.x > 0 || lastInput.x < 0) && (lastInput.y >0||lastInput.y<0))
+                if ((lastInput.x > 0 || lastInput.x < 0) && (lastInput.y > 0 || lastInput.y < 0))
                 {
                     lastInput.x = 0;
+                    lastInput.y = 1;
+                }
+            }
+            if (IsClient)
+            {
+
+
+            }
+        }
+        if(flag == "PLACE")
+        {
+            if(IsServer)
+            {
+                if(canPlace)
+                {
+                    Debug.Log("Place");
+                    canPlace = false;
+                    StartCoroutine(Move(tiles[activeTile]));
+                    SendUpdate("PLACE", canPlace.ToString());
                 }
                 
             }
-
+            if(IsLocalPlayer)
+            {
+                canPlace = bool.Parse(value);
+                    
+                
+            }
         }
-        if (IsClient)
+        if(flag == "FLIP")
         {
-
-
+            if (IsServer)
+            {
+                isFlipped = !isFlipped;
+                SendUpdate("FLIP", isFlipped.ToString());
+            }
+            if (IsLocalPlayer)
+            {
+                isFlipped = bool.Parse(value);
+            }
         }
+       
     }
  
     public override void NetworkedStart()
@@ -80,11 +115,11 @@ public class Player : NetworkComponent
     }
     public void OnPlace(InputAction.CallbackContext ev)
     {
-        if (IsServer && ev.performed && canPlace)
+        if (IsLocalPlayer && ev.performed)
         {
             Debug.Log("Place");
-            canPlace = false;
-            StartCoroutine(Move(tiles[activeTile]));
+            SendCommand("PLACE", canPlace.ToString());
+            
         }
     }
     public void OnMove(InputAction.CallbackContext ev)
@@ -104,6 +139,11 @@ public class Player : NetworkComponent
             }
         }
     }
+    public void OnFlip(InputAction.CallbackContext ev)
+    {
+        if (ev.started)
+            SendCommand("FLIP","");
+    }
     public IEnumerator Move(Vector2[] dir)
     {
         if (IsServer)
@@ -111,18 +151,43 @@ public class Player : NetworkComponent
             Debug.Log("Move");
             for (int i = 0; i < dir.Length;i++)
             {
-                myRig.velocity = new Vector3(lastInput.x, 0, lastInput.y);
+                
+                if(lastInput.y <0)
+                {
+                    myRig.velocity = new Vector3(-dir[i].x, -dir[i].y, 0);
+                    if(isFlipped)
+                        myRig.velocity = new Vector3(dir[i].x, -dir[i].y, 0);
+                }
+                else if (lastInput.x > 0)
+                {
+                    myRig.velocity = new Vector3(dir[i].y, -dir[i].x, 0);
+                    if(isFlipped)
+                        myRig.velocity = new Vector3(dir[i].y, dir[i].x, 0);
+                }
+                else if(lastInput.x < 0)
+                {
+                    myRig.velocity = new Vector3(-dir[i].y, dir[i].x, 0);
+                    if(isFlipped)
+                        myRig.velocity = new Vector3(-dir[i].y, -dir[i].x, 0);
+                }
+                else
+                {
+                    myRig.velocity = new Vector3(dir[i].x, dir[i].y, 0);
+                    if(isFlipped)
+                        myRig.velocity = new Vector3(-dir[i].x, dir[i].y, 0);
+                }
                 yield return new WaitForSeconds(dir[i].magnitude / speed);
                 
             }
             myRig.velocity = new Vector3(0, 0, 0);
             canPlace = true;
+            SendUpdate("PLACE", canPlace.ToString());
         }
     }
     
     
     // Start is called before the first frame update
-    void Start()
+    public void Start()
     {
         myRig = GetComponent<Rigidbody>();
         maxTiles = 5;
@@ -137,23 +202,16 @@ public class Player : NetworkComponent
         tiles = new List<Vector2[]>();
         tiles.Add(new Vector2[] { new Vector2(0, 4), new Vector2(2, 0) });
         activeTile = 0;
+        isFlipped = false;
     }
 
     // Update is called once per frame
-    void Update()
+    public void Update()
     {
-        if (IsServer)
-        {
-            
-        }
-        if (IsClient)
-        {
-            //animation logic pref with synchronzied variables
-        }
         if (IsLocalPlayer)
         {
 
-            Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position + new Vector3(0,0, -9), myRig.position, speed / 2 * Time.deltaTime);
+            Camera.main.transform.position = Vector3.Lerp(transform.position + new Vector3(0,0, -9), myRig.position, speed / 2 * Time.deltaTime);
 
         }
     }
