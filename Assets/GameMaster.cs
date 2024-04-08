@@ -87,7 +87,7 @@ public class GameMaster : NetworkComponent
     public IEnumerator Delay()
     {
         gameCanvas.GetComponent<Canvas>().enabled = false;
-        yield return new WaitForSeconds(60);
+        yield return new WaitForSeconds(120);
         gameOver = true;
         gameCanvas.GetComponent<Canvas>().enabled = true;
     }

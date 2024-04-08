@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 4610692112435773444}
   - component: {fileID: 5729620915529849505}
   - component: {fileID: 8876078422322473741}
-  - component: {fileID: 7153171595321224817}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -103,38 +102,6 @@ MonoBehaviour:
   NetId: -10
   IsInit: 0
   IsLocalPlayer: 0
+  UseLobby: 0
   UpdateFrequency: 0.1
   MyCore: {fileID: 0}
---- !u!114 &7153171595321224817
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1944970891843161481}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9a764e782e5577f4eb3fa01b9dff9243, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  MyCore: {fileID: 0}
-  MyId: {fileID: 0}
-  IsDirty: 0
-  hp: 0
-  tileCount: 0
-  maxTiles: 0
-  tileGainSec: 0
-  isGenerating: 0
-  qcd: 0
-  wcd: 0
-  ecd: 0
-  rcd: 0
-  myRig: {fileID: 0}
-  speed: 0
-  canPlace: 0
-  canAttack: 0
-  canQ: 0
-  canW: 0
-  canE: 0
-  canR: 0
-  activeTile: 0

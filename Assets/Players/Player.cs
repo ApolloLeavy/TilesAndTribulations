@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using NETWORK_ENGINE;
 using UnityEngine.InputSystem;
-public class Player : NetworkComponent
+public abstract class Player : NetworkComponent
 {
     public int hp;
     public int tileCount;
@@ -97,7 +97,9 @@ public class Player : NetworkComponent
             }
             if (IsLocalPlayer)
             {
+
                 isFlipped = bool.Parse(value);
+                PreviewMove(tiles[activeTile]);
             }
         }
        
@@ -137,7 +139,7 @@ public class Player : NetworkComponent
     {
         if (IsLocalPlayer)
         {
-            if (ev.started || ev.performed)
+            if (ev.started)
             {
                 Debug.Log("Input");
                 Vector2 tempCmd = ev.ReadValue<Vector2>();
@@ -208,28 +210,37 @@ public class Player : NetworkComponent
 
                 if (lastInput.y < 0)
                 {
-                    point.position += new Vector3(-dir[i].x * (dir[i].magnitude / speed), -dir[i].y * (dir[i].magnitude / speed), 0);
                     if (isFlipped)
-                        point.position += new Vector3(dir[i].x * (dir[i].magnitude / speed), -dir[i].y * (dir[i].magnitude / speed), 0);
-                }
+                        dir[i].x *= -1;
+                    point.position += new Vector3(-dir[i].x * (dir[i].magnitude / speed), -dir[i].y * (dir[i].magnitude / speed), 0);
+                if (isFlipped)
+                    dir[i].x *= -1;
+
+            }
                 else if (lastInput.x > 0)
                 {
+                if (isFlipped)
+                        dir[i].x *= -1;
                     point.position += new Vector3(dir[i].y * (dir[i].magnitude / speed), -dir[i].x * (dir[i].magnitude / speed), 0);
-                    if (isFlipped)
-                        point.position += new Vector3(dir[i].y * (dir[i].magnitude / speed), dir[i].x * (dir[i].magnitude / speed), 0);
-                }
+                if (isFlipped)
+                    dir[i].x *= -1;
+            }
                 else if (lastInput.x < 0)
                 {
-                    point.position += new Vector3(-dir[i].y * (dir[i].magnitude / speed), dir[i].x * (dir[i].magnitude / speed), 0);
-                    if (isFlipped)
-                        point.position += new Vector3(-dir[i].y * (dir[i].magnitude / speed), -dir[i].x * (dir[i].magnitude / speed), 0);
-                }
+                if (isFlipped)
+                    dir[i].x *= -1;
+                point.position += new Vector3(-dir[i].y * (dir[i].magnitude / speed), dir[i].x * (dir[i].magnitude / speed), 0);
+                if (isFlipped)
+                    dir[i].x *= -1;
+            }
                 else
                 {
-                    point.position += new Vector3(dir[i].x* (dir[i].magnitude / speed), dir[i].y* (dir[i].magnitude / speed), 0);
-                    if (isFlipped)
-                        point.position += new Vector3(-dir[i].x * (dir[i].magnitude / speed), dir[i].y * (dir[i].magnitude / speed), 0);
-                }
+                if (isFlipped)
+                    dir[i].x *= -1;
+                point.position += new Vector3(dir[i].x* (dir[i].magnitude / speed), dir[i].y* (dir[i].magnitude / speed), 0);
+                if (isFlipped)
+                    dir[i].x *= -1;
+            }
                 indicatorList.Add(GameObject.Instantiate(previewBlock,point.position,Quaternion.identity));
                 
             }
@@ -239,7 +250,7 @@ public class Player : NetworkComponent
     }
 
     // Start is called before the first frame update
-    public void Start()
+    public virtual void Start()
     {
         myRig = GetComponent<Rigidbody>();
         maxTiles = 5;
@@ -260,7 +271,7 @@ public class Player : NetworkComponent
     }
 
     // Update is called once per frame
-    public void Update()
+    public virtual void Update()
     {
         if (IsLocalPlayer)
         {
