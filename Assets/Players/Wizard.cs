@@ -5,8 +5,12 @@ using NETWORK_ENGINE;
 using UnityEngine.InputSystem;
 public class Wizard : Player
 {
+    public GameObject fireball;
+    public GameObject icestorm;
+    public GameObject teleport;
+    public GameObject haste;
     // Start is called before the first frame update
-    public void Start()
+    public override void Start()
     {
         base.Start();
         hp = 10;
@@ -20,7 +24,7 @@ public class Wizard : Player
     {
         base.NetworkedStart();
     }
-    public void Update()
+    public override void Update()
     {
         base.Update();
      }

@@ -36,6 +36,9 @@ public abstract class Player : NetworkComponent
     public bool isFlipped;
     public Transform point;
     public GameObject previewBlock;
+    
+
+
     public List<GameObject> indicatorList;
     public override void HandleMessage(string flag, string value)
     {
@@ -64,7 +67,7 @@ public abstract class Player : NetworkComponent
                     lastInput.x = 0;
                     lastInput.y = 1;
                 }
-                PreviewMove(tiles[activeTile]);
+                PreviewMove(tiles[activeTile], previewBlock);
 
             }
         }
@@ -99,7 +102,7 @@ public abstract class Player : NetworkComponent
             {
 
                 isFlipped = bool.Parse(value);
-                PreviewMove(tiles[activeTile]);
+                PreviewMove(tiles[activeTile], previewBlock);
             }
         }
        
@@ -197,7 +200,7 @@ public abstract class Player : NetworkComponent
             SendUpdate("PLACE", canPlace.ToString());
         }
     }
-    public void PreviewMove(Vector2[] dir)
+    public void PreviewMove(Vector2[] dir, GameObject pre)
     {
         
             foreach(GameObject o in indicatorList)
@@ -241,7 +244,7 @@ public abstract class Player : NetworkComponent
                 if (isFlipped)
                     dir[i].x *= -1;
             }
-                indicatorList.Add(GameObject.Instantiate(previewBlock,point.position,Quaternion.identity));
+                indicatorList.Add(GameObject.Instantiate(pre,point.position,Quaternion.identity));
                 
             }
             point.position = transform.position;
@@ -263,7 +266,7 @@ public abstract class Player : NetworkComponent
         canE = true;
         canR = true;
         tiles = new List<Vector2[]>();
-        tiles.Add(new Vector2[] { new Vector2(0, 1),new Vector2(0, 1),new Vector2(0, 1),new Vector2(0, 1), new Vector2(1, 0), new Vector2(1, 0) });
+        tiles.Add(new Vector2[] { new Vector2(1, 1),new Vector2(1, 1),new Vector2(-1, 1),new Vector2(-1, 1), new Vector2(1, 1), new Vector2(1, 1) });
         activeTile = 0;
         isFlipped = false;
         point = transform.GetChild(0);
