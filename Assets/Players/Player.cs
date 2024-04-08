@@ -34,6 +34,9 @@ public class Player : NetworkComponent
     public float deathTimer;
     public GameObject npm;
     public bool isFlipped;
+    public Transform point;
+    public GameObject previewBlock;
+    public List<GameObject> indicatorList;
     public override void HandleMessage(string flag, string value)
     {
         
@@ -50,10 +53,18 @@ public class Player : NetworkComponent
                     lastInput.x = 0;
                     lastInput.y = 1;
                 }
+                SendUpdate("MV", value);
             }
             if (IsClient)
             {
-
+                string[] tmp = value.Split(',');
+                lastInput = new Vector2(float.Parse(tmp[0]), float.Parse(tmp[1]));
+                if ((lastInput.x > 0 || lastInput.x < 0) && (lastInput.y > 0 || lastInput.y < 0))
+                {
+                    lastInput.x = 0;
+                    lastInput.y = 1;
+                }
+                PreviewMove(tiles[activeTile]);
 
             }
         }
@@ -184,8 +195,49 @@ public class Player : NetworkComponent
             SendUpdate("PLACE", canPlace.ToString());
         }
     }
-    
-    
+    public void PreviewMove(Vector2[] dir)
+    {
+        
+            foreach(GameObject o in indicatorList)
+            {
+                GameObject.Destroy(o);
+            }
+            indicatorList.Clear();
+            for (int i = 0; i < dir.Length; i++)
+            {
+
+                if (lastInput.y < 0)
+                {
+                    point.position += new Vector3(-dir[i].x * (dir[i].magnitude / speed), -dir[i].y * (dir[i].magnitude / speed), 0);
+                    if (isFlipped)
+                        point.position += new Vector3(dir[i].x * (dir[i].magnitude / speed), -dir[i].y * (dir[i].magnitude / speed), 0);
+                }
+                else if (lastInput.x > 0)
+                {
+                    point.position += new Vector3(dir[i].y * (dir[i].magnitude / speed), -dir[i].x * (dir[i].magnitude / speed), 0);
+                    if (isFlipped)
+                        point.position += new Vector3(dir[i].y * (dir[i].magnitude / speed), dir[i].x * (dir[i].magnitude / speed), 0);
+                }
+                else if (lastInput.x < 0)
+                {
+                    point.position += new Vector3(-dir[i].y * (dir[i].magnitude / speed), dir[i].x * (dir[i].magnitude / speed), 0);
+                    if (isFlipped)
+                        point.position += new Vector3(-dir[i].y * (dir[i].magnitude / speed), -dir[i].x * (dir[i].magnitude / speed), 0);
+                }
+                else
+                {
+                    point.position += new Vector3(dir[i].x* (dir[i].magnitude / speed), dir[i].y* (dir[i].magnitude / speed), 0);
+                    if (isFlipped)
+                        point.position += new Vector3(-dir[i].x * (dir[i].magnitude / speed), dir[i].y * (dir[i].magnitude / speed), 0);
+                }
+                indicatorList.Add(GameObject.Instantiate(previewBlock,point.position,Quaternion.identity));
+                
+            }
+            point.position = transform.position;
+            
+        
+    }
+
     // Start is called before the first frame update
     public void Start()
     {
@@ -200,9 +252,11 @@ public class Player : NetworkComponent
         canE = true;
         canR = true;
         tiles = new List<Vector2[]>();
-        tiles.Add(new Vector2[] { new Vector2(0, 4), new Vector2(2, 0) });
+        tiles.Add(new Vector2[] { new Vector2(0, 1),new Vector2(0, 1),new Vector2(0, 1),new Vector2(0, 1), new Vector2(1, 0), new Vector2(1, 0) });
         activeTile = 0;
         isFlipped = false;
+        point = transform.GetChild(0);
+        List<GameObject> indicatorList = new List<GameObject>();
     }
 
     // Update is called once per frame

@@ -3,7 +3,13 @@ guid: 9a764e782e5577f4eb3fa01b9dff9243
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - MyCore: {instanceID: 0}
+  - MyId: {instanceID: 0}
+  - myRig: {instanceID: 0}
+  - npm: {instanceID: 0}
+  - point: {instanceID: 0}
+  - previewBlock: {fileID: 6054271980300801125, guid: dfa4c5c85385c7e429388ed1ca3075bf, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
