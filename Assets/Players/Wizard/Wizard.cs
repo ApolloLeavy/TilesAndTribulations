@@ -57,6 +57,40 @@ public class Wizard : Player
                 canW = bool.Parse(value);
             }
         }
+        if (flag == "E")
+        {
+            if (IsServer)
+            {
+                if (canE)
+                {
+                    PreviewAbility(tiles[activeTile], 9);
+                    canE = false;
+                    StartCoroutine(E());
+                    SendUpdate("E", canE.ToString());
+                }
+            }
+            if (IsLocalPlayer)
+            {
+                canW = bool.Parse(value);
+            }
+        }
+        if (flag == "R")
+        {
+            if (IsServer)
+            {
+                if (canR)
+                {
+                    PreviewAbility(tiles[activeTile], 10);
+                    canR = false;
+                    StartCoroutine(R());
+                    SendUpdate("R", canR.ToString());
+                }
+            }
+            if (IsLocalPlayer)
+            {
+                canR = bool.Parse(value);
+            }
+        }
     }
     public IEnumerator Q()
     {
@@ -69,6 +103,18 @@ public class Wizard : Player
         yield return new WaitForSeconds(wcd);
         canW = true;
         SendUpdate("W", canW.ToString());
+    }
+    public IEnumerator E()
+    {
+        yield return new WaitForSeconds(ecd);
+        canE = true;
+        SendUpdate("E", canE.ToString());
+    }
+    public IEnumerator R()
+    {
+        yield return new WaitForSeconds(rcd);
+        canR = true;
+        SendUpdate("R", canR.ToString());
     }
     public override void NetworkedStart()
     {
