@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: -568182568632565362}
   - component: {fileID: -2543828206256491466}
   - component: {fileID: -3848510929299555613}
+  - component: {fileID: -2839854804019220782}
   m_Layer: 0
   m_Name: Rogue
   m_TagString: Untagged
@@ -197,6 +198,10 @@ MonoBehaviour:
   isDead: 0
   deathTimer: 0
   npm: {fileID: 0}
+  isFlipped: 0
+  point: {fileID: 0}
+  previewBlock: {fileID: 0}
+  indicatorList: []
 --- !u!114 &-3848510929299555613
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -213,6 +218,37 @@ MonoBehaviour:
   MyId: {fileID: 0}
   IsDirty: 0
   threshold: 0.1
+  MyRig: {fileID: 0}
   adaptVelocity: {x: 0, y: 0, z: 0}
   eThreshold: 1
   useAdapt: 0
+--- !u!114 &-2839854804019220782
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7582327490012109634}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Actions: {fileID: -944628639613478452, guid: b5b7d041a4cc8ab49936d0933eaaeb43, type: 3}
+  m_NotificationBehavior: 0
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents: []
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: 
+  m_DefaultActionMap: Player
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}
