@@ -19,7 +19,7 @@ GameObject:
   - component: {fileID: -7958681026234198793}
   m_Layer: 0
   m_Name: Ranger
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -198,6 +198,10 @@ MonoBehaviour:
   isDead: 0
   deathTimer: 0
   npm: {fileID: 0}
+  isFlipped: 0
+  point: {fileID: 0}
+  previewBlock: {fileID: 0}
+  indicatorList: []
 --- !u!114 &-1983258064893101346
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -328,6 +332,7 @@ MonoBehaviour:
   MyId: {fileID: 0}
   IsDirty: 0
   threshold: 0.1
+  MyRig: {fileID: 0}
   adaptVelocity: {x: 0, y: 0, z: 0}
   eThreshold: 1
   useAdapt: 0

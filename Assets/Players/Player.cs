@@ -14,6 +14,8 @@ public abstract class Player : NetworkComponent
     public int wcd;
     public int ecd;
     public int rcd;
+    public float acd;
+    
     public Rigidbody myRig;
     public float speed;
     public Vector2 lastInput;
@@ -36,9 +38,6 @@ public abstract class Player : NetworkComponent
     public bool isFlipped;
     public Transform point;
     public GameObject previewBlock;
-    
-
-
     public List<GameObject> indicatorList;
     public override void HandleMessage(string flag, string value)
     {
@@ -87,11 +86,30 @@ public abstract class Player : NetworkComponent
             if(IsLocalPlayer)
             {
                 canPlace = bool.Parse(value);
-                    
-                
+                if(canPlace)
+                    PreviewMove(tiles[activeTile]);
+
             }
         }
-        if(flag == "FLIP")
+        if (flag == "ATTACK")
+        {
+            if (IsServer)
+            {
+                if (canAttack)
+                {
+                    Debug.Log("Attack");
+                    StartCoroutine(Attack());
+                    canAttack = false;
+                    SendUpdate("ATTACK", canAttack.ToString());
+                }
+
+            }
+            if (IsLocalPlayer)
+            {
+                canAttack = bool.Parse(value);
+            }
+        }
+        if (flag == "FLIP")
         {
             if (IsServer)
             {
@@ -107,7 +125,12 @@ public abstract class Player : NetworkComponent
         }
        
     }
- 
+    public virtual IEnumerator Attack()
+    {
+        yield return new WaitForSeconds(acd);
+        canAttack = true;
+        SendUpdate("ATTACK", canAttack.ToString());
+    }
     public override void NetworkedStart()
     {
         
@@ -121,6 +144,10 @@ public abstract class Player : NetworkComponent
             {
                 if (IsDirty)
                 {
+                    SendUpdate("ATTACK", canAttack.ToString());
+                    SendUpdate("MV", lastInput.x+","+lastInput.y);
+                    SendUpdate("PLACE", canPlace.ToString());
+                    SendUpdate("FLIP", isFlipped.ToString());
                     IsDirty = false;
                 }
                 yield return new WaitForSeconds(MyId.UpdateFrequency);
@@ -129,14 +156,26 @@ public abstract class Player : NetworkComponent
 
         }
     }
+    public void OnAttack(InputAction.CallbackContext ev)
+    {
+        if (ev.started && IsLocalPlayer)
+        {
+            SendCommand("ATTACK", "");
+        }
+    }
     public void OnPlace(InputAction.CallbackContext ev)
     {
         if (IsLocalPlayer && ev.performed)
         {
             Debug.Log("Place");
-            SendCommand("PLACE", canPlace.ToString());
+            SendCommand("PLACE", "");
             
         }
+    }
+    public void OnFlip(InputAction.CallbackContext ev)
+    {
+        if (ev.started)
+            SendCommand("FLIP","");
     }
     public void OnMove(InputAction.CallbackContext ev)
     {
@@ -154,11 +193,6 @@ public abstract class Player : NetworkComponent
                 SendCommand("MV", lastInput.x + "," + lastInput.y);
             }
         }
-    }
-    public void OnFlip(InputAction.CallbackContext ev)
-    {
-        if (ev.started)
-            SendCommand("FLIP","");
     }
     public IEnumerator Move(Vector2[] dir)
     {
@@ -192,18 +226,26 @@ public abstract class Player : NetworkComponent
                     if(isFlipped)
                         myRig.velocity = new Vector3(-dir[i].x, dir[i].y, 0);
                 }
-                yield return new WaitForSeconds(dir[i].magnitude / speed);
+                myRig.velocity = myRig.velocity.normalized* speed;
+                
+                yield return new WaitForSecondsRealtime(1 / speed);
                 
             }
             myRig.velocity = new Vector3(0, 0, 0);
+            
             canPlace = true;
+            
             SendUpdate("PLACE", canPlace.ToString());
         }
     }
-    public void PreviewAbility(Vector2[] dir, int type)
+    public void PreviewMove(Vector2[] dir)
     {
-        
-        
+
+        foreach (GameObject o in indicatorList)
+        {
+            GameObject.Destroy(o);
+        }
+        indicatorList.Clear();
         for (int i = 0; i < dir.Length; i++)
         {
 
@@ -211,16 +253,15 @@ public abstract class Player : NetworkComponent
             {
                 if (isFlipped)
                     dir[i].x *= -1;
-                point.position += new Vector3(-dir[i].x * (dir[i].magnitude / speed), -dir[i].y * (dir[i].magnitude / speed), 0);
+                point.position += new Vector3(-dir[i].x * (dir[i].magnitude), -dir[i].y * (dir[i].magnitude), 0);
                 if (isFlipped)
                     dir[i].x *= -1;
-
             }
             else if (lastInput.x > 0)
             {
                 if (isFlipped)
                     dir[i].x *= -1;
-                point.position += new Vector3(dir[i].y * (dir[i].magnitude / speed), -dir[i].x * (dir[i].magnitude / speed), 0);
+                point.position += new Vector3(dir[i].y * (dir[i].magnitude), -dir[i].x * (dir[i].magnitude), 0);
                 if (isFlipped)
                     dir[i].x *= -1;
             }
@@ -228,7 +269,7 @@ public abstract class Player : NetworkComponent
             {
                 if (isFlipped)
                     dir[i].x *= -1;
-                point.position += new Vector3(-dir[i].y * (dir[i].magnitude / speed), dir[i].x * (dir[i].magnitude / speed), 0);
+                point.position += new Vector3(-dir[i].y * (dir[i].magnitude), dir[i].x * (dir[i].magnitude), 0);
                 if (isFlipped)
                     dir[i].x *= -1;
             }
@@ -236,66 +277,140 @@ public abstract class Player : NetworkComponent
             {
                 if (isFlipped)
                     dir[i].x *= -1;
-                point.position += new Vector3(dir[i].x * (dir[i].magnitude / speed), dir[i].y * (dir[i].magnitude / speed), 0);
+                point.position += new Vector3(dir[i].x * (dir[i].magnitude), dir[i].y * (dir[i].magnitude), 0);
                 if (isFlipped)
                     dir[i].x *= -1;
             }
-            indicatorList.Add(MyCore.NetCreateObject(type, Owner, point.position, Quaternion.identity));
+            indicatorList.Add(GameObject.Instantiate(previewBlock, point.position, Quaternion.identity));
 
         }
         point.position = transform.position;
 
 
     }
-    public void PreviewMove(Vector2[] dir)
+    public void PreviewAbility(Vector2[] dir, int type)
     {
-        
-            foreach(GameObject o in indicatorList)
+        for (int i = 0; i < dir.Length; i++)
+        {
+            if (lastInput.y < 0)
             {
-                GameObject.Destroy(o);
+                if (isFlipped)
+                    dir[i].x *= -1;
+                point.position += new Vector3(-dir[i].x * (dir[i].magnitude), -dir[i].y * (dir[i].magnitude), 0);
+                if (isFlipped)
+                    dir[i].x *= -1;
             }
-            indicatorList.Clear();
-            for (int i = 0; i < dir.Length; i++)
+            else if (lastInput.x > 0)
             {
-
-                if (lastInput.y < 0)
-                {
-                    if (isFlipped)
-                        dir[i].x *= -1;
-                    point.position += new Vector3(-dir[i].x * (dir[i].magnitude / speed), -dir[i].y * (dir[i].magnitude / speed), 0);
-                    if (isFlipped)
-                        dir[i].x *= -1;
-                }
-                else if (lastInput.x > 0)
-                {
-                    if (isFlipped)
-                            dir[i].x *= -1;
-                        point.position += new Vector3(dir[i].y * (dir[i].magnitude / speed), -dir[i].x * (dir[i].magnitude / speed), 0);
-                    if (isFlipped)
-                        dir[i].x *= -1;
-                }
-                else if (lastInput.x < 0)
-                {
-                    if (isFlipped)
-                        dir[i].x *= -1;
-                    point.position += new Vector3(-dir[i].y * (dir[i].magnitude / speed), dir[i].x * (dir[i].magnitude / speed), 0);
-                    if (isFlipped)
-                        dir[i].x *= -1;
-                }
-                else
-                {
-                    if (isFlipped)
-                        dir[i].x *= -1;
-                    point.position += new Vector3(dir[i].x* (dir[i].magnitude / speed), dir[i].y* (dir[i].magnitude / speed), 0);
-                    if (isFlipped)
-                        dir[i].x *= -1;
-                }
-                indicatorList.Add(GameObject.Instantiate(previewBlock,point.position,Quaternion.identity));
-                
+                if (isFlipped)
+                    dir[i].x *= -1;
+                point.position += new Vector3(dir[i].y * (dir[i].magnitude), -dir[i].x * (dir[i].magnitude), 0);
+                if (isFlipped)
+                    dir[i].x *= -1;
             }
-            point.position = transform.position;
-            
-        
+            else if (lastInput.x < 0)
+            {
+                if (isFlipped)
+                    dir[i].x *= -1;
+                point.position += new Vector3(-dir[i].y * (dir[i].magnitude), dir[i].x * (dir[i].magnitude), 0);
+                if (isFlipped)
+                    dir[i].x *= -1;
+            }
+            else
+            {
+                if (isFlipped)
+                    dir[i].x *= -1;
+                point.position += new Vector3(dir[i].x * (dir[i].magnitude), dir[i].y * (dir[i].magnitude), 0);
+                if (isFlipped)
+                    dir[i].x *= -1;
+            }
+            indicatorList.Add(MyCore.NetCreateObject(type, Owner, point.position, Quaternion.identity));
+        }
+        point.position = transform.position;
+    }
+    public void PreviewAbilityEnd(Vector2[] dir, int type)
+    {
+        for (int i = 0; i < dir.Length; i++)
+        {
+            if (lastInput.y < 0)
+            {
+                if (isFlipped)
+                    dir[i].x *= -1;
+                point.position += new Vector3(-dir[i].x * (dir[i].magnitude), -dir[i].y * (dir[i].magnitude), 0);
+                if (isFlipped)
+                    dir[i].x *= -1;
+            }
+            else if (lastInput.x > 0)
+            {
+                if (isFlipped)
+                    dir[i].x *= -1;
+                point.position += new Vector3(dir[i].y * (dir[i].magnitude), -dir[i].x * (dir[i].magnitude), 0);
+                if (isFlipped)
+                    dir[i].x *= -1;
+            }
+            else if (lastInput.x < 0)
+            {
+                if (isFlipped)
+                    dir[i].x *= -1;
+                point.position += new Vector3(-dir[i].y * (dir[i].magnitude), dir[i].x * (dir[i].magnitude), 0);
+                if (isFlipped)
+                    dir[i].x *= -1;
+            }
+            else
+            {
+                if (isFlipped)
+                    dir[i].x *= -1;
+                point.position += new Vector3(dir[i].x * (dir[i].magnitude), dir[i].y * (dir[i].magnitude), 0);
+                if (isFlipped)
+                    dir[i].x *= -1;
+            }
+        }
+        indicatorList.Add(MyCore.NetCreateObject(type, Owner, point.position, Quaternion.identity));
+        point.position = transform.position;
+    }
+    public IEnumerator Q()
+    {
+        yield return new WaitForSeconds(qcd);
+        canQ = true;
+        SendUpdate("Q", canQ.ToString());
+    }
+    public IEnumerator W()
+    {
+        yield return new WaitForSeconds(wcd);
+        canW = true;
+        SendUpdate("W", canW.ToString());
+    }
+    public IEnumerator E()
+    {
+        yield return new WaitForSeconds(ecd);
+        canE = true;
+        SendUpdate("E", canE.ToString());
+    }
+    public IEnumerator R()
+    {
+        yield return new WaitForSeconds(rcd);
+        canR = true;
+        SendUpdate("R", canR.ToString());
+    }
+    public void OnQ(InputAction.CallbackContext ev)
+    {
+        if (ev.started && canQ)
+            SendCommand("Q", "");
+    }
+    public void OnW(InputAction.CallbackContext ev)
+    {
+        if (ev.started && canW)
+            SendCommand("W", "");
+    }
+    public void OnE(InputAction.CallbackContext ev)
+    {
+        if (ev.started && canQ)
+            SendCommand("E", "");
+    }
+    public void OnR(InputAction.CallbackContext ev)
+    {
+        if (ev.started && canW)
+            SendCommand("R", "");
     }
 
     // Start is called before the first frame update

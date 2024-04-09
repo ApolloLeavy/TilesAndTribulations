@@ -5,6 +5,7 @@ using NETWORK_ENGINE;
 public class Haste : Projectile
 {
     public Player player;
+    public Animator myAnim;
     public override void HandleMessage(string flag, string value)
     {
 
@@ -27,7 +28,8 @@ public class Haste : Projectile
     // Start is called before the first frame update
     void Start()
     {
-
+        myAnim = GetComponent<Animator>();
+        
     }
 
     // Update is called once per frame

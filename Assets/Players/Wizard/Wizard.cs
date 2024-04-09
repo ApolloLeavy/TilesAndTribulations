@@ -5,16 +5,14 @@ using NETWORK_ENGINE;
 using UnityEngine.InputSystem;
 public class Wizard : Player
 {
-    public GameObject fireball;
-    public GameObject icestorm;
-    public GameObject teleport;
-    public GameObject haste;
+    
     // Start is called before the first frame update
     public override void Start()
     {
         base.Start();
         hp = 10;
-        speed = 1;
+        speed = 4;
+        acd = .75f;
         qcd = 5;
         wcd = 5;
         ecd = 5;
@@ -63,7 +61,8 @@ public class Wizard : Player
             {
                 if (canE)
                 {
-                    PreviewAbility(tiles[activeTile], 9);
+                    PreviewAbilityEnd(tiles[activeTile], 9);
+                    
                     canE = false;
                     StartCoroutine(E());
                     SendUpdate("E", canE.ToString());
@@ -92,30 +91,7 @@ public class Wizard : Player
             }
         }
     }
-    public IEnumerator Q()
-    {
-        yield return new WaitForSeconds(qcd);
-        canQ = true;
-        SendUpdate("Q", canQ.ToString());
-    }
-    public IEnumerator W()
-    {
-        yield return new WaitForSeconds(wcd);
-        canW = true;
-        SendUpdate("W", canW.ToString());
-    }
-    public IEnumerator E()
-    {
-        yield return new WaitForSeconds(ecd);
-        canE = true;
-        SendUpdate("E", canE.ToString());
-    }
-    public IEnumerator R()
-    {
-        yield return new WaitForSeconds(rcd);
-        canR = true;
-        SendUpdate("R", canR.ToString());
-    }
+  
     public override void NetworkedStart()
     {
         base.NetworkedStart();
@@ -124,24 +100,5 @@ public class Wizard : Player
     {
         base.Update();
      }
-    public void OnQ(InputAction.CallbackContext ev)
-    {
-        if (ev.started && canQ)
-            SendCommand("Q", "");
-    }
-    public void OnW(InputAction.CallbackContext ev)
-    {
-        if (ev.started && canW)
-            SendCommand("W", "");
-    }
-    public void OnE(InputAction.CallbackContext ev)
-    {
-        if (ev.started && canQ)
-            SendCommand("E", "");
-    }
-    public void OnR(InputAction.CallbackContext ev)
-    {
-        if (ev.started && canW)
-            SendCommand("R", "");
-    }
+    
 }

@@ -50,7 +50,7 @@ GameObject:
   - component: {fileID: -1470090735627908868}
   m_Layer: 0
   m_Name: Wizard
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -234,10 +234,6 @@ MonoBehaviour:
   point: {fileID: 0}
   previewBlock: {fileID: 6054271980300801125, guid: 2c9f71078870df14fb572e08780e3d04, type: 3}
   indicatorList: []
-  fireball: {fileID: 3735715134184617721, guid: 23f0c13a26da12d479ec8f8cb3c18352, type: 3}
-  icestorm: {fileID: 29342722948522525, guid: 55f8ada905bf70d42b39260770d90511, type: 3}
-  teleport: {fileID: 6015937735221243839, guid: 0b074696d1add834fbd86a7fb025b8f7, type: 3}
-  haste: {fileID: 3735715134184617721, guid: c6e4124d24f1bf144b4ae684a4e928bd, type: 3}
 --- !u!114 &2923946472919753007
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -304,7 +300,19 @@ MonoBehaviour:
     m_ActionId: 22187107-82a1-43bf-9567-5f474b32e17f
     m_ActionName: Player/Look[/Mouse/delta]
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: -3831004274665527372}
+        m_TargetAssemblyTypeName: Player, Assembly-CSharp
+        m_MethodName: OnAttack
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: dfb22772-477b-491c-9fd4-14f5abf3caaa
     m_ActionName: Player/Fire[/Mouse/leftButton]
   - m_PersistentCalls:
@@ -340,11 +348,35 @@ MonoBehaviour:
     m_ActionId: 2c6f397c-3a81-404a-9cc0-9d2ea2d6ab73
     m_ActionName: Player/W[/Keyboard/w]
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: -3831004274665527372}
+        m_TargetAssemblyTypeName: Wizard, Assembly-CSharp
+        m_MethodName: OnE
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: 881862e6-6d0e-4365-8fab-729b1e0283c6
     m_ActionName: Player/E[/Keyboard/e]
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: -3831004274665527372}
+        m_TargetAssemblyTypeName: Wizard, Assembly-CSharp
+        m_MethodName: OnR
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: 5f19f29c-9698-4b38-bb63-57a45291c01d
     m_ActionName: Player/R[/Keyboard/r]
   - m_PersistentCalls:
