@@ -25,7 +25,7 @@ public abstract class Player : NetworkComponent
     public bool canW;
     public bool canE;
     public bool canR;
-    public List<Vector2[]> tiles;
+    public List<int> tiles;
     public List<Vector2[]> tileLibrary; 
     public int activeTile;
     public bool isInvincible;
@@ -42,7 +42,7 @@ public abstract class Player : NetworkComponent
     public override void HandleMessage(string flag, string value)
     {
         
-        if (flag == "MV")
+        if (flag == "MV" && activeTile != -1)
         {
             if (IsServer && canPlace)
             {
@@ -66,19 +66,20 @@ public abstract class Player : NetworkComponent
                     lastInput.x = 0;
                     lastInput.y = 1;
                 }
-                PreviewMove(tiles[activeTile]);
+                
+                PreviewMove(tileLibrary[tiles[activeTile]]);
 
             }
         }
-        if(flag == "PLACE")
+        if(flag == "PLACE" && activeTile != -1)
         {
             if(IsServer)
             {
                 if(canPlace)
                 {
-                    Debug.Log("Place");
+                    
                     canPlace = false;
-                    StartCoroutine(Move(tiles[activeTile]));
+                    StartCoroutine(Move(tileLibrary[tiles[activeTile]]));
                     SendUpdate("PLACE", canPlace.ToString());
                 }
                 
@@ -87,7 +88,7 @@ public abstract class Player : NetworkComponent
             {
                 canPlace = bool.Parse(value);
                 if(canPlace)
-                    PreviewMove(tiles[activeTile]);
+                    PreviewMove(tileLibrary[tiles[activeTile]]);
 
             }
         }
@@ -109,7 +110,7 @@ public abstract class Player : NetworkComponent
                 canAttack = bool.Parse(value);
             }
         }
-        if (flag == "FLIP")
+        if (flag == "FLIP" && activeTile != -1)
         {
             if (IsServer)
             {
@@ -120,10 +121,95 @@ public abstract class Player : NetworkComponent
             {
 
                 isFlipped = bool.Parse(value);
-                PreviewMove(tiles[activeTile]);
+                PreviewMove(tileLibrary[tiles[activeTile]]);
             }
         }
-       
+       if(flag == "SPTL" && activeTile != -1)
+        {
+            if (IsServer)
+            {
+
+            }
+            if(IsLocalPlayer)
+            {
+                tileCount--;
+                tiles.Remove(tiles[activeTile]);
+                if (activeTile == tileCount)
+                    activeTile--;
+                PreviewMove(tileLibrary[tiles[activeTile]]);
+            }
+        }
+        if (flag == "DRTL")
+        {
+            if (IsServer)
+            {
+
+            }
+            if (IsLocalPlayer)
+            {
+                tiles.Add(int.Parse(value));
+                tileCount++;
+                if (activeTile == -1)
+                {
+                    activeTile = 0;
+                }
+            }
+        }
+        if(flag == "CYCLE")
+        {
+            if(IsServer)
+            {
+                if (tileCount > 1)
+                {
+                    float t = float.Parse(value);
+                    if (t > 0)
+                    {
+                        activeTile++;
+                        if (activeTile == tileCount)
+                            activeTile = 0;
+                        
+                    }
+                    else if (t < 0)
+                    {
+                        activeTile--;
+                        if (activeTile == -1)
+                            activeTile = (tiles.Count - 1);
+                    }
+                    SendUpdate("CYCLE", activeTile.ToString());
+                }
+            }
+            if (IsLocalPlayer)
+            {
+                activeTile = int.Parse(value);
+                PreviewMove(tileLibrary[tiles[activeTile]]);
+            }
+        }
+    }
+    public IEnumerator Draw()
+    {
+        
+        if (tileCount < maxTiles)
+        {
+            int i = Random.Range(0, (tileLibrary.Count - 1));
+            while (tiles.Contains(i))
+            {
+                
+                i++;
+                if (i == tileLibrary.Count)
+                    i = 0;
+            }
+            tiles.Add(i);
+            tileCount++;
+            if (activeTile == -1)
+            {
+                activeTile = 0;
+            }
+            SendUpdate("DRTL", i.ToString());
+
+        }    
+            
+        yield return new WaitForSeconds(2);
+        StartCoroutine(Draw());
     }
     public virtual IEnumerator Attack()
     {
@@ -133,7 +219,10 @@ public abstract class Player : NetworkComponent
     }
     public override void NetworkedStart()
     {
-        
+        if(IsServer)
+        {
+            StartCoroutine(Draw());
+        }
     }
 
     public override IEnumerator SlowUpdate()
@@ -253,7 +342,7 @@ public abstract class Player : NetworkComponent
             {
                 if (isFlipped)
                     dir[i].x *= -1;
-                point.position += new Vector3(-dir[i].x * (dir[i].magnitude), -dir[i].y * (dir[i].magnitude), 0);
+                point.position += new Vector3(-dir[i].x, -dir[i].y, 0);
                 if (isFlipped)
                     dir[i].x *= -1;
             }
@@ -261,7 +350,7 @@ public abstract class Player : NetworkComponent
             {
                 if (isFlipped)
                     dir[i].x *= -1;
-                point.position += new Vector3(dir[i].y * (dir[i].magnitude), -dir[i].x * (dir[i].magnitude), 0);
+                point.position += new Vector3(dir[i].y, -dir[i].x, 0);
                 if (isFlipped)
                     dir[i].x *= -1;
             }
@@ -269,7 +358,7 @@ public abstract class Player : NetworkComponent
             {
                 if (isFlipped)
                     dir[i].x *= -1;
-                point.position += new Vector3(-dir[i].y * (dir[i].magnitude), dir[i].x * (dir[i].magnitude), 0);
+                point.position += new Vector3(-dir[i].y, dir[i].x, 0);
                 if (isFlipped)
                     dir[i].x *= -1;
             }
@@ -277,7 +366,7 @@ public abstract class Player : NetworkComponent
             {
                 if (isFlipped)
                     dir[i].x *= -1;
-                point.position += new Vector3(dir[i].x * (dir[i].magnitude), dir[i].y * (dir[i].magnitude), 0);
+                point.position += new Vector3(dir[i].x, dir[i].y, 0);
                 if (isFlipped)
                     dir[i].x *= -1;
             }
@@ -296,7 +385,7 @@ public abstract class Player : NetworkComponent
             {
                 if (isFlipped)
                     dir[i].x *= -1;
-                point.position += new Vector3(-dir[i].x * (dir[i].magnitude), -dir[i].y * (dir[i].magnitude), 0);
+                point.position += new Vector3(-dir[i].x, -dir[i].y, 0);
                 if (isFlipped)
                     dir[i].x *= -1;
             }
@@ -304,7 +393,7 @@ public abstract class Player : NetworkComponent
             {
                 if (isFlipped)
                     dir[i].x *= -1;
-                point.position += new Vector3(dir[i].y * (dir[i].magnitude), -dir[i].x * (dir[i].magnitude), 0);
+                point.position += new Vector3(dir[i].y, -dir[i].x, 0);
                 if (isFlipped)
                     dir[i].x *= -1;
             }
@@ -312,7 +401,7 @@ public abstract class Player : NetworkComponent
             {
                 if (isFlipped)
                     dir[i].x *= -1;
-                point.position += new Vector3(-dir[i].y * (dir[i].magnitude), dir[i].x * (dir[i].magnitude), 0);
+                point.position += new Vector3(-dir[i].y, dir[i].x, 0);
                 if (isFlipped)
                     dir[i].x *= -1;
             }
@@ -320,7 +409,7 @@ public abstract class Player : NetworkComponent
             {
                 if (isFlipped)
                     dir[i].x *= -1;
-                point.position += new Vector3(dir[i].x * (dir[i].magnitude), dir[i].y * (dir[i].magnitude), 0);
+                point.position += new Vector3(dir[i].x, dir[i].y, 0);
                 if (isFlipped)
                     dir[i].x *= -1;
             }
@@ -336,7 +425,7 @@ public abstract class Player : NetworkComponent
             {
                 if (isFlipped)
                     dir[i].x *= -1;
-                point.position += new Vector3(-dir[i].x * (dir[i].magnitude), -dir[i].y * (dir[i].magnitude), 0);
+                point.position += new Vector3(-dir[i].x, -dir[i].y, 0);
                 if (isFlipped)
                     dir[i].x *= -1;
             }
@@ -344,7 +433,7 @@ public abstract class Player : NetworkComponent
             {
                 if (isFlipped)
                     dir[i].x *= -1;
-                point.position += new Vector3(dir[i].y * (dir[i].magnitude), -dir[i].x * (dir[i].magnitude), 0);
+                point.position += new Vector3(dir[i].y, -dir[i].x, 0);
                 if (isFlipped)
                     dir[i].x *= -1;
             }
@@ -352,7 +441,7 @@ public abstract class Player : NetworkComponent
             {
                 if (isFlipped)
                     dir[i].x *= -1;
-                point.position += new Vector3(-dir[i].y * (dir[i].magnitude), dir[i].x * (dir[i].magnitude), 0);
+                point.position += new Vector3(-dir[i].y, dir[i].x, 0);
                 if (isFlipped)
                     dir[i].x *= -1;
             }
@@ -360,7 +449,7 @@ public abstract class Player : NetworkComponent
             {
                 if (isFlipped)
                     dir[i].x *= -1;
-                point.position += new Vector3(dir[i].x * (dir[i].magnitude), dir[i].y * (dir[i].magnitude), 0);
+                point.position += new Vector3(dir[i].x, dir[i].y, 0);
                 if (isFlipped)
                     dir[i].x *= -1;
             }
@@ -368,26 +457,51 @@ public abstract class Player : NetworkComponent
         indicatorList.Add(MyCore.NetCreateObject(type, Owner, point.position, Quaternion.identity));
         point.position = transform.position;
     }
+    public void CycleTile(InputAction.CallbackContext ev)
+    {
+        SendCommand("CYCLE", ev.ReadValue<Vector2>().y.ToString());
+        
+    }
     public IEnumerator Q()
     {
+        tiles.Remove(tiles[activeTile]);
+        SendUpdate("SPTL", activeTile.ToString());
+        if (activeTile == tileCount)
+            activeTile--;
+        tileCount--;
         yield return new WaitForSeconds(qcd);
         canQ = true;
         SendUpdate("Q", canQ.ToString());
     }
     public IEnumerator W()
     {
+        tiles.Remove(tiles[activeTile]);
+        SendUpdate("SPTL", activeTile.ToString());
+        if (activeTile == tileCount)
+            activeTile--;
+        tileCount--;
         yield return new WaitForSeconds(wcd);
         canW = true;
         SendUpdate("W", canW.ToString());
     }
     public IEnumerator E()
     {
+        tiles.Remove(tiles[activeTile]);
+        SendUpdate("SPTL", activeTile.ToString());
+        if (activeTile == tileCount)
+            activeTile--;
+        tileCount--;
         yield return new WaitForSeconds(ecd);
         canE = true;
         SendUpdate("E", canE.ToString());
     }
     public IEnumerator R()
     {
+        tiles.Remove(tiles[activeTile]);
+        SendUpdate("SPTL", activeTile.ToString());
+        if (activeTile == tileCount)
+            activeTile--;
+        tileCount--;
         yield return new WaitForSeconds(rcd);
         canR = true;
         SendUpdate("R", canR.ToString());
@@ -426,8 +540,15 @@ public abstract class Player : NetworkComponent
         canW = true;
         canE = true;
         canR = true;
-        tiles = new List<Vector2[]>();
-        tiles.Add(new Vector2[] { new Vector2(0, 1),new Vector2(0, 1),new Vector2(0, 1),new Vector2(1, 0)});
+        tiles = new List<int>();
+        tileLibrary = new List<Vector2[]>();
+        tiles.Add(0);
+        tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1) });
+        tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), new Vector2(1, 0) });
+        tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(0, 1), new Vector2(1, 0), new Vector2(1, 0) });
+        tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(1, 0), new Vector2(0, 1), new Vector2(1, 0) });
+        tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(1, 0), new Vector2(0, 1), new Vector2(0, 1) });
+        tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(1, 0), new Vector2(0, 1), new Vector2(-1, 0) });
         activeTile = 0;
         isFlipped = false;
         point = transform.GetChild(0);

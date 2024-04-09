@@ -213,6 +213,7 @@ MonoBehaviour:
   wcd: 0
   ecd: 0
   rcd: 0
+  acd: 0
   myRig: {fileID: 0}
   speed: 0
   lastInput: {x: 0, y: 0}
@@ -222,6 +223,7 @@ MonoBehaviour:
   canW: 0
   canE: 0
   canR: 0
+  tiles: 
   activeTile: 0
   isInvincible: 0
   kills: 0
@@ -451,6 +453,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: e5291675-e74a-41ed-9b87-3ee1d4703a10
     m_ActionName: Player/Flip[/Keyboard/f]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: -3831004274665527372}
+        m_TargetAssemblyTypeName: Player, Assembly-CSharp
+        m_MethodName: CycleTile
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 901b9894-d247-4592-8e4a-b517f5aa8556
+    m_ActionName: Player/Cycle[/Mouse/scroll]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player

@@ -27,9 +27,11 @@ public class Wizard : Player
             {
                 if(canQ)
                 {
-                    PreviewAbility(tiles[activeTile], 7);
+                    PreviewAbility(tileLibrary[tiles[activeTile]], 7);
                     canQ = false;
+
                     StartCoroutine(Q());
+
                     SendUpdate("Q", canQ.ToString());
                 }
             }
@@ -44,7 +46,7 @@ public class Wizard : Player
             {
                 if(canQ)
                 {
-                    PreviewAbility(tiles[activeTile], 8);
+                    PreviewAbility(tileLibrary[tiles[activeTile]], 8);
                     canW = false;
                     StartCoroutine(W());
                     SendUpdate("W", canW.ToString());
@@ -61,7 +63,7 @@ public class Wizard : Player
             {
                 if (canE)
                 {
-                    PreviewAbilityEnd(tiles[activeTile], 9);
+                    PreviewAbilityEnd(tileLibrary[tiles[activeTile]], 9);
                     
                     canE = false;
                     StartCoroutine(E());
@@ -79,7 +81,8 @@ public class Wizard : Player
             {
                 if (canR)
                 {
-                    PreviewAbility(tiles[activeTile], 10);
+
+                    PreviewAbility(tileLibrary[tiles[activeTile]], 10);
                     canR = false;
                     StartCoroutine(R());
                     SendUpdate("R", canR.ToString());
