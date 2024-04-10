@@ -159,7 +159,7 @@ public abstract class Player : NetworkComponent
         {
             if(IsServer)
             {
-                if (tileCount > 1)
+                if (tileCount > 1 && canPlace)
                 {
                     float t = float.Parse(value);
                     if (t > 0)
@@ -211,12 +211,7 @@ public abstract class Player : NetworkComponent
         yield return new WaitForSeconds(2);
         StartCoroutine(Draw());
     }
-    public virtual IEnumerator Attack()
-    {
-        yield return new WaitForSeconds(acd);
-        canAttack = true;
-        SendUpdate("ATTACK", canAttack.ToString());
-    }
+ 
     public override void NetworkedStart()
     {
         if(IsServer)
@@ -237,6 +232,7 @@ public abstract class Player : NetworkComponent
                     SendUpdate("MV", lastInput.x+","+lastInput.y);
                     SendUpdate("PLACE", canPlace.ToString());
                     SendUpdate("FLIP", isFlipped.ToString());
+                    SendUpdate("CYCLE", activeTile.ToString());
                     IsDirty = false;
                 }
                 yield return new WaitForSeconds(MyId.UpdateFrequency);
@@ -251,6 +247,17 @@ public abstract class Player : NetworkComponent
         {
             SendCommand("ATTACK", "");
         }
+    }
+    public IEnumerator Attack()
+    {
+        Attack2();
+        yield return new WaitForSeconds(acd);
+        canAttack = true;
+        SendUpdate("ATTACK", canAttack.ToString());
+    }
+    public virtual void Attack2()
+    {
+
     }
     public void OnPlace(InputAction.CallbackContext ev)
     {
@@ -459,6 +466,7 @@ public abstract class Player : NetworkComponent
     }
     public void CycleTile(InputAction.CallbackContext ev)
     {
+        if(IsLocalPlayer && canPlace)
         SendCommand("CYCLE", ev.ReadValue<Vector2>().y.ToString());
         
     }

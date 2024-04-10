@@ -25,9 +25,9 @@ public class Icespike : Projectile
         MyCore.NetDestroyObject(NetId);
     }
     // Start is called before the first frame update
-    void Start()
+    public override void Start()
     {
-
+        myRig = GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame

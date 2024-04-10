@@ -4,6 +4,7 @@ using UnityEngine;
 using NETWORK_ENGINE;
 public class Projectile : NetworkComponent
 {
+    public Rigidbody myRig;
     public override void HandleMessage(string flag, string value)
     {
 
@@ -20,9 +21,9 @@ public class Projectile : NetworkComponent
     }
 
     // Start is called before the first frame update
-    void Start()
+    public virtual void Start()
     {
-        
+        myRig = GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame

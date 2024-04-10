@@ -94,7 +94,12 @@ public class Wizard : Player
             }
         }
     }
-  
+
+    public override void Attack2()
+    {
+        GameObject o = MyCore.NetCreateObject(8,Owner,myRig.position+new Vector3(lastInput.x,lastInput.y,0));
+        o.GetComponent<Rigidbody>().velocity = new Vector3(lastInput.x, lastInput.y,0).normalized*speed;
+    }
     public override void NetworkedStart()
     {
         base.NetworkedStart();
