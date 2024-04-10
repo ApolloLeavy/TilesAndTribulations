@@ -165,14 +165,14 @@ public abstract class Player : NetworkComponent
                     if (t > 0)
                     {
                         activeTile++;
-                        if (activeTile == tileCount)
+                        if (activeTile >= tileCount)
                             activeTile = 0;
                         
                     }
                     else if (t < 0)
                     {
                         activeTile--;
-                        if (activeTile == -1)
+                        if (activeTile <= -1)
                             activeTile = (tiles.Count - 1);
                     }
                     SendUpdate("CYCLE", activeTile.ToString());
@@ -281,6 +281,7 @@ public abstract class Player : NetworkComponent
             {
                 Debug.Log("Input");
                 Vector2 tempCmd = ev.ReadValue<Vector2>();
+
                 SendCommand("MV", tempCmd.x + "," + tempCmd.y);
 
             }
@@ -534,13 +535,18 @@ public abstract class Player : NetworkComponent
         if (ev.started && canW)
             SendCommand("R", "");
     }
-
+    public IEnumerator TakeDamage()
+    {
+        isInvincible = true;
+        yield return new WaitForSeconds(1);
+        isInvincible = false;
+    }
     // Start is called before the first frame update
     public virtual void Start()
     {
         myRig = GetComponent<Rigidbody>();
         maxTiles = 5;
-        tileCount = 0;
+        tileCount = 1;
         tileGainSec = 2;
         canAttack = true;
         canPlace = true;
@@ -551,26 +557,31 @@ public abstract class Player : NetworkComponent
         tiles = new List<int>();
         tileLibrary = new List<Vector2[]>();
         tiles.Add(0);
-        tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1) });
         tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), new Vector2(1, 0) });
+        tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1) });
         tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(0, 1), new Vector2(1, 0), new Vector2(1, 0) });
-        tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(1, 0), new Vector2(0, 1), new Vector2(1, 0) });
-        tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(1, 0), new Vector2(0, 1), new Vector2(0, 1) });
-        tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(1, 0), new Vector2(0, 1), new Vector2(-1, 0) });
+        tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(0, 1), new Vector2(1, 0), new Vector2(0, 1) });
         activeTile = 0;
         isFlipped = false;
         point = transform.GetChild(0);
         List<GameObject> indicatorList = new List<GameObject>();
     }
-
+    public void OnTriggerEnter(Collider other)
+    {
+        if (IsServer)
+        {
+            if (other.tag == "Enemy")
+            {
+                StartCoroutine(TakeDamage());
+            }
+        }
+    }
     // Update is called once per frame
     public virtual void Update()
     {
         if (IsLocalPlayer)
         {
-
             Camera.main.transform.position = Vector3.Lerp(transform.position + new Vector3(0,0, -9), myRig.position, speed / 2 * Time.deltaTime);
-
         }
     }
 }
