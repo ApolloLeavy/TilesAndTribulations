@@ -5,7 +5,7 @@ using NETWORK_ENGINE;
 public class Teleport : Projectile
 {
 
-    Player p;
+    public Player p;
     public override void HandleMessage(string flag, string value)
     {
 
@@ -13,7 +13,7 @@ public class Teleport : Projectile
 
     public override void NetworkedStart()
     {
-        p = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
+        p = GameObject.FindGameObjectWithTag("Wizard").GetComponent<Player>();
         p.myRig.position = transform.position;
         StartCoroutine(Timer());
         StartCoroutine(prevUp());

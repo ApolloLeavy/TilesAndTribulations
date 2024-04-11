@@ -41,7 +41,6 @@ public abstract class Player : NetworkComponent
     public List<GameObject> indicatorList;
     public override void HandleMessage(string flag, string value)
     {
-        
         if (flag == "MV" && activeTile != -1)
         {
             if (IsServer && canPlace)
@@ -66,9 +65,7 @@ public abstract class Player : NetworkComponent
                     lastInput.x = 0;
                     lastInput.y = 1;
                 }
-                
                 PreviewMove(tileLibrary[tiles[activeTile]]);
-
             }
         }
         if(flag == "PLACE" && activeTile != -1)

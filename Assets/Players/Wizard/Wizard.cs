@@ -102,10 +102,12 @@ public class Wizard : Player
     {
         GameObject o = MyCore.NetCreateObject(8,Owner,myRig.position+new Vector3(lastInput.x,lastInput.y,0));
         o.GetComponent<Rigidbody>().velocity = new Vector3(lastInput.x, lastInput.y,0).normalized*speed;
+        o.GetComponent<Teleport>().p = this.gameObject;
     }
     public override void NetworkedStart()
     {
         base.NetworkedStart();
+        myRig.position += new Vector3(1, 0, 0);
     }
     public override void Update()
     {
