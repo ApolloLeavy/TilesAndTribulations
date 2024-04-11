@@ -35,13 +35,15 @@ public abstract class Player : NetworkComponent
     public bool isDead;
     public float deathTimer;
     public GameObject npm;
+    public bool isStunned;
     public bool isFlipped;
     public Transform point;
     public GameObject previewBlock;
-    public List<GameObject> indicatorList;
+    public bool isResisting;
+
     public override void HandleMessage(string flag, string value)
     {
-        if (flag == "MV" && activeTile != -1)
+        if (flag == "MV" && activeTile != -1 && !isStunned)
         {
             if (IsServer && canPlace)
             {
@@ -68,7 +70,7 @@ public abstract class Player : NetworkComponent
                 PreviewMove(tileLibrary[tiles[activeTile]]);
             }
         }
-        if(flag == "PLACE" && activeTile != -1)
+        if(flag == "PLACE" && activeTile != -1 && !isStunned)
         {
             if(IsServer)
             {
@@ -89,7 +91,7 @@ public abstract class Player : NetworkComponent
 
             }
         }
-        if (flag == "ATTACK")
+        if (flag == "ATTACK" && !isStunned)
         {
             if (IsServer)
             {
@@ -181,6 +183,77 @@ public abstract class Player : NetworkComponent
                 PreviewMove(tileLibrary[tiles[activeTile]]);
             }
         }
+        if(flag == "STUN")
+        {
+            if(IsClient)
+            {
+                isStunned = bool.Parse(value);
+            }
+        }
+    }
+    public override void NetworkedStart()
+    {
+        if (IsServer)
+        {
+            StartCoroutine(Draw());
+        }
+    }
+    public override IEnumerator SlowUpdate()
+    {
+        if (IsConnected)
+        {
+            while (IsServer)
+            {
+                if (IsDirty)
+                {
+                    SendUpdate("ATTACK", canAttack.ToString());
+                    SendUpdate("MV", lastInput.x + "," + lastInput.y);
+                    SendUpdate("PLACE", canPlace.ToString());
+                    SendUpdate("FLIP", isFlipped.ToString());
+                    SendUpdate("CYCLE", activeTile.ToString());
+                    IsDirty = false;
+                }
+                yield return new WaitForSeconds(MyId.UpdateFrequency);
+            }
+            if (IsLocalPlayer)
+            {
+                PreviewMove(tileLibrary[tiles[activeTile]]);
+            }
+            yield return new WaitForSeconds(MyId.UpdateFrequency);
+            
+        }
+    }
+    public virtual void Start()
+    {
+        myRig = GetComponent<Rigidbody>();
+        maxTiles = 5;
+        tileCount = 1;
+        tileGainSec = 2;
+        canAttack = true;
+        canPlace = true;
+        canQ = true;
+        canW = true;
+        canE = true;
+        canR = true;
+        tiles = new List<int>();
+        tileLibrary = new List<Vector2[]>();
+        tiles.Add(0);
+        tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), new Vector2(1, 0) });
+        tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1) });
+        tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(0, 1), new Vector2(1, 0), new Vector2(1, 0) });
+        tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(0, 1), new Vector2(1, 0), new Vector2(0, 1) });
+        activeTile = 0;
+        isResisting = false;
+        isFlipped = false;
+        point = transform.GetChild(0);
+        List<GameObject> indicatorList = new List<GameObject>();
+    }
+    public virtual void Update()
+    {
+        if (IsLocalPlayer)
+        {
+            Camera.main.transform.position = Vector3.Lerp(transform.position + new Vector3(0, 0, -9), myRig.position, speed / 2 * Time.deltaTime);
+        }
     }
     public IEnumerator Draw()
     {
@@ -208,35 +281,13 @@ public abstract class Player : NetworkComponent
         yield return new WaitForSeconds(2);
         StartCoroutine(Draw());
     }
- 
-    public override void NetworkedStart()
+    public IEnumerator Knockback()
     {
-        if(IsServer)
-        {
-            StartCoroutine(Draw());
-        }
-    }
-
-    public override IEnumerator SlowUpdate()
-    {
-        if (IsConnected)
-        {
-            while(IsServer)
-            {
-                if (IsDirty)
-                {
-                    SendUpdate("ATTACK", canAttack.ToString());
-                    SendUpdate("MV", lastInput.x+","+lastInput.y);
-                    SendUpdate("PLACE", canPlace.ToString());
-                    SendUpdate("FLIP", isFlipped.ToString());
-                    SendUpdate("CYCLE", activeTile.ToString());
-                    IsDirty = false;
-                }
-                yield return new WaitForSeconds(MyId.UpdateFrequency);
-            }
-            yield return new WaitForSeconds(MyId.UpdateFrequency);
-
-        }
+        isStunned = true;
+        SendUpdate("STUN", isStunned.ToString());
+        yield return new WaitForSeconds(1);
+        isStunned = false;
+        SendUpdate("STUN", isStunned.ToString());
     }
     public void OnAttack(InputAction.CallbackContext ev)
     {
@@ -334,12 +385,6 @@ public abstract class Player : NetworkComponent
     }
     public void PreviewMove(Vector2[] dir)
     {
-
-        foreach (GameObject o in indicatorList)
-        {
-            GameObject.Destroy(o);
-        }
-        indicatorList.Clear();
         for (int i = 0; i < dir.Length; i++)
         {
 
@@ -375,7 +420,7 @@ public abstract class Player : NetworkComponent
                 if (isFlipped)
                     dir[i].x *= -1;
             }
-            indicatorList.Add(GameObject.Instantiate(previewBlock, point.position, Quaternion.identity));
+            GameObject.Instantiate(previewBlock, point.position, Quaternion.identity);
 
         }
         point.position = transform.position;
@@ -418,10 +463,11 @@ public abstract class Player : NetworkComponent
                 if (isFlipped)
                     dir[i].x *= -1;
             }
-            indicatorList.Add(MyCore.NetCreateObject(type, Owner, point.position, Quaternion.identity));
+            MyCore.NetCreateObject(type, Owner, point.position, Quaternion.identity);
         }
         point.position = transform.position;
     }
+    
     public void PreviewAbilityEnd(Vector2[] dir, int type)
     {
         for (int i = 0; i < dir.Length; i++)
@@ -459,7 +505,7 @@ public abstract class Player : NetworkComponent
                     dir[i].x *= -1;
             }
         }
-        indicatorList.Add(MyCore.NetCreateObject(type, Owner, point.position, Quaternion.identity));
+        MyCore.NetCreateObject(type, Owner, point.position, Quaternion.identity);
         point.position = transform.position;
     }
     public void CycleTile(InputAction.CallbackContext ev)
@@ -539,46 +585,20 @@ public abstract class Player : NetworkComponent
         isInvincible = false;
     }
     // Start is called before the first frame update
-    public virtual void Start()
-    {
-        myRig = GetComponent<Rigidbody>();
-        maxTiles = 5;
-        tileCount = 1;
-        tileGainSec = 2;
-        canAttack = true;
-        canPlace = true;
-        canQ = true;
-        canW = true;
-        canE = true;
-        canR = true;
-        tiles = new List<int>();
-        tileLibrary = new List<Vector2[]>();
-        tiles.Add(0);
-        tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), new Vector2(1, 0) });
-        tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1) });
-        tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(0, 1), new Vector2(1, 0), new Vector2(1, 0) });
-        tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(0, 1), new Vector2(1, 0), new Vector2(0, 1) });
-        activeTile = 0;
-        isFlipped = false;
-        point = transform.GetChild(0);
-        List<GameObject> indicatorList = new List<GameObject>();
-    }
+    
     public void OnTriggerEnter(Collider other)
     {
         if (IsServer)
         {
-            if (other.tag == "Enemy")
+            switch (other.tag)
             {
-                StartCoroutine(TakeDamage());
+                case "SkelSword":
+                    {
+                        break;
+                    }
             }
         }
     }
     // Update is called once per frame
-    public virtual void Update()
-    {
-        if (IsLocalPlayer)
-        {
-            Camera.main.transform.position = Vector3.Lerp(transform.position + new Vector3(0,0, -9), myRig.position, speed / 2 * Time.deltaTime);
-        }
-    }
+
 }

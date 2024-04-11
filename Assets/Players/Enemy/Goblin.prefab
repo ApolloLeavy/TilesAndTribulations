@@ -14,9 +14,11 @@ GameObject:
   - component: {fileID: 6744530094776123415}
   - component: {fileID: -7424445853481870059}
   - component: {fileID: 8189603929642606644}
+  - component: {fileID: 3543948745210889718}
+  - component: {fileID: -9190360851220205625}
   m_Layer: 0
   m_Name: Goblin
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -31,7 +33,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -14.344314, y: -4.9375005, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 3, y: 3, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -134,7 +136,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 1
-  m_Constraints: 0
+  m_Constraints: 56
   m_CollisionDetection: 1
 --- !u!65 &-7424445853481870059
 BoxCollider:
@@ -155,8 +157,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.5, y: 1.5, z: 0.2}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 0.3, y: 0.4341731, z: 0.20000002}
+  m_Center: {x: 0, y: -0.07859763, z: 0}
 --- !u!114 &8189603929642606644
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -169,3 +171,52 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc5851e19b19d0342bf3bac6cfdd8dba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MyCore: {fileID: 0}
+  MyId: {fileID: 0}
+  IsDirty: 0
+  hp: 0
+  speed: 0
+  isStunned: 0
+  player: {fileID: 0}
+  canAttack: 0
+  acd: 0
+--- !u!114 &3543948745210889718
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4752896807480936281}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f34ca87a457962d459c49c36b9753ca5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Type: 0
+  Owner: -10
+  NetId: -10
+  IsInit: 0
+  IsLocalPlayer: 0
+  UseLobby: 0
+  UpdateFrequency: 0.1
+  MyCore: {fileID: 0}
+--- !u!114 &-9190360851220205625
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4752896807480936281}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fa5d0f21d84ddb48a46a7686c04ea38, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MyCore: {fileID: 0}
+  MyId: {fileID: 0}
+  IsDirty: 0
+  threshold: 0.1
+  MyRig: {fileID: 0}
+  adaptVelocity: {x: 0, y: 0, z: 0}
+  eThreshold: 1
+  useAdapt: 0

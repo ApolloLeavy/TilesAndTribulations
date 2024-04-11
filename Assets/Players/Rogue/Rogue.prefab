@@ -181,6 +181,7 @@ MonoBehaviour:
   wcd: 0
   ecd: 0
   rcd: 0
+  acd: 0
   myRig: {fileID: 0}
   speed: 0
   lastInput: {x: 0, y: 0}
@@ -190,6 +191,7 @@ MonoBehaviour:
   canW: 0
   canE: 0
   canR: 0
+  tiles: 
   activeTile: 0
   isInvincible: 0
   kills: 0
@@ -200,7 +202,7 @@ MonoBehaviour:
   npm: {fileID: 0}
   isFlipped: 0
   point: {fileID: 0}
-  previewBlock: {fileID: 0}
+  previewBlock: {fileID: 6054271980300801125, guid: 541a90e571e99de4a9cc733b0960be9a, type: 3}
   indicatorList: []
 --- !u!114 &-3848510929299555613
 MonoBehaviour:

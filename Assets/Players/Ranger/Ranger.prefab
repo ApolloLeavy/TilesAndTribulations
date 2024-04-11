@@ -181,6 +181,7 @@ MonoBehaviour:
   wcd: 0
   ecd: 0
   rcd: 0
+  acd: 0
   myRig: {fileID: 0}
   speed: 0
   lastInput: {x: 0, y: 0}
@@ -190,6 +191,7 @@ MonoBehaviour:
   canW: 0
   canE: 0
   canR: 0
+  tiles: 
   activeTile: 0
   isInvincible: 0
   kills: 0
@@ -200,7 +202,7 @@ MonoBehaviour:
   npm: {fileID: 0}
   isFlipped: 0
   point: {fileID: 0}
-  previewBlock: {fileID: 0}
+  previewBlock: {fileID: 6054271980300801125, guid: dfa4c5c85385c7e429388ed1ca3075bf, type: 3}
   indicatorList: []
 --- !u!114 &-1983258064893101346
 MonoBehaviour:
@@ -311,6 +313,14 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 29af5729-ba07-4a91-a4d2-5bfbe8273dea
     m_ActionName: UI/TrackedDeviceOrientation
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: e5291675-e74a-41ed-9b87-3ee1d4703a10
+    m_ActionName: Player/Flip[/Keyboard/f]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 901b9894-d247-4592-8e4a-b517f5aa8556
+    m_ActionName: Player/Cycle[/Mouse/scroll]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player

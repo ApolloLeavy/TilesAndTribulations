@@ -17,6 +17,9 @@ public class Ranger : Player
         wcd = 5;
         ecd = 5;
         rcd = 5;
+        tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(1, 0), new Vector2(1, 0), new Vector2(0, 1), new Vector2(0, 1), new Vector2(-1, 0), new Vector2(0, 1) });
+
+        tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(1, 0), new Vector2(0, 1), new Vector2(0, 1), new Vector2(1, 0), new Vector2(0, 1), new Vector2(0, 1) });
     }
     public override void HandleMessage(string flag, string value)
     {
@@ -27,16 +30,10 @@ public class Ranger : Player
             {
                 if (canQ)
                 {
-                    PreviewAbility(tileLibrary[tiles[activeTile]], 7);
+                    PreviewAbility(tileLibrary[tiles[activeTile]], 11);
                     isFlipped = !isFlipped;
-                    PreviewAbility(tileLibrary[tiles[activeTile]], 7);
+                    PreviewAbility(tileLibrary[tiles[activeTile]], 11);
                     isFlipped = !isFlipped;
-
-                    tiles.Remove(tiles[activeTile]);
-                    SendUpdate("SPTL", activeTile.ToString());
-                    if (activeTile == tileCount)
-                        activeTile--;
-                    
                     canQ = false;
                     StartCoroutine(Q());
                     SendUpdate("Q", canQ.ToString());
@@ -53,9 +50,9 @@ public class Ranger : Player
             {
                 if (canQ)
                 {
-                    PreviewAbility(tileLibrary[tiles[activeTile]], 8);
+                    PreviewAbility(tileLibrary[tiles[activeTile]], 12);
                     isFlipped = !isFlipped;
-                    PreviewAbility(tileLibrary[tiles[activeTile]], 8);
+                    PreviewAbility(tileLibrary[tiles[activeTile]], 12);
                     isFlipped = !isFlipped;
                     canW = false;
                     StartCoroutine(W());
@@ -73,9 +70,9 @@ public class Ranger : Player
             {
                 if (canE)
                 {
-                    PreviewAbilityEnd(tileLibrary[tiles[activeTile]], 9);
+                    PreviewAbilityEnd(tileLibrary[tiles[activeTile]], 13);
                     isFlipped = !isFlipped;
-                    PreviewAbilityEnd(tileLibrary[tiles[activeTile]], 9);
+                    PreviewAbilityEnd(tileLibrary[tiles[activeTile]], 13);
                     isFlipped = !isFlipped;
 
                     canE = false;
@@ -94,9 +91,9 @@ public class Ranger : Player
             {
                 if (canR)
                 {
-                    PreviewAbility(tileLibrary[tiles[activeTile]], 10);
+                    PreviewAbility(tileLibrary[tiles[activeTile]], 14);
                     isFlipped = !isFlipped;
-                    PreviewAbility(tileLibrary[tiles[activeTile]], 10);
+                    PreviewAbility(tileLibrary[tiles[activeTile]], 14);
                     isFlipped = !isFlipped;
                     canR = false;
                     StartCoroutine(R());
@@ -109,10 +106,16 @@ public class Ranger : Player
             }
         }
     }
-
+    public override void Attack2()
+    {
+        GameObject o = MyCore.NetCreateObject(8, Owner, myRig.position + new Vector3(lastInput.x, lastInput.y, 0));
+        o.GetComponent<Rigidbody>().velocity = new Vector3(lastInput.x, lastInput.y, 0).normalized * speed;
+        
+    }
     public override void NetworkedStart()
     {
         base.NetworkedStart();
+        myRig.position += new Vector3(-1, 0, 0);
     }
     public override void Update()
     {

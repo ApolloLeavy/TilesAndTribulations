@@ -17,6 +17,7 @@ public class Knight : Player
         wcd = 5;
         ecd = 5;
         rcd = 5;
+        isResisting = true;
     }
     public override void HandleMessage(string flag, string value)
     {
@@ -27,7 +28,7 @@ public class Knight : Player
             {
                 if (canQ)
                 {
-                    PreviewAbility(tileLibrary[tiles[activeTile]], 7);
+                    PreviewAbility(tileLibrary[tiles[activeTile]], 19);
                     canQ = false;
                     StartCoroutine(Q());
                     SendUpdate("Q", canQ.ToString());
@@ -44,7 +45,7 @@ public class Knight : Player
             {
                 if (canQ)
                 {
-                    PreviewAbility(tileLibrary[tiles[activeTile]], 8);
+                    PreviewAbility(tileLibrary[tiles[activeTile]], 20);
                     canW = false;
                     StartCoroutine(W());
                     SendUpdate("W", canW.ToString());
@@ -61,7 +62,7 @@ public class Knight : Player
             {
                 if (canE)
                 {
-                    PreviewAbilityEnd(tileLibrary[tiles[activeTile]], 9);
+                    PreviewAbilityEnd(tileLibrary[tiles[activeTile]], 21);
 
                     canE = false;
                     StartCoroutine(E());
@@ -79,7 +80,7 @@ public class Knight : Player
             {
                 if (canR)
                 {
-                    PreviewAbility(tileLibrary[tiles[activeTile]], 10);
+                    PreviewAbility(tileLibrary[tiles[activeTile]], 22);
                     canR = false;
                     StartCoroutine(R());
                     SendUpdate("R", canR.ToString());

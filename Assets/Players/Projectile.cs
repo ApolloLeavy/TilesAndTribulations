@@ -27,7 +27,7 @@ public class Projectile : NetworkComponent
     }
 
     // Update is called once per frame
-    void Update()
+    public virtual void Update()
     {
         
     }

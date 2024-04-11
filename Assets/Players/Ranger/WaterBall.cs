@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using NETWORK_ENGINE;
-public class Icespike : Projectile
+public class WaterBall : Projectile
 {
-    public Player player;
+
     public override void HandleMessage(string flag, string value)
     {
 
@@ -17,13 +17,16 @@ public class Icespike : Projectile
 
     public override IEnumerator SlowUpdate()
     {
+
         yield return new WaitForSeconds(.1f);
+
     }
     public IEnumerator Timer()
     {
-        yield return new WaitForSeconds(5);
+        yield return new WaitForSeconds(3);
         MyCore.NetDestroyObject(NetId);
     }
+
     // Start is called before the first frame update
     public override void Start()
     {
@@ -36,3 +39,4 @@ public class Icespike : Projectile
         base.Update();
     }
 }
+

@@ -30,7 +30,7 @@ public class Wizard : Player
             {
                 if(canQ)
                 {
-                    PreviewAbility(tileLibrary[tiles[activeTile]], 7);
+                    PreviewAbility(tileLibrary[tiles[activeTile]], 15);
                     canQ = false;
 
                     StartCoroutine(Q());
@@ -49,7 +49,7 @@ public class Wizard : Player
             {
                 if(canQ)
                 {
-                    PreviewAbility(tileLibrary[tiles[activeTile]], 8);
+                    PreviewAbility(tileLibrary[tiles[activeTile]], 16);
                     canW = false;
                     StartCoroutine(W());
                     SendUpdate("W", canW.ToString());
@@ -66,7 +66,7 @@ public class Wizard : Player
             {
                 if (canE)
                 {
-                    PreviewAbilityEnd(tileLibrary[tiles[activeTile]], 9);
+                    PreviewAbilityEnd(tileLibrary[tiles[activeTile]], 17);
                     
                     canE = false;
                     StartCoroutine(E());
@@ -85,7 +85,7 @@ public class Wizard : Player
                 if (canR)
                 {
 
-                    PreviewAbility(tileLibrary[tiles[activeTile]], 10);
+                    PreviewAbility(tileLibrary[tiles[activeTile]], 18);
                     canR = false;
                     StartCoroutine(R());
                     SendUpdate("R", canR.ToString());
@@ -102,7 +102,7 @@ public class Wizard : Player
     {
         GameObject o = MyCore.NetCreateObject(8,Owner,myRig.position+new Vector3(lastInput.x,lastInput.y,0));
         o.GetComponent<Rigidbody>().velocity = new Vector3(lastInput.x, lastInput.y,0).normalized*speed;
-        o.GetComponent<Teleport>().p = this.gameObject;
+        
     }
     public override void NetworkedStart()
     {

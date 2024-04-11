@@ -17,6 +17,9 @@ public class Rogue : Player
         wcd = 5;
         ecd = 5;
         rcd = 5;
+        tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1) });
+
+        tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), new Vector2(1, 0), new Vector2(1, 0), new Vector2(1, 0) });
     }
     public override void HandleMessage(string flag, string value)
     {
