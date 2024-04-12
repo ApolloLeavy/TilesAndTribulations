@@ -16,21 +16,30 @@ public class Monster : NetworkComponent
     public float acd;
     public Transform point;
     public int poisonStacks;
-    
+    public Animator myAnim;
     public bool isTaunted;
     public Vector3 distance;
     public Vector2 lastInput;
     public GameObject previewBlock;
     public List<Vector2[]> tileLibrary;
     public Rigidbody myRig;
+    public int attackNum;
     public override void HandleMessage(string flag, string value)
     {
+        if(flag == "DMG")
+        {
+            if(IsClient)
+            {
+                hp -= int.Parse(value);
+                StartCoroutine(AnimStart("isHit", attackNum));
+            }
+        }
 
     }
 
     public override void NetworkedStart()
     {
-
+        StartCoroutine(TakeAction());
     }
     public override IEnumerator SlowUpdate()
     {
@@ -43,7 +52,9 @@ public class Monster : NetworkComponent
         isInvincible = false;
         isTaunted = false;
         myRig = GetComponent<Rigidbody>();
+        myAnim = GetComponent<Animator>();
         poisonStacks = 0;
+        attackNum = 0;
         isAttack = false;
         canAct = true;
         tileLibrary = new List<Vector2[]>();
@@ -102,10 +113,12 @@ public class Monster : NetworkComponent
             if(isAttack)
             {
                 Attack();
+                isAttack = false;
             }
             else
             {
                 Move();
+                isAttack = true;
             }
         }
         yield return new WaitForSeconds(acd);
@@ -222,21 +235,48 @@ public class Monster : NetworkComponent
     }
     public virtual void Attack()
     {
-        
-        
+        StartCoroutine(AnimStart("Attack", attackNum));
+        attackNum++;
+        if (attackNum >= 3)
+            attackNum = 0;
     }
     public virtual void Move()
     {
+        StartCoroutine(AnimStart("isRun", attackNum));
         Vector2[] piece = tileLibrary[Random.Range(0, (tileLibrary.Count - 1))];
         StartCoroutine(Move(piece));
 
     }
+    public IEnumerator AnimStart(string anim, int attack)
+    {
+        if(anim.Equals("Attack"))
+        {
+            myAnim.SetBool(anim, true);
+            myAnim.SetInteger("Attack", attack);
+        }
+        else
+        {
+            myAnim.SetBool(anim, true);
+        }
+        yield return new WaitForSeconds(1);
+        if (anim == "Attack")
+        {
+            myAnim.SetBool(anim, false);
+            myAnim.SetInteger("Attack", attack);
+        }
+        else
+        {
+            myAnim.SetBool(anim, false);
+        }
+    }
+    
     public void Posion()
     {
         poisonStacks++;
         if (poisonStacks == 1)
             StartCoroutine(Poison());
     }
+
     public void OnTriggerEnter(Collider other)
     {
         if (IsServer)
@@ -245,10 +285,7 @@ public class Monster : NetworkComponent
             {
                 case "Fireball":
                     {
-                        break;
-                    }
-                case "Haste":
-                    {
+                        SendUpdate("DMG",15.ToString());
                         break;
                     }
                 case "IceSpike":
@@ -279,10 +316,6 @@ public class Monster : NetworkComponent
                     {
                         break;
                     }
-                case "HealingSpirit":
-                    {
-                        break;
-                    }
                 case "LightningStrike":
                     {
                         break;
@@ -296,10 +329,6 @@ public class Monster : NetworkComponent
                         break;
                     }
                 case "BeyBlade":
-                    {
-                        break;
-                    }
-                case "Fortify":
                     {
                         break;
                     }
