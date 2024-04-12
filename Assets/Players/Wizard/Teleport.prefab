@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: -857345439771192639}
   m_Layer: 0
   m_Name: Teleport
-  m_TagString: Fireball
+  m_TagString: Teleport
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -190,3 +190,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 674065ed93a29c9449752f368552611f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MyCore: {fileID: 0}
+  MyId: {fileID: 0}
+  IsDirty: 0
+  myRig: {fileID: 0}
+  p: {fileID: 0}

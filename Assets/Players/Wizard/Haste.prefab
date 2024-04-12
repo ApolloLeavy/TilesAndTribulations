@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 5264222515472682667}
   m_Layer: 0
   m_Name: Haste
-  m_TagString: Fireball
+  m_TagString: Haste
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -190,3 +190,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: baf01f68ec654aa4e8bc75dc47fa8339, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MyCore: {fileID: 0}
+  MyId: {fileID: 0}
+  IsDirty: 0
+  myRig: {fileID: 0}
+  player: {fileID: 0}
+  myAnim: {fileID: 0}

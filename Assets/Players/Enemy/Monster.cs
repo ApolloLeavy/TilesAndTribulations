@@ -247,7 +247,70 @@ public class Monster : NetworkComponent
                     {
                         break;
                     }
-
+                case "Haste":
+                    {
+                        break;
+                    }
+                case "IceSpike":
+                    {
+                        break;
+                    }
+                case "Teleport":
+                    {
+                        break;
+                    }
+                case "Caltrops":
+                    {
+                        break;
+                    }
+                case "CriticalStrike":
+                    {
+                        break;
+                    }
+                case "SleepingGas":
+                    {
+                        break;
+                    }
+                case "Tumble":
+                    {
+                        break;
+                    }
+                case "Gale":
+                    {
+                        break;
+                    }
+                case "HealingSpirit":
+                    {
+                        break;
+                    }
+                case "LightningStrike":
+                    {
+                        break;
+                    }
+                case "RockSlide":
+                    {
+                        break;
+                    }
+                case "WaterBall":
+                    {
+                        break;
+                    }
+                case "BeyBlade":
+                    {
+                        break;
+                    }
+                case "Fortify":
+                    {
+                        break;
+                    }
+                case "ShieldBash":
+                    {
+                        break;
+                    }
+                case "Shout":
+                    {
+                        break;
+                    }
             }
         }
     }

@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 5344971014314785173}
   m_Layer: 0
   m_Name: Tumble
-  m_TagString: Fireball
+  m_TagString: Tumble
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -193,5 +193,6 @@ MonoBehaviour:
   MyCore: {fileID: 0}
   MyId: {fileID: 0}
   IsDirty: 0
+  myRig: {fileID: 0}
   player: {fileID: 0}
   myAnim: {fileID: 0}

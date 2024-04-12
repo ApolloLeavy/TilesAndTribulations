@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 3308782400948607308}
   m_Layer: 0
   m_Name: LightningStrike
-  m_TagString: Fireball
+  m_TagString: LightningStrike
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -171,4 +171,5 @@ MonoBehaviour:
   MyCore: {fileID: 0}
   MyId: {fileID: 0}
   IsDirty: 0
+  myRig: {fileID: 0}
   player: {fileID: 0}
