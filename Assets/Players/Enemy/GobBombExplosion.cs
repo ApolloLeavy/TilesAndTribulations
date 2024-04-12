@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using NETWORK_ENGINE;
-public class SkelSword : Projectile
+public class GobBombExplosion : Projectile
 {
 
     public override void HandleMessage(string flag, string value)
@@ -23,7 +23,7 @@ public class SkelSword : Projectile
     }
     public IEnumerator Timer()
     {
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(1);
         MyCore.NetDestroyObject(NetId);
     }
 
@@ -31,7 +31,6 @@ public class SkelSword : Projectile
     public override void Start()
     {
         base.Start();
-        
     }
 
     // Update is called once per frame
@@ -40,4 +39,3 @@ public class SkelSword : Projectile
         base.Update();
     }
 }
-

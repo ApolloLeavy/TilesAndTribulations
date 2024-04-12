@@ -23,11 +23,20 @@ public class Skeleton : Monster
     public override void Start()
     {
         base.Start();
+        hp = 30;
+        speed = 1;
+        acd = 1.5f;
     }
 
     // Update is called once per frame
     public override void Update()
     {
         base.Update();
+    }
+    public override void Attack()
+    {
+        base.Attack();
+        Vector2[] piece = tileLibrary[Random.Range(0, (tileLibrary.Count - 1))];
+        PreviewAbility(piece, 26);
     }
 }

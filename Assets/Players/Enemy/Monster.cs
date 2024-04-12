@@ -8,6 +8,7 @@ public class Monster : NetworkComponent
     public float speed;
     public bool isSlowed;
     public bool isStunned;
+    public bool isInvincible;
     public Player target;
     public GameObject[] players;
     public bool canAct;
@@ -15,6 +16,7 @@ public class Monster : NetworkComponent
     public float acd;
     public Transform point;
     public int poisonStacks;
+    
     public bool isTaunted;
     public Vector3 distance;
     public Vector2 lastInput;
@@ -36,6 +38,14 @@ public class Monster : NetworkComponent
     }
     public virtual void Start()
     {
+        isSlowed = false;
+        isStunned = false;
+        isInvincible = false;
+        isTaunted = false;
+        myRig = GetComponent<Rigidbody>();
+        poisonStacks = 0;
+        isAttack = false;
+        canAct = true;
         tileLibrary = new List<Vector2[]>();
         tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), new Vector2(1, 0) });
         tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1) });
@@ -184,6 +194,7 @@ public class Monster : NetworkComponent
         point.position = transform.position;
         MyCore.NetCreateObject(type, Owner, point.position, Quaternion.identity);
     }
+    
     public IEnumerator Slow(float t)
     {
         isSlowed = true;
@@ -211,7 +222,8 @@ public class Monster : NetworkComponent
     }
     public virtual void Attack()
     {
-        Vector2[] piece = tileLibrary[Random.Range(0, (tileLibrary.Count-1))];
+        
+        
     }
     public virtual void Move()
     {

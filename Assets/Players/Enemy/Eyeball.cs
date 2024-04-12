@@ -23,11 +23,20 @@ public class Eyeball : Monster
     public override void Start()
     {
         base.Start();
+        hp = 15;
+        speed = 1;
+        acd = 2;
     }
 
     // Update is called once per frame
     public override void Update()
     {
         base.Update();
+    }
+    public override void Attack()
+    {
+        base.Attack();
+        GameObject o = MyCore.NetCreateObject(23, Owner, transform.position, Quaternion.identity);
+        o.GetComponent<Rigidbody>().velocity = new Vector3(lastInput.x, lastInput.y, 0).normalized * speed / 2;
     }
 }

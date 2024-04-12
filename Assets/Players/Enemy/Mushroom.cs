@@ -23,11 +23,20 @@ public class Mushroom : Monster
     public override void Start()
     {
         base.Start();
+        hp = 25;
+        speed = 2;
+        acd = 1.5f;
     }
 
     // Update is called once per frame
     public override void Update()
     {
         base.Update();
+    }
+    public override void Attack()
+    {
+        base.Attack();
+        GameObject o = MyCore.NetCreateObject(25, Owner, transform.position, Quaternion.identity);
+        o.GetComponent<Rigidbody>().velocity = new Vector3(lastInput.x, lastInput.y, 0).normalized * speed/2;
     }
 }

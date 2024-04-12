@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1097173912164764180
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5766699333056696434}
+  m_Layer: 0
+  m_Name: Pointer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5766699333056696434
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1097173912164764180}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 130195425507561639}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1940563907108383554
 GameObject:
   m_ObjectHideFlags: 0
@@ -35,7 +66,8 @@ Transform:
   m_LocalPosition: {x: -1.1198654, y: -11.353504, z: 0}
   m_LocalScale: {x: 3, y: 3, z: 3}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 5766699333056696434}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &5827783076487346481
@@ -176,10 +208,21 @@ MonoBehaviour:
   IsDirty: 0
   hp: 0
   speed: 0
+  isSlowed: 0
   isStunned: 0
-  player: {fileID: 0}
-  canAttack: 0
+  isInvincible: 0
+  target: {fileID: 0}
+  players: []
+  canAct: 0
+  isAttack: 0
   acd: 0
+  point: {fileID: 0}
+  poisonStacks: 0
+  isTaunted: 0
+  distance: {x: 0, y: 0, z: 0}
+  lastInput: {x: 0, y: 0}
+  previewBlock: {fileID: 0}
+  myRig: {fileID: 0}
 --- !u!114 &9110398422575857648
 MonoBehaviour:
   m_ObjectHideFlags: 0
