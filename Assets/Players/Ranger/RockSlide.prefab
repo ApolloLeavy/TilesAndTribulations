@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 3119680769446989622}
   m_Layer: 0
   m_Name: RockSlide
-  m_TagString: Fireball
+  m_TagString: RockSlide
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

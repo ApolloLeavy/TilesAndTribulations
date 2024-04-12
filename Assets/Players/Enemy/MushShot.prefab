@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 5105027769204214562}
   m_Layer: 0
   m_Name: MushShot
-  m_TagString: Untagged
+  m_TagString: MushShot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

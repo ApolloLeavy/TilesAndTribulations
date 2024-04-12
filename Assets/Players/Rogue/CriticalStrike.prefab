@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 1683390880797410422}
   m_Layer: 0
   m_Name: CriticalStrike
-  m_TagString: Fireball
+  m_TagString: CriticalStrike
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
