@@ -50,7 +50,7 @@ GameObject:
   - component: {fileID: -1470090735627908868}
   m_Layer: 0
   m_Name: Wizard
-  m_TagString: Player
+  m_TagString: Wizard
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -214,6 +214,7 @@ MonoBehaviour:
   ecd: 0
   rcd: 0
   acd: 0
+  indicatorList: []
   myRig: {fileID: 0}
   speed: 0
   lastInput: {x: 0, y: 0}
@@ -232,10 +233,11 @@ MonoBehaviour:
   isDead: 0
   deathTimer: 0
   npm: {fileID: 0}
+  isStunned: 0
   isFlipped: 0
   point: {fileID: 0}
   previewBlock: {fileID: 6054271980300801125, guid: 2c9f71078870df14fb572e08780e3d04, type: 3}
-  indicatorList: []
+  isResisting: 0
 --- !u!114 &2923946472919753007
 MonoBehaviour:
   m_ObjectHideFlags: 0

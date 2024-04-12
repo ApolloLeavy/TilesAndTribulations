@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 2123096691451008152}
   - component: {fileID: 7715530414471590713}
   - component: {fileID: 3308782400948607308}
+  - component: {fileID: 1683390880797410422}
   m_Layer: 0
   m_Name: CriticalStrike
   m_TagString: Fireball
@@ -171,4 +172,26 @@ MonoBehaviour:
   MyCore: {fileID: 0}
   MyId: {fileID: 0}
   IsDirty: 0
+  myRig: {fileID: 0}
   player: {fileID: 0}
+--- !u!95 &1683390880797410422
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3735715134184617721}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: f7d10d2dc9735a0478c3da8d6be973da, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

@@ -15,7 +15,7 @@ public abstract class Player : NetworkComponent
     public int ecd;
     public int rcd;
     public float acd;
-    
+    public List<GameObject> indicatorList;
     public Rigidbody myRig;
     public float speed;
     public Vector2 lastInput;
@@ -385,6 +385,11 @@ public abstract class Player : NetworkComponent
     }
     public void PreviewMove(Vector2[] dir)
     {
+        foreach (GameObject o in indicatorList)
+        {
+            GameObject.Destroy(o);
+        }
+        indicatorList.Clear();
         for (int i = 0; i < dir.Length; i++)
         {
 
@@ -420,7 +425,7 @@ public abstract class Player : NetworkComponent
                 if (isFlipped)
                     dir[i].x *= -1;
             }
-            GameObject.Instantiate(previewBlock, point.position, Quaternion.identity);
+            indicatorList.Add(GameObject.Instantiate(previewBlock, point.position, Quaternion.identity));
 
         }
         point.position = transform.position;

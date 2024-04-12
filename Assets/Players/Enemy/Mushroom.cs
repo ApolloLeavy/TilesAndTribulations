@@ -36,7 +36,10 @@ public class Mushroom : Monster
     public override void Attack()
     {
         base.Attack();
-        GameObject o = MyCore.NetCreateObject(25, Owner, transform.position, Quaternion.identity);
+        GameObject o = MyCore.NetCreateObject(25, Owner, transform.position+new Vector3(lastInput.x,lastInput.x,0), Quaternion.identity);
         o.GetComponent<Rigidbody>().velocity = new Vector3(lastInput.x, lastInput.y, 0).normalized * speed/2;
+        o = MyCore.NetCreateObject(25, Owner, transform.position + new Vector3(lastInput.y, lastInput.y, 0), Quaternion.identity);
+        o.GetComponent<Rigidbody>().velocity = new Vector3(lastInput.x, lastInput.y, 0).normalized * speed / 2;
+
     }
 }

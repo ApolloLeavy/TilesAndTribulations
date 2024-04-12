@@ -9,6 +9,7 @@ TagManager:
   - Fireball
   - Enemy
   - SkelSword
+  - Wizard
   layers:
   - Default
   - TransparentFX

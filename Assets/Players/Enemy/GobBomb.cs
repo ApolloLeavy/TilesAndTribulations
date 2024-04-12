@@ -28,7 +28,7 @@ public class GobBomb : Projectile
     public IEnumerator Timer()
     {
         yield return new WaitForSeconds(4);
-        MyCore.NetCreateObject(, Owner, transform.position, Quaternion.identity);
+        MyCore.NetCreateObject(27, Owner, transform.position, Quaternion.identity);
         MyCore.NetDestroyObject(NetId);
     }
 
