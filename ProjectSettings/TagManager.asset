@@ -9,6 +9,25 @@ TagManager:
   - Fireball
   - Enemy
   - SkelSword
+  - EyeShot
+  - GobBomb
+  - MushShot
+  - BeyBlade
+  - Fortify
+  - ShieldBash
+  - Shout
+  - Gale
+  - HealingSpirit
+  - LightningStrike
+  - RockSlide
+  - WaterBall
+  - Caltrops
+  - CriticalStrike
+  - SleepingGas
+  - Tumble
+  - Haste
+  - Icespike
+  - Teleport
   layers:
   - Default
   - TransparentFX
