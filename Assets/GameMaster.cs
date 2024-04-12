@@ -111,7 +111,7 @@ public class GameMaster : NetworkComponent
             IsDirty = true;
             SendUpdate("PLAY", canPlay.ToString());
             StartGame();
-
+            
         }
     }
     public void SelectClass(int i, int k)
@@ -128,13 +128,14 @@ public class GameMaster : NetworkComponent
     public void StartGame()
     {
         
+        MyCore.IsListening = false;
         foreach (GameObject o in players)
         {
             o.GetComponent<PlayerNetworkManager>().SpawnCharacter();
             
         }
 
-
+        
     }
     public IEnumerator EndGame()
     {

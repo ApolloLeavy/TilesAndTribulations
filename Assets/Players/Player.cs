@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 public abstract class Player : NetworkComponent
 {
     public int hp;
+    public int hpM;
     public int tileCount;
     public int maxTiles;
     public int tileGainSec;
@@ -15,7 +16,9 @@ public abstract class Player : NetworkComponent
     public int ecd;
     public int rcd;
     public float acd;
+    public float tcd;
     public List<GameObject> indicatorList;
+    public Animator myAnim;
     public Rigidbody myRig;
     public float speed;
     public Vector2 lastInput;
@@ -40,6 +43,9 @@ public abstract class Player : NetworkComponent
     public Transform point;
     public GameObject previewBlock;
     public bool isResisting;
+    public int healingSpirit;
+    
+    public bool haste;
 
     public override void HandleMessage(string flag, string value)
     {
@@ -190,12 +196,20 @@ public abstract class Player : NetworkComponent
                 isStunned = bool.Parse(value);
             }
         }
+        if (flag == "HP")
+        {
+            if (IsClient)
+            {
+                hp = int.Parse(value);
+            }
+        }
     }
     public override void NetworkedStart()
     {
         if (IsServer)
         {
             StartCoroutine(Draw());
+            StartCoroutine(Healing());
         }
     }
     public override IEnumerator SlowUpdate()
@@ -226,6 +240,7 @@ public abstract class Player : NetworkComponent
     public virtual void Start()
     {
         myRig = GetComponent<Rigidbody>();
+        myAnim = GetComponent<Animator>();
         maxTiles = 5;
         tileCount = 1;
         tileGainSec = 2;
@@ -236,6 +251,7 @@ public abstract class Player : NetworkComponent
         canE = true;
         canR = true;
         tiles = new List<int>();
+        tcd = 2;
         tileLibrary = new List<Vector2[]>();
         tiles.Add(0);
         tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), new Vector2(1, 0) });
@@ -278,10 +294,11 @@ public abstract class Player : NetworkComponent
 
         }    
             
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(tcd);
         StartCoroutine(Draw());
     }
-    public IEnumerator Knockback()
+    
+    public IEnumerator Stun()
     {
         isStunned = true;
         SendUpdate("STUN", isStunned.ToString());
@@ -583,119 +600,166 @@ public abstract class Player : NetworkComponent
         if (ev.started && canW)
             SendCommand("R", "");
     }
-    public IEnumerator TakeDamage()
+    public IEnumerator TakeDamage(int i)
     {
-        isInvincible = true;
+        hp -= i;
+        if(hp > 0)
+        {
+            SendUpdate("HP", i.ToString());
+            isInvincible = true;
+            yield return new WaitForSeconds(1);
+            isInvincible = false;
+        }
+        else
+        {
+            StartCoroutine(Die());
+            SendUpdate("DIE", "");
+        }
+        
+    }
+    public IEnumerator AnimStart(string anim)
+    {
+        
+            myAnim.SetBool(anim, true);
+        
         yield return new WaitForSeconds(1);
-        isInvincible = false;
+        
+            myAnim.SetBool(anim, false);
+        
+    }
+    public IEnumerator Die()
+    {
+        if(IsClient)
+        {
+            indicatorList.Clear();
+            StartCoroutine(AnimStart("isDead"));
+        }
+        yield return new WaitForSeconds(1);
+        if (IsClient)
+        {
+
+            GetComponent<SpriteRenderer>().enabled = false;
+        }
+        yield return new WaitForSeconds(16);
+        if (IsClient)
+        {
+
+            GetComponent<SpriteRenderer>().enabled = true;
+        }
+    }
+    public IEnumerator Fortify()
+    {
+        isResisting = true;
+        yield return new WaitForSeconds(10);
+        isResisting = false;
+    }
+    public IEnumerator Healing()
+    {
+        if( hp<hpM)
+        {
+            hp += 1 + healingSpirit;
+            if (hp > hpM)
+                hp = hpM;
+            SendUpdate("HP", hp.ToString());
+        }
+        yield return new WaitForSeconds(2);
+        StartCoroutine(Healing());
+    }
+    public IEnumerator Haste()
+    {
+        if (!haste)
+        {
+            haste = true;
+            speed *= 2;
+            acd /= 2;
+            tcd /= 2;
+            yield return new WaitForSeconds(10);
+            speed /= 2;
+            acd *= 2;
+            tcd *= 2;
+            haste = false;
+        }
+        
     }
     // Start is called before the first frame update
-    
+    public void OnTriggerStay(Collider other)
+    {
+        if (IsServer)
+        {
+            switch(other.tag)
+            {
+                case "HealingSpirit":
+                    {
+                        healingSpirit = 0;
+                        break;
+                    }
+            }
+        }
+    }
     public void OnTriggerEnter(Collider other)
     {
         if (IsServer)
         {
             switch (other.tag)
             {
-                case "SkelSword":
+                case "Skeleton":
+                case "Eyeball":
+                case "Goblin":
+                case "Mushroom":
                     {
+                        if (!isResisting)
+                        {
+                            StartCoroutine(TakeDamage(5));
+                            StartCoroutine(Stun());
+                        }
                         break;
                     }
-                case "Eyeball":
+                case "EyeShot":
                     {
+                        StartCoroutine(TakeDamage(8));
                         break;
                     }
                 case "GobBomb":
                     {
+                        StartCoroutine(TakeDamage(5));
+                        StartCoroutine(Stun());
                         break;
                     }
-                case "Goblin":
+                case "GobBombExplosion":
                     {
+                        StartCoroutine(TakeDamage(10));
                         break;
                     }
-                case "Mushroom":
+                case "SkelSword":
                     {
+                        StartCoroutine(TakeDamage(2));
+                        
+                        StartCoroutine(Stun());
                         break;
                     }
                 case "MushShot":
                     {
-                        break;
-                    }
-                case "Skeleton":
-                    {
-                        break;
-                    }
-                case "Fireball":
-                    {
+                        StartCoroutine(TakeDamage(4));
                         break;
                     }
                 case "Haste":
                     {
-                        break;
-                    }
-                case "IceSpike":
-                    {
-                        break;
-                    }
-                case "Teleport":
-                    {
-                        break;
-                    }
-                case "Caltrops":
-                    {
-                        break;
-                    }
-                case "CriticalStrike":
-                    {
-                        break;
-                    }
-                case "SleepingGas":
-                    {
-                        break;
-                    }
-                case "Tumble":
-                    {
-                        break;
-                    }
-                case "Gale":
-                    {
-                        break;
-                    }
-                case "HealingSpirit":
-                    {
-                        break;
-                    }
-                case "LightningStrike":
-                    {
-                        break;
-                    }
-                case "RockSlide":
-                    {
-                        break;
-                    }
-                case "WaterBall":
-                    {
-                        break;
-                    }
-                case "BeyBlade":
-                    {
+                        StartCoroutine(Haste());
                         break;
                     }
                 case "Fortify":
                     {
+                        StartCoroutine(Fortify());
                         break;
                     }
-                case "ShieldBash":
+                case "HealingSpirit":
                     {
+                        healingSpirit = 2;
                         break;
                     }
-                case "Shout":
-                    {
-                        break;
-                    }
-
             }
         }
+        
     }
     // Update is called once per frame
 
