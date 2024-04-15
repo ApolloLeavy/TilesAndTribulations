@@ -7,17 +7,12 @@ public class Potion : Projectile
     public Player player;
     public override void HandleMessage(string flag, string value)
     {
-
+        base.HandleMessage(flag, value);
     }
 
     public override void NetworkedStart()
     {
-        
-    }
-
-    public override IEnumerator SlowUpdate()
-    {
-        yield return new WaitForSeconds(.1f);
+        base.NetworkedStart();
     }
     public IEnumerator Timer()
     {
@@ -35,4 +30,5 @@ public class Potion : Projectile
     {
         base.Update();
     }
+    
 }

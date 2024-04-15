@@ -10,7 +10,7 @@ public class Knight : Player
     public override void Start()
     {
         base.Start();
-        hp = 10;
+        hp = 40;
         speed = 4;
         acd = .75f;
         qcd = 5;
@@ -124,5 +124,19 @@ public class Knight : Player
     {
         base.Update();
     }
-
+    public override void OnTriggerEnter(Collider other)
+    {
+        base.OnTriggerEnter(other);
+        switch (other.tag)
+        {
+            case "Helmet":
+                {
+                    break;
+                }
+            case "Chestplate":
+                {
+                    break;
+                }
+        }
+    }
 }

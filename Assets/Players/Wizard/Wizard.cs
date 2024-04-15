@@ -10,7 +10,7 @@ public class Wizard : Player
     public override void Start()
     {
         base.Start();
-        hp = 10;
+        hp = 25;
         speed = 4;
         acd = .75f;
         qcd = 5;
@@ -125,5 +125,19 @@ public class Wizard : Player
     {
         base.Update();
      }
-    
+    public override void OnTriggerEnter(Collider other)
+    {
+        base.OnTriggerEnter(other);
+        switch (other.tag)
+        {
+            case "Ring":
+                {
+                    break;
+                }
+            case "Necklace":
+                {
+                    break;
+                }
+        }
+    }
 }

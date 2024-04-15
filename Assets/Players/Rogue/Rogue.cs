@@ -10,7 +10,7 @@ public class Rogue : Player
     public override void Start()
     {
         base.Start();
-        hp = 10;
+        hp = 30;
         speed = 4;
         acd = .75f;
         qcd = 5;
@@ -121,5 +121,24 @@ public class Rogue : Player
     {
         base.Update();
     }
-
+    public override void OnTriggerEnter(Collider other)
+    {
+        base.OnTriggerEnter(other);
+        switch (other.tag)
+        {
+            case "Boots":
+                {
+                    speed += 1;
+                    qcd -= 1;
+                    wcd -= 1;
+                    ecd -= 1;
+                    rcd -= 1;
+                    break;
+                }
+            case "Vial":
+                {
+                    break;
+                }
+        }
+    }
 }

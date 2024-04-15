@@ -67,23 +67,27 @@ public class Monster : NetworkComponent
     }
     public override IEnumerator SlowUpdate()
     {
-        if(myRig.velocity.magnitude > 0)
+        while (MyCore.IsConnected)
         {
-            myAnim.SetBool("isRun", true);
+            if (myRig.velocity.magnitude > 0)
+            {
+                myAnim.SetBool("isRun", true);
+            }
+            else
+            {
+                myAnim.SetBool("isRun", false);
+            }
+            if (lastInput.x < 0)
+            {
+                spriteRender.flipX = true;
+            }
+            else
+            {
+                spriteRender.flipX = false;
+            }
+            yield return new WaitForSeconds(.1f);
         }
-        else
-        {
-            myAnim.SetBool("isRun", false);
-        }
-        if(lastInput.x < 0)
-        {
-            spriteRender.flipX = true;
-        }
-        else
-        {
-            spriteRender.flipX = false;
-        }
-        yield return new WaitForSeconds(.1f);
+        
     }
     public virtual void Start()
     {

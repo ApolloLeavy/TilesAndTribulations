@@ -51,11 +51,11 @@ public abstract class Player : NetworkComponent
     public override void HandleMessage(string flag, string value)
     {
         
-        if(flag == "Q"|| flag == "W" || flag == "E" || flag == "R" )
+        if((flag == "Q"|| flag == "W" || flag == "E" || flag == "R") && !isStunned && !isDead)
         {
             StartCoroutine(AnimStart("isAttack"));
         }
-        if (flag == "MV" && activeTile != -1 && !isStunned)
+        if (flag == "MV" && activeTile != -1 && !isStunned && !isDead)
         {
             if (IsServer && canPlace)
             {
@@ -81,14 +81,14 @@ public abstract class Player : NetworkComponent
                 PreviewMove(tileLibrary[tiles[activeTile]]);
             }
         }
-        if(flag == "PLACE" && activeTile != -1 && !isStunned)
+        if(flag == "PLACE" && activeTile != -1 && !isStunned && !isDead)
         {
             if(IsServer)
             {
                 if(canPlace)
                 {
                     canPlace = false;
-                    indicatorList.Clear();
+                    
                     StartCoroutine(Move(tileLibrary[tiles[activeTile]]));
                     SendUpdate("PLACE", canPlace.ToString());
                     tiles.Remove(tiles[activeTile]);
@@ -115,7 +115,7 @@ public abstract class Player : NetworkComponent
 
             }
         }
-        if (flag == "ATTACK" && !isStunned)
+        if (flag == "ATTACK" && !isStunned && !isDead)
         {
             if (IsServer)
             {
@@ -137,7 +137,7 @@ public abstract class Player : NetworkComponent
                 }
             }
         }
-        if (flag == "FLIP" && activeTile != -1)
+        if (flag == "FLIP" && activeTile != -1 && !isDead)
         {
             if (IsServer)
             {
@@ -151,7 +151,7 @@ public abstract class Player : NetworkComponent
                 PreviewMove(tileLibrary[tiles[activeTile]]);
             }
         }
-       if(flag == "SPTL" && activeTile != -1)
+       if(flag == "SPTL" && activeTile != -1 && !isDead)
         {
             if (IsServer)
             {
@@ -182,7 +182,7 @@ public abstract class Player : NetworkComponent
                 }
             }
         }
-        if(flag == "CYCLE")
+        if(flag == "CYCLE" && !isDead)
         {
             if(IsServer)
             {
@@ -211,14 +211,14 @@ public abstract class Player : NetworkComponent
                 PreviewMove(tileLibrary[tiles[activeTile]]);
             }
         }
-        if(flag == "STUN")
+        if(flag == "STUN" && !isDead)
         {
             if(IsClient)
             {
                 isStunned = bool.Parse(value);
             }
         }
-        if (flag == "HP")
+        if (flag == "HP" && !isDead)
         {
             if (IsClient)
             {
@@ -230,10 +230,11 @@ public abstract class Player : NetworkComponent
                 hp = t;
             }
         }
-        if (flag == "DIE")
+        if (flag == "DIE" && !isDead)
         {
             if (IsClient)
             {
+                isDead = bool.Parse(value);
                 StartCoroutine(Die());
             }
         }
@@ -249,31 +250,40 @@ public abstract class Player : NetworkComponent
     }
     public override IEnumerator SlowUpdate()
     {
-        if (IsServer)
+        while (MyCore.IsConnected)
         {
-            if (IsDirty)
+            if (IsServer)
             {
-                SendUpdate("ATTACK", canAttack.ToString());
-                SendUpdate("MV", lastInput.x + "," + lastInput.y);
-                SendUpdate("PLACE", canPlace.ToString());
-                SendUpdate("FLIP", isFlipped.ToString());
-                SendUpdate("CYCLE", activeTile.ToString());
-                IsDirty = false;
+                if (IsDirty)
+                {
+                    SendUpdate("ATTACK", canAttack.ToString());
+                    SendUpdate("MV", lastInput.x + "," + lastInput.y);
+                    SendUpdate("PLACE", canPlace.ToString());
+                    SendUpdate("FLIP", isFlipped.ToString());
+                    SendUpdate("CYCLE", activeTile.ToString());
+                    IsDirty = false;
+                }
             }
+            if (IsLocalPlayer && !isStunned && !isDead && canPlace)
+            {
+                if (lastInput.x < 0)
+                {
+                    spriteRender.flipX = true;
+                }
+                else
+                {
+                    spriteRender.flipX = false;
+                }
+                PreviewMove(tileLibrary[tiles[activeTile]]);
+
+            }
+            if ((isDead || canPlace) && !isStunned)
+            {
+                myRig.velocity = Vector3.zero;
+            }
+
+            yield return new WaitForSeconds(MyId.UpdateFrequency);
         }
-        if (IsLocalPlayer)
-        {
-            PreviewMove(tileLibrary[tiles[activeTile]]);
-        }
-        if (lastInput.x < 0)
-        {
-            spriteRender.flipX = true;
-        }
-        else
-        {
-            spriteRender.flipX = false;
-        }
-        yield return new WaitForSeconds(MyId.UpdateFrequency);
     }
     public virtual void Start()
     {
@@ -649,7 +659,7 @@ public abstract class Player : NetworkComponent
         else
         {
             StartCoroutine(Die());
-            SendUpdate("DIE", "");
+            
         }
         
     }
@@ -666,12 +676,22 @@ public abstract class Player : NetworkComponent
     public IEnumerator Die()
     {
         myRig.velocity = Vector3.zero;
+        isDead = true;
         isStunned = true;
+        if (IsServer)
+            SendUpdate("DIE", isDead.ToString());
         if (IsClient)
         {
             
-            indicatorList.Clear();
             StartCoroutine(AnimStart("isDead"));
+            if(IsLocalPlayer)
+            {
+                foreach (GameObject o in indicatorList)
+                {
+                    GameObject.Destroy(o);
+                }
+                indicatorList.Clear();
+            }
         }
         yield return new WaitForSeconds(1);
         if (IsClient)
@@ -680,7 +700,11 @@ public abstract class Player : NetworkComponent
             GetComponent<SpriteRenderer>().enabled = false;
         }
         yield return new WaitForSeconds(16);
+        hp = hpM;
         isStunned = false;
+        isDead = false;
+        if (IsServer)
+            SendUpdate("DIE", isDead.ToString());
         if (IsClient)
         {
 
@@ -730,7 +754,7 @@ public abstract class Player : NetworkComponent
             {
                 case "HealingSpirit":
                     {
-                        healingSpirit = 0;
+                        healingSpirit = 2;
                         break;
                     }
             }
@@ -738,15 +762,17 @@ public abstract class Player : NetworkComponent
     }
     public IEnumerator Knockback(Vector3 dir)
     {
+        isStunned = true;
         myRig.velocity += dir;
         yield return new WaitForSeconds(1);
+        isStunned = false;
         myRig.velocity -= dir;
     }
-    public void OnTriggerEnter(Collider other)
+    public void OnCollisionEnter(Collision collision)
     {
-        if (IsServer)
+        if (IsServer && !isDead && !isInvincible)
         {
-            switch (other.tag)
+            switch (collision.gameObject.tag)
             {
                 case "Skeleton":
                 case "Eyeball":
@@ -756,11 +782,21 @@ public abstract class Player : NetworkComponent
                         if (!isResisting)
                         {
                             StartCoroutine(TakeDamage(5));
-                            StartCoroutine(Knockback((transform.position - other.transform.position).normalized));
+                            StartCoroutine(Knockback((transform.position - collision.transform.position).normalized));
                             StartCoroutine(Stun());
                         }
                         break;
                     }
+            }
+        }
+    }
+    public virtual void OnTriggerEnter(Collider other)
+    {
+        if (IsServer && !isDead && !isInvincible)
+        {
+            switch (other.tag)
+            {
+                
                 case "EyeShot":
                     {
                         StartCoroutine(TakeDamage(8));
@@ -800,11 +836,15 @@ public abstract class Player : NetworkComponent
                         StartCoroutine(Fortify());
                         break;
                     }
-                case "HealingSpirit":
+
+                case "Potion":
                     {
-                        healingSpirit = 2;
+                        hp += 10;
+                        if (hp > hpM)
+                            hp = hpM;
+                        SendUpdate("HP", hp.ToString());
                         break;
-                    }
+                    }                
             }
         }
         

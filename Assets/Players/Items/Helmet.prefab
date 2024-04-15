@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2105979857690631405}
   - component: {fileID: 2123096691451008152}
   - component: {fileID: 7715530414471590713}
-  - component: {fileID: 5344971014314785173}
+  - component: {fileID: 4724489848199957315}
   m_Layer: 0
   m_Name: Helmet
   m_TagString: BeyBlade
@@ -178,7 +178,7 @@ MonoBehaviour:
   UseLobby: 0
   UpdateFrequency: 0.1
   MyCore: {fileID: 0}
---- !u!114 &5344971014314785173
+--- !u!114 &4724489848199957315
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -187,12 +187,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 3735715134184617721}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8732d35a135849d4bba2db8c62017e64, type: 3}
+  m_Script: {fileID: 11500000, guid: 6d58b482c3ed8a14796e7ea0d68f7bc7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   MyCore: {fileID: 0}
   MyId: {fileID: 0}
   IsDirty: 0
   myRig: {fileID: 0}
-  player: {fileID: 0}
   myAnim: {fileID: 0}
+  player: {fileID: 0}

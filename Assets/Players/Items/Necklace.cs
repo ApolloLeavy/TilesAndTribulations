@@ -7,17 +7,12 @@ public class Necklace : Projectile
     public Player player;
     public override void HandleMessage(string flag, string value)
     {
-
+        base.HandleMessage(flag, value);
     }
 
     public override void NetworkedStart()
     {
-        StartCoroutine(Timer());
-    }
-
-    public override IEnumerator SlowUpdate()
-    {
-        yield return new WaitForSeconds(.1f);
+        base.NetworkedStart();
     }
     public IEnumerator Timer()
     {

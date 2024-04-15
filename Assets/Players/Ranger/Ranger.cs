@@ -11,7 +11,7 @@ public class Ranger : Player
     {
         base.Start();
 
-        hp = 10;
+        hp = 25;
         speed = 4;
         acd = .75f;
         qcd = 5;
@@ -134,5 +134,19 @@ public class Ranger : Player
     {
         base.Update();
     }
-
+    public override void OnTriggerEnter(Collider other)
+    {
+        base.OnTriggerEnter(other);
+        switch(other.tag)
+        {
+            case "Gatito":
+                {
+                    break;
+                }
+            case "Fairy":
+                {
+                    break;
+                }
+        }
+    }
 }

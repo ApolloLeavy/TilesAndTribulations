@@ -40,6 +40,7 @@ TagManager:
   - Goblin
   - Mushroom
   - Skeleton
+  - Potion
   layers:
   - Default
   - TransparentFX
