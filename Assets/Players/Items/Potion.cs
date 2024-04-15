@@ -5,7 +5,6 @@ using NETWORK_ENGINE;
 public class Potion : Projectile
 {
     public Player player;
-    public Animator myAnim;
     public override void HandleMessage(string flag, string value)
     {
 
@@ -13,7 +12,7 @@ public class Potion : Projectile
 
     public override void NetworkedStart()
     {
-        StartCoroutine(Timer());
+        
     }
 
     public override IEnumerator SlowUpdate()
@@ -26,15 +25,14 @@ public class Potion : Projectile
         MyCore.NetDestroyObject(NetId);
     }
     // Start is called before the first frame update
-    void Start()
+    public override void Start()
     {
-        myAnim = GetComponent<Animator>();
-        
+        base.Start();
     }
 
     // Update is called once per frame
-    void Update()
+    public override void Update()
     {
-
+        base.Update();
     }
 }

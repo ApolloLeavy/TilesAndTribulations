@@ -20,6 +20,7 @@ public abstract class Player : NetworkComponent
     public List<GameObject> indicatorList;
     public Animator myAnim;
     public Rigidbody myRig;
+    public SpriteRenderer spriteRender;
     public float speed;
     public Vector2 lastInput;
     public bool canPlace;
@@ -49,11 +50,15 @@ public abstract class Player : NetworkComponent
 
     public override void HandleMessage(string flag, string value)
     {
+        
+        if(flag == "Q"|| flag == "W" || flag == "E" || flag == "R" )
+        {
+            StartCoroutine(AnimStart("isAttack"));
+        }
         if (flag == "MV" && activeTile != -1 && !isStunned)
         {
             if (IsServer && canPlace)
             {
-                Debug.Log("Input");
                 string[] tmp = value.Split(',');
                 lastInput = new Vector2(float.Parse(tmp[0]), float.Parse(tmp[1]));
                 IsDirty = true;
@@ -82,10 +87,15 @@ public abstract class Player : NetworkComponent
             {
                 if(canPlace)
                 {
-                    
                     canPlace = false;
+                    indicatorList.Clear();
                     StartCoroutine(Move(tileLibrary[tiles[activeTile]]));
                     SendUpdate("PLACE", canPlace.ToString());
+                    tiles.Remove(tiles[activeTile]);
+                    SendUpdate("SPTL", activeTile.ToString());
+                    if (activeTile == tileCount - 1)
+                        activeTile--;
+                    tileCount--;
                 }
                 
             }
@@ -93,7 +103,15 @@ public abstract class Player : NetworkComponent
             {
                 canPlace = bool.Parse(value);
                 if(canPlace)
+                {
+                    myAnim.SetBool("isRun", false);
                     PreviewMove(tileLibrary[tiles[activeTile]]);
+                }
+                else
+                {
+                    myAnim.SetBool("isRun", true);
+                }
+                    
 
             }
         }
@@ -113,6 +131,10 @@ public abstract class Player : NetworkComponent
             if (IsLocalPlayer)
             {
                 canAttack = bool.Parse(value);
+                if(!canAttack)
+                {
+                    StartCoroutine(AnimStart("isAttack"));
+                }
             }
         }
         if (flag == "FLIP" && activeTile != -1)
@@ -141,7 +163,7 @@ public abstract class Player : NetworkComponent
                 tiles.Remove(tiles[activeTile]);
                 if (activeTile == tileCount)
                     activeTile--;
-                PreviewMove(tileLibrary[tiles[activeTile]]);
+                
             }
         }
         if (flag == "DRTL")
@@ -200,9 +222,22 @@ public abstract class Player : NetworkComponent
         {
             if (IsClient)
             {
-                hp = int.Parse(value);
+                int t= int.Parse(value);
+                if(t < hp)
+                {
+                    StartCoroutine(AnimStart("isHit"));
+                }
+                hp = t;
             }
         }
+        if (flag == "DIE")
+        {
+            if (IsClient)
+            {
+                StartCoroutine(Die());
+            }
+        }
+
     }
     public override void NetworkedStart()
     {
@@ -214,33 +249,37 @@ public abstract class Player : NetworkComponent
     }
     public override IEnumerator SlowUpdate()
     {
-        if (IsConnected)
+        if (IsServer)
         {
-            while (IsServer)
+            if (IsDirty)
             {
-                if (IsDirty)
-                {
-                    SendUpdate("ATTACK", canAttack.ToString());
-                    SendUpdate("MV", lastInput.x + "," + lastInput.y);
-                    SendUpdate("PLACE", canPlace.ToString());
-                    SendUpdate("FLIP", isFlipped.ToString());
-                    SendUpdate("CYCLE", activeTile.ToString());
-                    IsDirty = false;
-                }
-                yield return new WaitForSeconds(MyId.UpdateFrequency);
+                SendUpdate("ATTACK", canAttack.ToString());
+                SendUpdate("MV", lastInput.x + "," + lastInput.y);
+                SendUpdate("PLACE", canPlace.ToString());
+                SendUpdate("FLIP", isFlipped.ToString());
+                SendUpdate("CYCLE", activeTile.ToString());
+                IsDirty = false;
             }
-            if (IsLocalPlayer)
-            {
-                PreviewMove(tileLibrary[tiles[activeTile]]);
-            }
-            yield return new WaitForSeconds(MyId.UpdateFrequency);
-            
         }
+        if (IsLocalPlayer)
+        {
+            PreviewMove(tileLibrary[tiles[activeTile]]);
+        }
+        if (lastInput.x < 0)
+        {
+            spriteRender.flipX = true;
+        }
+        else
+        {
+            spriteRender.flipX = false;
+        }
+        yield return new WaitForSeconds(MyId.UpdateFrequency);
     }
     public virtual void Start()
     {
         myRig = GetComponent<Rigidbody>();
         myAnim = GetComponent<Animator>();
+        spriteRender = GetComponent<SpriteRenderer>();
         maxTiles = 5;
         tileCount = 1;
         tileGainSec = 2;
@@ -328,7 +367,6 @@ public abstract class Player : NetworkComponent
     {
         if (IsLocalPlayer && ev.performed)
         {
-            Debug.Log("Place");
             SendCommand("PLACE", "");
             
         }
@@ -344,7 +382,6 @@ public abstract class Player : NetworkComponent
         {
             if (ev.started)
             {
-                Debug.Log("Input");
                 Vector2 tempCmd = ev.ReadValue<Vector2>();
 
                 SendCommand("MV", tempCmd.x + "," + tempCmd.y);
@@ -360,7 +397,6 @@ public abstract class Player : NetworkComponent
     {
         if (IsServer)
         {
-            Debug.Log("Move");
             for (int i = 0; i < dir.Length;i++)
             {
                 
@@ -540,7 +576,7 @@ public abstract class Player : NetworkComponent
     {
         tiles.Remove(tiles[activeTile]);
         SendUpdate("SPTL", activeTile.ToString());
-        if (activeTile == tileCount)
+        if (activeTile == tileCount-1)
             activeTile--;
         tileCount--;
         yield return new WaitForSeconds(qcd);
@@ -592,12 +628,12 @@ public abstract class Player : NetworkComponent
     }
     public void OnE(InputAction.CallbackContext ev)
     {
-        if (ev.started && canQ)
+        if (ev.started && canE)
             SendCommand("E", "");
     }
     public void OnR(InputAction.CallbackContext ev)
     {
-        if (ev.started && canW)
+        if (ev.started && canR)
             SendCommand("R", "");
     }
     public IEnumerator TakeDamage(int i)
@@ -629,8 +665,11 @@ public abstract class Player : NetworkComponent
     }
     public IEnumerator Die()
     {
-        if(IsClient)
+        myRig.velocity = Vector3.zero;
+        isStunned = true;
+        if (IsClient)
         {
+            
             indicatorList.Clear();
             StartCoroutine(AnimStart("isDead"));
         }
@@ -641,6 +680,7 @@ public abstract class Player : NetworkComponent
             GetComponent<SpriteRenderer>().enabled = false;
         }
         yield return new WaitForSeconds(16);
+        isStunned = false;
         if (IsClient)
         {
 
@@ -696,6 +736,12 @@ public abstract class Player : NetworkComponent
             }
         }
     }
+    public IEnumerator Knockback(Vector3 dir)
+    {
+        myRig.velocity += dir;
+        yield return new WaitForSeconds(1);
+        myRig.velocity -= dir;
+    }
     public void OnTriggerEnter(Collider other)
     {
         if (IsServer)
@@ -710,6 +756,7 @@ public abstract class Player : NetworkComponent
                         if (!isResisting)
                         {
                             StartCoroutine(TakeDamage(5));
+                            StartCoroutine(Knockback((transform.position - other.transform.position).normalized));
                             StartCoroutine(Stun());
                         }
                         break;
@@ -728,6 +775,7 @@ public abstract class Player : NetworkComponent
                 case "GobBombExplosion":
                     {
                         StartCoroutine(TakeDamage(10));
+                        StartCoroutine(Knockback((transform.position - other.transform.position).normalized));
                         break;
                     }
                 case "SkelSword":

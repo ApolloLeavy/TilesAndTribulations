@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2232305328663277990}
   - component: {fileID: 3220378874290405720}
   - component: {fileID: 6314006284140143255}
-  - component: {fileID: 4695865851595203146}
+  - component: {fileID: 6023439317368292438}
   m_Layer: 0
   m_Name: ShieldBash
   m_TagString: ShieldBash
@@ -178,7 +178,7 @@ MonoBehaviour:
   UseLobby: 0
   UpdateFrequency: 0.1
   MyCore: {fileID: 0}
---- !u!114 &4695865851595203146
+--- !u!114 &6023439317368292438
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -187,11 +187,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 29342722948522525}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 92abcbe82f02f9544acbdfb450f4d577, type: 3}
+  m_Script: {fileID: 11500000, guid: 1998bfee2872bb74d911cdfa2dd4446d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   MyCore: {fileID: 0}
   MyId: {fileID: 0}
   IsDirty: 0
   myRig: {fileID: 0}
+  myAnim: {fileID: 0}
   player: {fileID: 0}

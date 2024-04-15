@@ -10,6 +10,7 @@ public class Ranger : Player
     public override void Start()
     {
         base.Start();
+
         hp = 10;
         speed = 4;
         acd = .75f;
@@ -42,13 +43,17 @@ public class Ranger : Player
             if (IsLocalPlayer)
             {
                 canQ = bool.Parse(value);
+                if (!canQ)
+                {
+                    PreviewMove(tileLibrary[tiles[activeTile]]);
+                }
             }
         }
         if (flag == "W")
         {
             if (IsServer)
             {
-                if (canQ)
+                if (canW)
                 {
                     PreviewAbility(tileLibrary[tiles[activeTile]], 12);
                     isFlipped = !isFlipped;
@@ -82,7 +87,11 @@ public class Ranger : Player
             }
             if (IsLocalPlayer)
             {
-                canW = bool.Parse(value);
+                canE = bool.Parse(value);
+                if (!canE)
+                {
+                    PreviewMove(tileLibrary[tiles[activeTile]]);
+                }
             }
         }
         if (flag == "R")
@@ -103,19 +112,23 @@ public class Ranger : Player
             if (IsLocalPlayer)
             {
                 canR = bool.Parse(value);
+                if (!canR)
+                {
+                    PreviewMove(tileLibrary[tiles[activeTile]]);
+                }
             }
         }
     }
     public override void Attack2()
     {
-        GameObject o = MyCore.NetCreateObject(8, Owner, myRig.position + new Vector3(lastInput.x, lastInput.y, 0));
-        o.GetComponent<Rigidbody>().velocity = new Vector3(lastInput.x, lastInput.y, 0).normalized * speed;
+        GameObject o = MyCore.NetCreateObject(32, Owner, myRig.position + new Vector3(lastInput.x, lastInput.y, 0));
+        o.GetComponent<Rigidbody>().velocity = new Vector3(lastInput.x, lastInput.y, 0).normalized * 3;
         
     }
     public override void NetworkedStart()
     {
         base.NetworkedStart();
-        myRig.position += new Vector3(-1, 0, 0);
+        myRig.position += new Vector3(0, -1, 0);
     }
     public override void Update()
     {

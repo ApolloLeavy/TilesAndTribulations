@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2105979857690631405}
   - component: {fileID: 2123096691451008152}
   - component: {fileID: 7715530414471590713}
-  - component: {fileID: 5344971014314785173}
+  - component: {fileID: -5546804279414688550}
   m_Layer: 0
   m_Name: Gale
   m_TagString: Gale
@@ -99,7 +99,7 @@ Animator:
   m_GameObject: {fileID: 3735715134184617721}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 8b47e4638a00caf44a5c749066ff6978, type: 2}
+  m_Controller: {fileID: 9100000, guid: 5a86ff78e410ed24992d427908adfe77, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -178,7 +178,7 @@ MonoBehaviour:
   UseLobby: 0
   UpdateFrequency: 0.1
   MyCore: {fileID: 0}
---- !u!114 &5344971014314785173
+--- !u!114 &-5546804279414688550
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -187,12 +187,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 3735715134184617721}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8732d35a135849d4bba2db8c62017e64, type: 3}
+  m_Script: {fileID: 11500000, guid: b3c0ad8263d1aa54baff0f37b41737d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   MyCore: {fileID: 0}
   MyId: {fileID: 0}
   IsDirty: 0
   myRig: {fileID: 0}
-  player: {fileID: 0}
   myAnim: {fileID: 0}
+  player: {fileID: 0}

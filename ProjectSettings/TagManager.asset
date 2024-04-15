@@ -21,7 +21,6 @@ TagManager:
   - HealingSpirit
   - LightningStrike
   - RockSlide
-  - WaterBall
   - Caltrops
   - CriticalStrike
   - SleepingGas
@@ -29,6 +28,18 @@ TagManager:
   - Haste
   - Icespike
   - Teleport
+  - Knight
+  - Rogue
+  - LightShot
+  - Ranger
+  - Spear
+  - Arrow
+  - Slash
+  - Eyeball
+  - GobBombExplosion
+  - Goblin
+  - Mushroom
+  - Skeleton
   layers:
   - Default
   - TransparentFX

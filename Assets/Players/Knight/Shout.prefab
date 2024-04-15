@@ -13,8 +13,8 @@ GameObject:
   - component: {fileID: 2105979857690631405}
   - component: {fileID: 2123096691451008152}
   - component: {fileID: 7715530414471590713}
-  - component: {fileID: 3308782400948607308}
   - component: {fileID: 4252624261877612167}
+  - component: {fileID: 3786030369967490741}
   m_Layer: 0
   m_Name: Shout
   m_TagString: Shout
@@ -32,7 +32,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -1.4221064, y: 0.9834737, z: -6.85299}
-  m_LocalScale: {x: 4, y: 4, z: 1}
+  m_LocalScale: {x: 0.57052, y: 0.57052, z: 0.14263}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -108,8 +108,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.34, y: 0.31, z: 0.2}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 1.9767004, y: 1.868762, z: 0.2}
+  m_Center: {x: 0.155876, y: -0.2078349, z: 0}
 --- !u!54 &2123096691451008152
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -157,23 +157,6 @@ MonoBehaviour:
   UseLobby: 0
   UpdateFrequency: 0.1
   MyCore: {fileID: 0}
---- !u!114 &3308782400948607308
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3735715134184617721}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe710ce32ade1924c860a14852ff8d3c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  MyCore: {fileID: 0}
-  MyId: {fileID: 0}
-  IsDirty: 0
-  myRig: {fileID: 0}
-  player: {fileID: 0}
 --- !u!95 &4252624261877612167
 Animator:
   serializedVersion: 5
@@ -195,3 +178,21 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &3786030369967490741
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3735715134184617721}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4cad374a2d39ce4499302fa2eaec517, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MyCore: {fileID: 0}
+  MyId: {fileID: 0}
+  IsDirty: 0
+  myRig: {fileID: 0}
+  myAnim: {fileID: 0}
+  player: {fileID: 0}

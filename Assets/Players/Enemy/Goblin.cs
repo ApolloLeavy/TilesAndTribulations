@@ -14,16 +14,12 @@ public class Goblin : Monster
         base.NetworkedStart();
     }
 
-    public override IEnumerator SlowUpdate()
-    {
-        yield return new WaitForSeconds(.1f);
-    }
     // Start is called before the first frame update
     public override void Start()
     {
         base.Start();
         hp = 20;
-        speed = 3;
+        speed = 4;
         acd = 1;
     }
 
@@ -37,5 +33,6 @@ public class Goblin : Monster
         base.Attack();
         GameObject o = MyCore.NetCreateObject(24, Owner, transform.position, Quaternion.identity);
         o.GetComponent<GobBomb>().lastInput = lastInput;
+        
     }
 }

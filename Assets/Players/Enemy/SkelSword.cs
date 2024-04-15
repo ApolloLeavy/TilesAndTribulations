@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using NETWORK_ENGINE;
-public class SkelSword : Projectile
+public class SkelSword : EnemyProjectile
 {
 
     public override void HandleMessage(string flag, string value)

@@ -10,7 +10,7 @@ public class Monster : NetworkComponent
     public bool isStunned;
     public bool isInvincible;
     public Player target;
-    public GameObject[] players;
+    public Player[] players;
     public bool canAct;
     public bool isAttack;
     public float acd;
@@ -22,6 +22,7 @@ public class Monster : NetworkComponent
     public Vector2 lastInput;
     public GameObject previewBlock;
     public List<Vector2[]> tileLibrary;
+    public SpriteRenderer spriteRender;
     public Rigidbody myRig;
     public int attackNum;
     public override void HandleMessage(string flag, string value)
@@ -31,7 +32,29 @@ public class Monster : NetworkComponent
             if(IsClient)
             {
                 hp -= int.Parse(value);
+                
                 StartCoroutine(AnimStart("isHit", attackNum));
+            }
+        }
+        if(tag == "DIE")
+        {
+            if(IsClient)
+            {
+                StartCoroutine(Die());
+            }
+        }
+        if (tag == "ATK")
+        {
+            if (IsClient)
+            {
+                StartCoroutine(AnimStart("isAttack", int.Parse(value)));
+            }
+        }
+        if (tag == "MOVE")
+        {
+            if (IsClient)
+            {
+                lastInput.x = float.Parse(value);
             }
         }
 
@@ -39,10 +62,27 @@ public class Monster : NetworkComponent
 
     public override void NetworkedStart()
     {
-        StartCoroutine(TakeAction());
+        if(IsServer)
+            StartCoroutine(TakeAction());
     }
     public override IEnumerator SlowUpdate()
     {
+        if(myRig.velocity.magnitude > 0)
+        {
+            myAnim.SetBool("isRun", true);
+        }
+        else
+        {
+            myAnim.SetBool("isRun", false);
+        }
+        if(lastInput.x < 0)
+        {
+            spriteRender.flipX = true;
+        }
+        else
+        {
+            spriteRender.flipX = false;
+        }
         yield return new WaitForSeconds(.1f);
     }
     public virtual void Start()
@@ -58,6 +98,9 @@ public class Monster : NetworkComponent
         isAttack = false;
         canAct = true;
         tileLibrary = new List<Vector2[]>();
+        spriteRender = GetComponent<SpriteRenderer>();
+        point = transform.GetChild(0);
+        players = GameObject.FindObjectsOfType<Player>();
         tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), new Vector2(1, 0) });
         tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1) });
         tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(0, 1), new Vector2(1, 0), new Vector2(1, 0) });
@@ -73,15 +116,18 @@ public class Monster : NetworkComponent
         {
             if (!isTaunted)
             {
-                foreach (GameObject p in players)
+                distance = Vector3.zero;
+                foreach (Player p in players)
                 {
-                    if ((transform.position - p.transform.position).magnitude < distance.magnitude)
+
+                    if (distance == Vector3.zero || (myRig.position - p.myRig.position).magnitude < distance.magnitude)
                     {
-                        distance = transform.position - p.transform.position;
-                        target = p.GetComponent<Player>();
+                        distance = myRig.position - p.myRig.position;
+                        target = p;
                     }
                 }
             }
+            distance *= -1;
             if(distance.x > 0 && distance.y > 0)
             {
                 if(distance.x > distance.y)
@@ -110,6 +156,7 @@ public class Monster : NetworkComponent
                 else
                     lastInput = new Vector2(0, 1);
             }
+            SendUpdate("MOVE", lastInput.x.ToString());
             if(isAttack)
             {
                 Attack();
@@ -122,7 +169,7 @@ public class Monster : NetworkComponent
             }
         }
         yield return new WaitForSeconds(acd);
-        StartCoroutine(TakeAction());
+        
     }
     public void PreviewMove(Vector2[] dir)
     {
@@ -181,6 +228,8 @@ public class Monster : NetworkComponent
 
             }
             myRig.velocity = new Vector3(0, 0, 0);
+            yield return new WaitForSecondsRealtime(acd);
+            StartCoroutine(TakeAction());
         }
     }
     public void PreviewAbility(Vector2[] dir, int type)
@@ -203,9 +252,10 @@ public class Monster : NetworkComponent
             {
                 point.position += new Vector3(dir[i].x, dir[i].y, 0);
             }
+            MyCore.NetCreateObject(type, Owner, point.position, Quaternion.identity);
         }
         point.position = transform.position;
-        MyCore.NetCreateObject(type, Owner, point.position, Quaternion.identity);
+        
     }
     
     public IEnumerator Slow(float t)
@@ -213,6 +263,12 @@ public class Monster : NetworkComponent
         isSlowed = true;
         yield return new WaitForSeconds(t);
         isSlowed = false;
+    }
+    public IEnumerator Taunt(float t)
+    {
+        isTaunted = true;
+        yield return new WaitForSeconds(t);
+        isTaunted = false;
     }
     public IEnumerator Stun(float t)
     {
@@ -233,12 +289,20 @@ public class Monster : NetworkComponent
         }
         
     }
+    public IEnumerator AttackDelay()
+    {
+        yield return new WaitForSeconds(acd);
+        StartCoroutine(TakeAction());
+    }
     public virtual void Attack()
     {
-        StartCoroutine(AnimStart("Attack", attackNum));
+        StartCoroutine(AnimStart("isAttack", attackNum));
+        SendUpdate("ATK", attackNum.ToString());
         attackNum++;
         if (attackNum >= 3)
             attackNum = 0;
+        StartCoroutine(AttackDelay());
+
     }
     public virtual void Move()
     {
@@ -249,7 +313,7 @@ public class Monster : NetworkComponent
     }
     public IEnumerator AnimStart(string anim, int attack)
     {
-        if(anim.Equals("Attack"))
+        if(anim.Equals("isAttack"))
         {
             myAnim.SetBool(anim, true);
             myAnim.SetInteger("Attack", attack);
@@ -259,7 +323,7 @@ public class Monster : NetworkComponent
             myAnim.SetBool(anim, true);
         }
         yield return new WaitForSeconds(1);
-        if (anim == "Attack")
+        if (anim == "isAttack")
         {
             myAnim.SetBool(anim, false);
             myAnim.SetInteger("Attack", attack);
@@ -269,75 +333,138 @@ public class Monster : NetworkComponent
             myAnim.SetBool(anim, false);
         }
     }
-    
+    public IEnumerator Die()
+    {
+        hp = 0;
+        StartCoroutine(AnimStart("isDead", attackNum));
+        yield return new WaitForSeconds(1);
+        if(IsServer)
+        {
+            MyCore.NetDestroyObject(MyId.NetId);
+        }
+    }
     public void Posion()
     {
         poisonStacks++;
         if (poisonStacks == 1)
             StartCoroutine(Poison());
     }
-
+    public IEnumerator Hit()
+    {
+        isInvincible = true;
+        yield return new WaitForSeconds(1);
+        isInvincible = false;
+    }
+    public IEnumerator Knockback(Vector3 dir)
+    {
+        myRig.velocity += dir;
+        yield return new WaitForSeconds(1);
+        myRig.velocity -= dir;
+    }
+    public void Damage(int i)
+    {
+        hp -= i;
+        if (hp <= 0)
+        {
+            hp = 0;
+            SendUpdate("DIE", "");
+            StartCoroutine(Die());
+        }
+        else
+        {
+            StartCoroutine(Hit());
+            SendUpdate("DMG", i.ToString());
+        }
+        
+    }
     public void OnTriggerEnter(Collider other)
     {
-        if (IsServer)
+        if (IsServer && !isInvincible)
         {
             switch (other.tag)
             {
                 case "Fireball":
                     {
-                        SendUpdate("DMG",15.ToString());
+                        Damage(15);
                         break;
                     }
                 case "IceSpike":
                     {
-                        break;
-                    }
-                case "Teleport":
-                    {
+                        Damage(10);
+                        StartCoroutine(Slow(1));
                         break;
                     }
                 case "Caltrops":
                     {
+                        Poison();
+                        Damage(5);
+                        StartCoroutine(Slow(3));
                         break;
                     }
                 case "CriticalStrike":
                     {
+                        Poison();
+                        Damage(30);
                         break;
                     }
                 case "SleepingGas":
                     {
+                        Poison();
+                        StartCoroutine(Stun(1));
                         break;
                     }
                 case "Tumble":
                     {
+                        StartCoroutine(Knockback((transform.position - other.transform.position).normalized));
                         break;
                     }
                 case "Gale":
                     {
+                        Damage(8);
                         break;
                     }
                 case "LightningStrike":
                     {
+                        Damage(5);
+                        StartCoroutine(Stun(4));
                         break;
                     }
                 case "RockSlide":
                     {
+                        StartCoroutine(Slow(1));
                         break;
                     }
                 case "WaterBall":
                     {
+                        Damage(5);
+                        break;
+                    }
+                case "ThrowingKnife":
+                    {
+                        Poison();
+                        Damage(5);
+                        break;
+                    }
+                case "LightShot":
+                    {
+                        Damage(5);
                         break;
                     }
                 case "BeyBlade":
                     {
+                        Damage(10);
                         break;
                     }
                 case "ShieldBash":
                     {
+                        Damage(5);
+                        StartCoroutine(Knockback((transform.position - other.transform.position).normalized));
                         break;
                     }
                 case "Shout":
                     {
+                        target = other.gameObject.GetComponent<Shout>().player;
+                        StartCoroutine(Taunt(7));
                         break;
                     }
             }

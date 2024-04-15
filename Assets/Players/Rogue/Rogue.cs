@@ -30,7 +30,7 @@ public class Rogue : Player
             {
                 if (canQ)
                 {
-                    PreviewAbility(tileLibrary[tiles[activeTile]], 7);
+                    PreviewAbilityEnd(tileLibrary[tiles[activeTile]], 7);
                     canQ = false;
                     StartCoroutine(Q());
                     SendUpdate("Q", canQ.ToString());
@@ -39,15 +39,19 @@ public class Rogue : Player
             if (IsLocalPlayer)
             {
                 canQ = bool.Parse(value);
+                if (!canQ)
+                {
+                    PreviewMove(tileLibrary[tiles[activeTile]]);
+                }
             }
         }
         if (flag == "W")
         {
             if (IsServer)
             {
-                if (canQ)
+                if (canW)
                 {
-                    PreviewAbility(tileLibrary[tiles[activeTile]], 8);
+                    PreviewAbilityEnd(tileLibrary[tiles[activeTile]], 8);
                     canW = false;
                     StartCoroutine(W());
                     SendUpdate("W", canW.ToString());
@@ -64,7 +68,7 @@ public class Rogue : Player
             {
                 if (canE)
                 {
-                    PreviewAbilityEnd(tileLibrary[tiles[activeTile]], 9);
+                    PreviewAbility(tileLibrary[tiles[activeTile]], 9);
 
                     canE = false;
                     StartCoroutine(E());
@@ -73,7 +77,11 @@ public class Rogue : Player
             }
             if (IsLocalPlayer)
             {
-                canW = bool.Parse(value);
+                canE = bool.Parse(value);
+                if (!canE)
+                {
+                    PreviewMove(tileLibrary[tiles[activeTile]]);
+                }
             }
         }
         if (flag == "R")
@@ -91,13 +99,23 @@ public class Rogue : Player
             if (IsLocalPlayer)
             {
                 canR = bool.Parse(value);
+                if (!canR)
+                {
+                    PreviewMove(tileLibrary[tiles[activeTile]]);
+                }
             }
         }
     }
+    public override void Attack2()
+    {
+        GameObject o = MyCore.NetCreateObject(34, Owner, myRig.position + new Vector3(lastInput.x, lastInput.y, 0));
+        o.GetComponent<Rigidbody>().velocity = new Vector3(lastInput.x, lastInput.y, 0).normalized * 2.5f;
 
+    }
     public override void NetworkedStart()
     {
         base.NetworkedStart();
+        myRig.position += new Vector3(-1, 0, 0);
     }
     public override void Update()
     {

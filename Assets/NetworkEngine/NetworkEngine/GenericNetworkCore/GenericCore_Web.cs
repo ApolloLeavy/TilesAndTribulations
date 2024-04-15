@@ -314,7 +314,7 @@ public class GenCore : WebSocketBehavior
 
             clientWS.OnOpen += () =>
             {
-                Debug.Log("Starting Connection!");
+                
             };
 
             clientWS.OnError += (e) =>

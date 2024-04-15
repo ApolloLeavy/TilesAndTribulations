@@ -15,16 +15,12 @@ public class Mushroom : Monster
         base.NetworkedStart();
     }
 
-    public override IEnumerator SlowUpdate()
-    {
-        yield return new WaitForSeconds(.1f);
-    }
     // Start is called before the first frame update
     public override void Start()
     {
         base.Start();
         hp = 25;
-        speed = 2;
+        speed = 3;
         acd = 1.5f;
     }
 
@@ -37,9 +33,10 @@ public class Mushroom : Monster
     {
         base.Attack();
         GameObject o = MyCore.NetCreateObject(25, Owner, transform.position+new Vector3(lastInput.x,lastInput.x,0), Quaternion.identity);
-        o.GetComponent<Rigidbody>().velocity = new Vector3(lastInput.x, lastInput.y, 0).normalized * speed/2;
+        o.GetComponent<Rigidbody>().velocity = new Vector3(lastInput.x, lastInput.y, 0).normalized * 3;
         o = MyCore.NetCreateObject(25, Owner, transform.position + new Vector3(lastInput.y, lastInput.y, 0), Quaternion.identity);
-        o.GetComponent<Rigidbody>().velocity = new Vector3(lastInput.x, lastInput.y, 0).normalized * speed / 2;
+        o.GetComponent<Rigidbody>().velocity = new Vector3(lastInput.x, lastInput.y, 0).normalized * 3;
+
 
     }
 }

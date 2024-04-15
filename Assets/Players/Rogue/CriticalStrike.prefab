@@ -173,6 +173,7 @@ MonoBehaviour:
   MyId: {fileID: 0}
   IsDirty: 0
   myRig: {fileID: 0}
+  myAnim: {fileID: 0}
   player: {fileID: 0}
 --- !u!95 &1683390880797410422
 Animator:

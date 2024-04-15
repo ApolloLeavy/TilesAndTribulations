@@ -14,17 +14,12 @@ public class Skeleton : Monster
     {
         base.NetworkedStart();
     }
-
-    public override IEnumerator SlowUpdate()
-    {
-        yield return new WaitForSeconds(.1f);
-    }
     // Start is called before the first frame update
     public override void Start()
     {
         base.Start();
         hp = 30;
-        speed = 1;
+        speed = 2;
         acd = 1.5f;
     }
 
@@ -38,5 +33,6 @@ public class Skeleton : Monster
         base.Attack();
         Vector2[] piece = tileLibrary[Random.Range(0, (tileLibrary.Count - 1))];
         PreviewAbility(piece, 26);
+
     }
 }

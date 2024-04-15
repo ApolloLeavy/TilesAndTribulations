@@ -194,4 +194,5 @@ MonoBehaviour:
   MyId: {fileID: 0}
   IsDirty: 0
   myRig: {fileID: 0}
+  myAnim: {fileID: 0}
   p: {fileID: 0}

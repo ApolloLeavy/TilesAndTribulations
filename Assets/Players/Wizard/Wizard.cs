@@ -41,13 +41,17 @@ public class Wizard : Player
             if(IsLocalPlayer)
             {
                 canQ = bool.Parse(value);
+                if (!canQ)
+                {
+                    PreviewMove(tileLibrary[tiles[activeTile]]);
+                }
             }
         }
         if(flag == "W")
         {
             if(IsServer)
             {
-                if(canQ)
+                if(canW)
                 {
                     PreviewAbility(tileLibrary[tiles[activeTile]], 16);
                     canW = false;
@@ -58,6 +62,10 @@ public class Wizard : Player
             if(IsLocalPlayer)
             {
                 canW = bool.Parse(value);
+                if (!canW)
+                {
+                    PreviewMove(tileLibrary[tiles[activeTile]]);
+                }
             }
         }
         if (flag == "E")
@@ -75,7 +83,7 @@ public class Wizard : Player
             }
             if (IsLocalPlayer)
             {
-                canW = bool.Parse(value);
+                canE = bool.Parse(value);
             }
         }
         if (flag == "R")
@@ -94,14 +102,18 @@ public class Wizard : Player
             if (IsLocalPlayer)
             {
                 canR = bool.Parse(value);
+                if (!canR)
+                {
+                    PreviewMove(tileLibrary[tiles[activeTile]]);
+                }
             }
         }
     }
 
     public override void Attack2()
     {
-        GameObject o = MyCore.NetCreateObject(8,Owner,myRig.position+new Vector3(lastInput.x,lastInput.y,0));
-        o.GetComponent<Rigidbody>().velocity = new Vector3(lastInput.x, lastInput.y,0).normalized*speed;
+        GameObject o = MyCore.NetCreateObject(33,Owner,myRig.position+new Vector3(lastInput.x,lastInput.y,0));
+        o.GetComponent<Rigidbody>().velocity = new Vector3(lastInput.x, lastInput.y,0).normalized*3.5f;
         
     }
     public override void NetworkedStart()

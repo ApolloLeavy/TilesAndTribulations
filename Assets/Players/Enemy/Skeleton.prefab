@@ -49,7 +49,7 @@ GameObject:
   - component: {fileID: 8002654812242977363}
   m_Layer: 0
   m_Name: Skeleton
-  m_TagString: Enemy
+  m_TagString: Skeleton
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -168,7 +168,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 1
-  m_Constraints: 56
+  m_Constraints: 120
   m_CollisionDetection: 1
 --- !u!65 &-1566908748575876701
 BoxCollider:
@@ -218,11 +218,14 @@ MonoBehaviour:
   acd: 0
   point: {fileID: 0}
   poisonStacks: 0
+  myAnim: {fileID: 0}
   isTaunted: 0
   distance: {x: 0, y: 0, z: 0}
   lastInput: {x: 0, y: 0}
   previewBlock: {fileID: 0}
+  spriteRender: {fileID: 0}
   myRig: {fileID: 0}
+  attackNum: 0
 --- !u!114 &9110398422575857648
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2232305328663277990}
   - component: {fileID: 3220378874290405720}
   - component: {fileID: 6314006284140143255}
-  - component: {fileID: 4695865851595203146}
+  - component: {fileID: 150033911555767905}
   m_Layer: 0
   m_Name: HealingSpirit
   m_TagString: HealingSpirit
@@ -178,7 +178,7 @@ MonoBehaviour:
   UseLobby: 0
   UpdateFrequency: 0.1
   MyCore: {fileID: 0}
---- !u!114 &4695865851595203146
+--- !u!114 &150033911555767905
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -187,11 +187,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 29342722948522525}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 92abcbe82f02f9544acbdfb450f4d577, type: 3}
+  m_Script: {fileID: 11500000, guid: 6659a371443d14e4dbf833588f3b86a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   MyCore: {fileID: 0}
   MyId: {fileID: 0}
   IsDirty: 0
   myRig: {fileID: 0}
+  myAnim: {fileID: 0}
   player: {fileID: 0}

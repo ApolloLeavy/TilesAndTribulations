@@ -13,6 +13,7 @@ public class PlayerNetworkManager : NetworkComponent
     public GameMaster gameMaster;
     public List<GameObject> classButtons;
     public GameObject gameCanvas;
+    public GameObject disconnect;
     public int classIndex;
     public int kills;
     public int deaths;
@@ -197,14 +198,8 @@ public class PlayerNetworkManager : NetworkComponent
     }
     public override IEnumerator SlowUpdate()
     {
-        while (IsConnected)
-        {
-
             while(!gameStarted)
             {
-                while (IsServer)
-                {
-
                     if (IsDirty)
                     {
                         SendUpdate("NAME", playerName);
@@ -213,10 +208,6 @@ public class PlayerNetworkManager : NetworkComponent
                         SendUpdate("CLSBUT", string.Join(',', gameMaster.classesTaken));
                         IsDirty = false;
                     }
-
-                    yield return new WaitForSeconds(.1f);
-
-                }
                 if (IsLocalPlayer && !isReady)
                 {
                     for (int o = 0; o < 4; o++)
@@ -229,31 +220,24 @@ public class PlayerNetworkManager : NetworkComponent
                 }
                 yield return new WaitForSeconds(.1f);
             }
+            if(IsLocalPlayer)
+            {
+                NameField.gameObject.SetActive(false);
+                ReadyButton.gameObject.SetActive(false);
+            }
             while (!gameMaster.gameOver)
             {
-                while (IsServer)
-                {
                     if (IsDirty)
                     {
-
                         IsDirty = false;
                     }
-                    yield return new WaitForSeconds(.1f);
-                }
-
                 yield return new WaitForSeconds(.1f);
             }
             while(gameMaster.gameOver)
             {
-                while (IsServer)
-                {
-                    
-                    yield return new WaitForSeconds(.1f);
-                }
 
                 yield return new WaitForSeconds(.1f);
             }
-        }
     }
 
     // Start is called before the first frame update

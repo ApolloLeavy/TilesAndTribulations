@@ -37,13 +37,17 @@ public class Knight : Player
             if (IsLocalPlayer)
             {
                 canQ = bool.Parse(value);
+                if (!canQ)
+                {
+                    PreviewMove(tileLibrary[tiles[activeTile]]);
+                }
             }
         }
         if (flag == "W")
         {
             if (IsServer)
             {
-                if (canQ)
+                if (canW)
                 {
                     PreviewAbility(tileLibrary[tiles[activeTile]], 20);
                     canW = false;
@@ -51,9 +55,14 @@ public class Knight : Player
                     SendUpdate("W", canW.ToString());
                 }
             }
+            if (IsClient)
+            {
+                StartCoroutine(AnimStart("isDash"));
+            }
             if (IsLocalPlayer)
             {
                 canW = bool.Parse(value);
+                
             }
         }
         if (flag == "E")
@@ -71,7 +80,11 @@ public class Knight : Player
             }
             if (IsLocalPlayer)
             {
-                canW = bool.Parse(value);
+                canE = bool.Parse(value);
+                if (!canE)
+                {
+                    PreviewMove(tileLibrary[tiles[activeTile]]);
+                }
             }
         }
         if (flag == "R")
@@ -89,13 +102,23 @@ public class Knight : Player
             if (IsLocalPlayer)
             {
                 canR = bool.Parse(value);
+                if (!canR)
+                {
+                    PreviewMove(tileLibrary[tiles[activeTile]]);
+                }
             }
         }
     }
+    public override void Attack2()
+    {
+        GameObject o = MyCore.NetCreateObject(35, Owner, myRig.position + new Vector3(lastInput.x, lastInput.y, 0));
+        o.GetComponent<Rigidbody>().velocity = new Vector3(lastInput.x, lastInput.y, 0).normalized * 1.5f;
 
+    }
     public override void NetworkedStart()
     {
         base.NetworkedStart();
+        myRig.position += new Vector3(0, 1, 0);
     }
     public override void Update()
     {

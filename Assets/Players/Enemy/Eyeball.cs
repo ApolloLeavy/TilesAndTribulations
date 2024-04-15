@@ -15,16 +15,12 @@ public class Eyeball : Monster
         base.NetworkedStart();
     }
 
-    public override IEnumerator SlowUpdate()
-    {
-        yield return new WaitForSeconds(.1f);
-    }
     // Start is called before the first frame update
     public override void Start()
     {
         base.Start();
         hp = 15;
-        speed = 1;
+        speed = 2;
         acd = 2;
     }
 
@@ -37,6 +33,7 @@ public class Eyeball : Monster
     {
         base.Attack();
         GameObject o = MyCore.NetCreateObject(23, Owner, transform.position, Quaternion.identity);
-        o.GetComponent<Rigidbody>().velocity = new Vector3(lastInput.x, lastInput.y, 0).normalized * speed / 2;
+        o.GetComponent<Rigidbody>().velocity = new Vector3(lastInput.x, lastInput.y, 0).normalized *2;
+
     }
 }

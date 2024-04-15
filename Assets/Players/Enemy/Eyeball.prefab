@@ -49,7 +49,7 @@ GameObject:
   - component: {fileID: 7097564556329230505}
   m_Layer: 0
   m_Name: Eyeball
-  m_TagString: Enemy
+  m_TagString: Eyeball
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -218,11 +218,14 @@ MonoBehaviour:
   acd: 0
   point: {fileID: 0}
   poisonStacks: 0
+  myAnim: {fileID: 0}
   isTaunted: 0
   distance: {x: 0, y: 0, z: 0}
   lastInput: {x: 0, y: 0}
   previewBlock: {fileID: 0}
+  spriteRender: {fileID: 0}
   myRig: {fileID: 0}
+  attackNum: 0
 --- !u!114 &5809211726396508870
 MonoBehaviour:
   m_ObjectHideFlags: 0

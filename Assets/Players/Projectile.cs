@@ -5,6 +5,7 @@ using NETWORK_ENGINE;
 public class Projectile : NetworkComponent
 {
     public Rigidbody myRig;
+    public Animator myAnim;
     public override void HandleMessage(string flag, string value)
     {
 
@@ -24,6 +25,7 @@ public class Projectile : NetworkComponent
     public virtual void Start()
     {
         myRig = GetComponent<Rigidbody>();
+        myAnim = GetComponent<Animator>();
     }
 
     // Update is called once per frame

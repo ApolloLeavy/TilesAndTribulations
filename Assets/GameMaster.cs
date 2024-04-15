@@ -9,6 +9,7 @@ public class GameMaster : NetworkComponent
     public List<GameObject> players;
     public GameObject gameCanvas;
     public List<int> classesTaken;
+    
     public bool gameOver;
     public GameObject[] monsters;
     public GameObject scoreboard;
@@ -34,59 +35,54 @@ public class GameMaster : NetworkComponent
 
     public override void NetworkedStart()
     {
-
+        
     }
 
     public override IEnumerator SlowUpdate()
     {
         while (!canPlay)
         {
-            while (IsServer)
-            {
-
                 if (IsDirty)
                 {
                     IsDirty = false;
                 }
-                yield return new WaitForSeconds(MyId.UpdateFrequency);
-            }
             yield return new WaitForSeconds(MyId.UpdateFrequency);
         }
+        if (IsServer)
+        {
+            MyCore.NetCreateObject(28, Owner, new Vector3(10,0,0), Quaternion.identity);
+            MyCore.NetCreateObject(29, Owner, new Vector3(-10, 0, 0), Quaternion.identity);
+            MyCore.NetCreateObject(30, Owner, new Vector3(0, 10, 0), Quaternion.identity);
+            MyCore.NetCreateObject(31, Owner, new Vector3(0, -10, 0), Quaternion.identity);
+        }
         StartCoroutine(Delay());
+        
         while (!gameOver)
         {
-            
-            while (IsServer)
+            if (IsDirty)
             {
-                
-
-                
-                if (IsDirty)
-                {
-                    SendUpdate("OVER", gameOver.ToString());
-                    IsDirty = false;
-                }
-                yield return new WaitForSeconds(.1f);
+                SendUpdate("OVER", gameOver.ToString());
+                IsDirty = false;
             }
-
-            yield return new WaitForSeconds(.1f);
+            yield return new WaitForSeconds(MyId.UpdateFrequency);
         }
 
         StartCoroutine(EndGame());
         while (gameOver)
         {
-            while (IsServer)
-            {
-                
-                yield return new WaitForSeconds(.1f);
-            }
+            
 
-            yield return new WaitForSeconds(.1f);
+            yield return new WaitForSeconds(MyId.UpdateFrequency);
         }
     }
     public IEnumerator Delay()
     {
+       
+        
+
+
         gameCanvas.GetComponent<Canvas>().enabled = false;
+        GameObject.Find("Disconnect").SetActive(false);
         yield return new WaitForSeconds(120);
         gameOver = true;
         gameCanvas.GetComponent<Canvas>().enabled = true;
@@ -163,6 +159,7 @@ public class GameMaster : NetworkComponent
     {
         gameCanvas = GameObject.Find("GameCanvas");
         gameOver = false;
+        canPlay = false;
     }
 
     // Update is called once per frame
