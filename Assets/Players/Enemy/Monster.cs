@@ -119,11 +119,13 @@ public class Monster : NetworkComponent
                 distance = Vector3.zero;
                 foreach (Player p in players)
                 {
-
-                    if (distance == Vector3.zero || (myRig.position - p.myRig.position).magnitude < distance.magnitude)
+                    if(!p.isDead)
                     {
-                        distance = myRig.position - p.myRig.position;
-                        target = p;
+                        if (distance == Vector3.zero || (myRig.position - p.myRig.position).magnitude < distance.magnitude)
+                        {
+                            distance = myRig.position - p.myRig.position;
+                            target = p;
+                        }
                     }
                 }
             }
