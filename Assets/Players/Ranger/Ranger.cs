@@ -13,7 +13,7 @@ public class Ranger : Player
 
         hp = 25;
         speed = 4;
-        acd = .75f;
+        acd = 2.5f;
         qcd = 5;
         wcd = 5;
         ecd = 5;

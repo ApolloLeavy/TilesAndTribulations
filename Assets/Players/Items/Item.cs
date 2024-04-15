@@ -2,33 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using NETWORK_ENGINE;
-public class Potion : Item
+public class Item : NetworkComponent
 {
-    public Player player;
-    public override void HandleMessage(string flag, string value)
-    {
-        base.HandleMessage(flag, value);
-    }
-
-    public override void NetworkedStart()
-    {
-        base.NetworkedStart();
-    }
-    public IEnumerator Timer()
-    {
-        yield return new WaitForSeconds(1);
-        MyCore.NetDestroyObject(NetId);
-    }
     // Start is called before the first frame update
-    public override void Start()
+    public virtual void Start()
     {
-        base.Start();
+        
     }
 
     // Update is called once per frame
-    public override void Update()
+    public virtual void Update()
     {
-        base.Update();
+        
     }
     public void OnCollisionEnter(Collision collision)
     {
@@ -41,10 +26,25 @@ public class Potion : Item
                 case "Wizard":
                 case "Ranger":
                     {
-                        StartCoroutine(Timer());
+                        MyCore.NetDestroyObject(MyId.NetId);
                         break;
                     }
             }
         }
+    }
+
+    public override IEnumerator SlowUpdate()
+    {
+        yield return new WaitForSeconds(.1f);
+    }
+
+    public override void HandleMessage(string flag, string value)
+    {
+
+    }
+
+    public override void NetworkedStart()
+    {
+
     }
 }

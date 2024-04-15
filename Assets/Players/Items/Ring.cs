@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using NETWORK_ENGINE;
-public class Ring : Projectile
+public class Ring : Item
 {
     public Player player;
     public override void HandleMessage(string flag, string value)

@@ -12,7 +12,7 @@ public class Rogue : Player
         base.Start();
         hp = 30;
         speed = 4;
-        acd = .75f;
+        acd = 1.5f;
         qcd = 5;
         wcd = 5;
         ecd = 5;

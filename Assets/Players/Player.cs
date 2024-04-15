@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using NETWORK_ENGINE;
 using UnityEngine.InputSystem;
 public abstract class Player : NetworkComponent
@@ -30,7 +31,10 @@ public abstract class Player : NetworkComponent
     public bool canE;
     public bool canR;
     public List<int> tiles;
-    public List<Vector2[]> tileLibrary; 
+    public List<Vector2[]> tileLibrary;
+    public List<Animator> cooldownsAnim;
+    public List<Text> cooldownsNum;
+    public GameObject HUDCanvas;
     public int activeTile;
     public bool isInvincible;
     public int kills;
@@ -45,7 +49,8 @@ public abstract class Player : NetworkComponent
     public GameObject previewBlock;
     public bool isResisting;
     public int healingSpirit;
-    
+    public bool ring;
+
     public bool haste;
 
     public override void HandleMessage(string flag, string value)
@@ -54,6 +59,35 @@ public abstract class Player : NetworkComponent
         if((flag == "Q"|| flag == "W" || flag == "E" || flag == "R") && !isStunned && !isDead)
         {
             StartCoroutine(AnimStart("isAttack"));
+
+        }
+        if(flag == "Q" && canQ && !ring)
+        {
+            if (IsServer)
+            {
+                SendUpdate("CD", "0," + qcd.ToString());
+            }
+        }
+        if (flag == "W" && canW && !ring)
+        {
+            if (IsServer)
+            {
+                SendUpdate("CD", "1," + wcd.ToString());
+            }
+        }
+        if (flag == "E" && canE && !ring)
+        {
+            if (IsServer)
+            {
+                SendUpdate("CD", "2," + ecd.ToString());
+            }
+        }
+        if (flag == "R" && canR && !ring)
+        {
+            if (IsServer)
+            {
+                SendUpdate("CD", "3," + rcd.ToString());
+            }
         }
         if (flag == "MV" && activeTile != -1 && !isStunned && !isDead)
         {
@@ -114,6 +148,20 @@ public abstract class Player : NetworkComponent
                     
 
             }
+        }
+        if(flag == "CD")
+        {
+            if (IsLocalPlayer)
+            {
+                string[] t = value.Split(',');
+                int index = int.Parse(t[0]);
+                int cooldown = int.Parse(t[1]);
+                cooldownsAnim[index].speed = (1 / cooldown);
+                cooldownsAnim[index].Play("CDCircle",0);
+                StartCoroutine(Cooldown(index,cooldown,cooldown));
+            }
+            
+
         }
         if (flag == "ATTACK" && !isStunned && !isDead)
         {
@@ -247,6 +295,17 @@ public abstract class Player : NetworkComponent
             StartCoroutine(Draw());
             StartCoroutine(Healing());
         }
+        if(IsClient && !IsLocalPlayer)
+        {
+            HUDCanvas.SetActive(false);
+        }
+        if (IsLocalPlayer)
+        {
+            cooldownsNum[0].text = qcd.ToString();
+            cooldownsNum[1].text = wcd.ToString();
+            cooldownsNum[2].text = ecd.ToString();
+            cooldownsNum[3].text = rcd.ToString();
+        }
     }
     public override IEnumerator SlowUpdate()
     {
@@ -311,6 +370,9 @@ public abstract class Player : NetworkComponent
         isResisting = false;
         isFlipped = false;
         point = transform.GetChild(0);
+        ring = false;
+
+
         List<GameObject> indicatorList = new List<GameObject>();
     }
     public virtual void Update()
@@ -319,6 +381,22 @@ public abstract class Player : NetworkComponent
         {
             Camera.main.transform.position = Vector3.Lerp(transform.position + new Vector3(0, 0, -9), myRig.position, speed / 2 * Time.deltaTime);
         }
+    }
+    public IEnumerator Cooldown(int index, float cooldown, float maxcd)
+    {
+        
+        if(cooldown >0)
+        {
+            cooldownsNum[index].text = cooldown.ToString();
+            yield return new WaitForSeconds(1);
+            StartCoroutine(Cooldown(index, cooldown - 1, maxcd));
+        }
+        else
+        {
+            cooldownsNum[index].text = maxcd.ToString();
+        }
+        
+        
     }
     public IEnumerator Draw()
     {
@@ -699,7 +777,7 @@ public abstract class Player : NetworkComponent
 
             GetComponent<SpriteRenderer>().enabled = false;
         }
-        yield return new WaitForSeconds(16);
+        yield return new WaitForSeconds(8);
         hp = hpM;
         isStunned = false;
         isDead = false;

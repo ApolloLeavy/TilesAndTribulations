@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using NETWORK_ENGINE;
-public class Boots : Projectile
+public class Boots : Item
 {
     public Player player;
     public override void HandleMessage(string flag, string value)

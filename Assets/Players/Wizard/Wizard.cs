@@ -6,13 +6,16 @@ using UnityEngine.InputSystem;
 public class Wizard : Player
 {
     
+    public bool necklace;
     // Start is called before the first frame update
     public override void Start()
     {
         base.Start();
+        ring = false;
+        necklace = false;
         hp = 25;
         speed = 4;
-        acd = .75f;
+        acd = 2.5f;
         qcd = 5;
         wcd = 5;
         ecd = 5;
@@ -31,11 +34,22 @@ public class Wizard : Player
                 if(canQ)
                 {
                     PreviewAbility(tileLibrary[tiles[activeTile]], 15);
-                    canQ = false;
+                    if (necklace)
+                    {
+                        StartCoroutine(NecklaceTimer());
+                        lastInput *= -1;
+                        PreviewAbility(tileLibrary[tiles[activeTile]], 15);
+                        lastInput *= -1;
+                    }
+                    if (!ring)
+                        canQ = false;
+                    else
+                        StartCoroutine(RingTimer());
 
                     StartCoroutine(Q());
 
                     SendUpdate("Q", canQ.ToString());
+
                 }
             }
             if(IsLocalPlayer)
@@ -54,7 +68,17 @@ public class Wizard : Player
                 if(canW)
                 {
                     PreviewAbility(tileLibrary[tiles[activeTile]], 16);
-                    canW = false;
+                    if (necklace)
+                    {
+                        StartCoroutine(NecklaceTimer());
+                        lastInput *= -1;
+                        PreviewAbility(tileLibrary[tiles[activeTile]], 16);
+                        lastInput *= -1;
+                    }
+                    if (!ring)
+                        canW = false;
+                    else
+                        StartCoroutine(RingTimer());
                     StartCoroutine(W());
                     SendUpdate("W", canW.ToString());
                 }
@@ -75,10 +99,21 @@ public class Wizard : Player
                 if (canE)
                 {
                     PreviewAbilityEnd(tileLibrary[tiles[activeTile]], 17);
-                    
-                    canE = false;
+                    if (necklace)
+                    {
+                        StartCoroutine(NecklaceTimer());
+                        lastInput *= -1;
+                        PreviewAbility(tileLibrary[tiles[activeTile]], 17);
+                        lastInput *= -1;
+                    }
+
+                    if (!ring)
+                        canE = false;
+                    else
+                        StartCoroutine(RingTimer());
                     StartCoroutine(E());
                     SendUpdate("E", canE.ToString());
+
                 }
             }
             if (IsLocalPlayer)
@@ -92,9 +127,19 @@ public class Wizard : Player
             {
                 if (canR)
                 {
-
+                    
                     PreviewAbility(tileLibrary[tiles[activeTile]], 18);
-                    canR = false;
+                    if(necklace)
+                    {
+                        StartCoroutine(NecklaceTimer());
+                        lastInput *= -1;
+                        PreviewAbility(tileLibrary[tiles[activeTile]], 18);
+                        lastInput *= -1;
+                    }
+                    if (!ring)
+                        canR = false;
+                    else
+                        StartCoroutine(RingTimer());
                     StartCoroutine(R());
                     SendUpdate("R", canR.ToString());
                 }
@@ -124,7 +169,19 @@ public class Wizard : Player
     public override void Update()
     {
         base.Update();
-     }
+    }
+    public IEnumerator RingTimer()
+    {
+        ring = false;
+        yield return new WaitForSeconds(10);
+        ring= true;    
+    }
+    public IEnumerator NecklaceTimer()
+    {
+        necklace = false;
+        yield return new WaitForSeconds(10);
+        necklace = true;
+    }
     public override void OnTriggerEnter(Collider other)
     {
         base.OnTriggerEnter(other);
@@ -132,10 +189,13 @@ public class Wizard : Player
         {
             case "Ring":
                 {
+                    ring = true;
                     break;
                 }
             case "Necklace":
                 {
+                    necklace = false;
+                    
                     break;
                 }
         }

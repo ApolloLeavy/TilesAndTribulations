@@ -13,7 +13,8 @@ public class PlayerNetworkManager : NetworkComponent
     public GameMaster gameMaster;
     public List<GameObject> classButtons;
     public GameObject gameCanvas;
-    public GameObject disconnect;
+    public GameObject LanCanvas;
+    public GameObject playerBlock;
     public int classIndex;
     public int kills;
     public int deaths;
@@ -224,6 +225,8 @@ public class PlayerNetworkManager : NetworkComponent
             {
                 NameField.gameObject.SetActive(false);
                 ReadyButton.gameObject.SetActive(false);
+            gameCanvas.GetComponent<GraphicRaycaster>().enabled = false;
+            LanCanvas.GetComponent<GraphicRaycaster>().enabled = false;
             }
             while (!gameMaster.gameOver)
             {
@@ -249,6 +252,7 @@ public class PlayerNetworkManager : NetworkComponent
         gameMaster.players.Add(this.gameObject);
         ReadyButton.interactable = false;
         gameCanvas = GameObject.Find("GameCanvas");
+        LanCanvas = GameObject.Find("LanNetworkManager").transform.GetChild(0).gameObject;
         classIndex = -1;
         
     }
