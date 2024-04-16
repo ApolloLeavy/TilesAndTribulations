@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: -4716463174143127533}
   m_Layer: 0
   m_Name: Gatito
-  m_TagString: BeyBlade
+  m_TagString: Gatito
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

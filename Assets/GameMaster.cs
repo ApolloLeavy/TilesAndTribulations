@@ -6,12 +6,15 @@ using NETWORK_ENGINE;
 public class GameMaster : NetworkComponent
 {
     public bool canPlay;
+    public bool stall;
     public List<GameObject> players;
     public GameObject gameCanvas;
     public List<int> classesTaken;
-    
+    public float spawnIntensity;
     public bool gameOver;
-    public GameObject[] monsters;
+    public bool timerOver;
+    public List<GameObject> monsters;
+    public List<int> items;
     public GameObject scoreboard;
     public int timer;
     public bool isWin;
@@ -32,6 +35,7 @@ public class GameMaster : NetworkComponent
                 gameOver = bool.Parse(value);
             }
         }
+        
     }
 
     public override void NetworkedStart()
@@ -51,13 +55,14 @@ public class GameMaster : NetworkComponent
         }
         if (IsServer)
         {
-            MyCore.NetCreateObject(28, Owner, new Vector3(10,0,0), Quaternion.identity);
-            MyCore.NetCreateObject(29, Owner, new Vector3(-10, 0, 0), Quaternion.identity);
-            MyCore.NetCreateObject(30, Owner, new Vector3(0, 10, 0), Quaternion.identity);
-            MyCore.NetCreateObject(31, Owner, new Vector3(0, -10, 0), Quaternion.identity);
+            
+        }
+        StartCoroutine(Stall());
+        while (stall)
+        {
+            yield return new WaitForSeconds(MyId.UpdateFrequency);
         }
         StartCoroutine(Delay());
-        
         while (!gameOver)
         {
             if(IsServer)
@@ -71,9 +76,13 @@ public class GameMaster : NetworkComponent
                     }
                     else
                     {
-                        gameOver = true;
-                        IsDirty = true;
+                        dead = true;
                     }
+                }
+                if (dead)
+                {
+                    gameOver = true;
+                    IsDirty = true;
                 }
             }
             if (IsDirty)
@@ -92,17 +101,38 @@ public class GameMaster : NetworkComponent
             yield return new WaitForSeconds(MyId.UpdateFrequency);
         }
     }
+    public IEnumerator Stall()
+    {
+        yield return new WaitForSeconds(30);
+    }
+
+    public IEnumerator SpawnMonster()
+    {
+        monsters.Add(MyCore.NetCreateObject(28, Owner, new Vector3(10, 0, 0), Quaternion.identity));
+        monsters.Add(MyCore.NetCreateObject(29, Owner, new Vector3(-10, 0, 0), Quaternion.identity));
+        monsters.Add(MyCore.NetCreateObject(30, Owner, new Vector3(0, 10, 0), Quaternion.identity));
+        monsters.Add(MyCore.NetCreateObject(31, Owner, new Vector3(0, -10, 0), Quaternion.identity));
+        yield return new WaitForSeconds(15 / spawnIntensity);
+        StartCoroutine(SpawnMonster());
+    }
     public IEnumerator Delay()
     {
-       
-        
-
-
         gameCanvas.GetComponent<Canvas>().enabled = false;
         GameObject.Find("Disconnect").SetActive(false);
+        if(IsServer)
+            StartCoroutine(SpawnMonster());
         yield return new WaitForSeconds(180);
-        gameOver = true;
+        timerOver = true;
         gameCanvas.GetComponent<Canvas>().enabled = true;
+        StartCoroutine(TriggerEnd());
+    }
+    public IEnumerator TriggerEnd()
+    {
+        if(monsters.Count == 0)
+        {
+            gameOver = true;
+        }
+        yield return new WaitForSeconds(1);
     }
     public void ReadyCheck()
     {
@@ -176,11 +206,17 @@ public class GameMaster : NetworkComponent
     // Start is called before the first frame update
     void Start()
     {
+        stall = true;
         gameCanvas = GameObject.Find("GameCanvas");
         gameOver = false;
         canPlay = false;
         isWin = false;
         dead = false;
+        timerOver = false;
+        spawnIntensity = 1;
+        items = new List<int>();
+        for (int i = 38; i <= 45; i++)
+            items.Add(i);
     }
 
     // Update is called once per frame

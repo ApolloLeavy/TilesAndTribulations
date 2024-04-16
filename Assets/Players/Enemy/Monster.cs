@@ -342,6 +342,16 @@ public class Monster : NetworkComponent
     }
     public IEnumerator Die()
     {
+        GameMaster gm = GameObject.FindGameObjectWithTag("GameMaster").GetComponent<GameMaster>();
+        gm.monsters.Remove(gameObject);
+        int i = Random.Range(37, 45);
+        
+        if (gm.items.Remove(i))
+        {
+            MyCore.NetCreateObject(i, gm.Owner, myRig.position, Quaternion.identity);
+        }
+        else
+            MyCore.NetCreateObject(37, gm.Owner, myRig.position, Quaternion.identity);
         hp = 0;
         StartCoroutine(AnimStart("isDead", attackNum));
         yield return new WaitForSeconds(1);

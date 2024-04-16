@@ -41,6 +41,14 @@ TagManager:
   - Mushroom
   - Skeleton
   - Potion
+  - Boots
+  - Fairy
+  - Gatito
+  - Helmet
+  - Chestplate
+  - Vial
+  - Necklace
+  - Ring
   layers:
   - Default
   - TransparentFX

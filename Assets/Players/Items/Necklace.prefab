@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: -7223985877110553498}
   m_Layer: 0
   m_Name: Necklace
-  m_TagString: BeyBlade
+  m_TagString: Necklace
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -193,6 +193,4 @@ MonoBehaviour:
   MyCore: {fileID: 0}
   MyId: {fileID: 0}
   IsDirty: 0
-  myRig: {fileID: 0}
-  myAnim: {fileID: 0}
   player: {fileID: 0}

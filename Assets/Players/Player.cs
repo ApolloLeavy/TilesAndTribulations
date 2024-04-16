@@ -47,6 +47,8 @@ public abstract class Player : NetworkComponent
     public bool isFlipped;
     public Transform point;
     public GameObject previewBlock;
+    public GameObject hpBar;
+    public Text nameUI;
     public bool isResisting;
     public int healingSpirit;
     public bool ring;
@@ -296,6 +298,7 @@ public abstract class Player : NetworkComponent
                     StartCoroutine(AnimStart("isHit"));
                 }
                 hp = t;
+                hpBar.transform.localScale.Set(2.5f * hp / hpM,2.5f,1);
             }
         }
         if (flag == "DIE" && !isDead)
@@ -314,6 +317,10 @@ public abstract class Player : NetworkComponent
         {
             StartCoroutine(Draw());
             StartCoroutine(Healing());
+        }
+        if (IsClient)
+        {
+            nameUI.text = name;
         }
         if(IsClient && !IsLocalPlayer)
         {
@@ -402,7 +409,7 @@ public abstract class Player : NetworkComponent
     {
         if (IsLocalPlayer)
         {
-            Camera.main.transform.position = Vector3.Lerp(transform.position + new Vector3(0, 0, -9), myRig.position, speed / 2 * Time.deltaTime);
+            Camera.main.transform.position = Vector3.Lerp(transform.position + new Vector3(0, 0, -11), myRig.position, speed / 2 * Time.deltaTime);
         }
     }
     public IEnumerator Cooldown(int index, float cooldown, float maxcd)
@@ -808,6 +815,7 @@ public abstract class Player : NetworkComponent
         }
         yield return new WaitForSeconds(8);
         hp = hpM;
+        SendUpdate("HP", hp.ToString());
         isStunned = false;
         isDead = false;
         if (IsServer)
