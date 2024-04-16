@@ -24,6 +24,7 @@ public class Monster : NetworkComponent
     public List<Vector2[]> tileLibrary;
     public SpriteRenderer spriteRender;
     public Rigidbody myRig;
+    public Rogue rogue;
     public int attackNum;
     public override void HandleMessage(string flag, string value)
     {
@@ -62,7 +63,8 @@ public class Monster : NetworkComponent
 
     public override void NetworkedStart()
     {
-        if(IsServer)
+        rogue = GameObject.FindGameObjectWithTag("Rogue").GetComponent<Rogue>();
+        if (IsServer)
             StartCoroutine(TakeAction());
     }
     public override IEnumerator SlowUpdate()
@@ -283,18 +285,7 @@ public class Monster : NetworkComponent
         isStunned = false;
     }
 
-    public IEnumerator Poison()
-    {
-        if (poisonStacks > 0)
-        {
-            yield return new WaitForSeconds(1);
-            hp -= poisonStacks;
-            poisonStacks -= 1;
-            StartCoroutine(Poison());
-            StartCoroutine(Slow(1));
-        }
-        
-    }
+    
     public IEnumerator AttackDelay()
     {
         yield return new WaitForSeconds(acd);
@@ -349,10 +340,23 @@ public class Monster : NetworkComponent
             MyCore.NetDestroyObject(MyId.NetId);
         }
     }
-    public void Posion()
+    public IEnumerator Poison()
     {
-        poisonStacks++;
-        if (poisonStacks == 1)
+        if (poisonStacks > 0)
+        {
+            yield return new WaitForSeconds(1);
+            hp -= poisonStacks;
+            poisonStacks -= 1;
+            StartCoroutine(Poison());
+            StartCoroutine(Slow(1));
+        }
+
+    }
+    public void Poison(int poison)
+    {
+        
+        poisonStacks += poison;
+        if (poisonStacks == poison)
             StartCoroutine(Poison());
     }
     public IEnumerator Hit()
@@ -402,20 +406,20 @@ public class Monster : NetworkComponent
                     }
                 case "Caltrops":
                     {
-                        Poison();
+                        Poison(rogue.poison);
                         Damage(5);
                         StartCoroutine(Slow(3));
                         break;
                     }
                 case "CriticalStrike":
                     {
-                        Poison();
+                        Poison(rogue.poison);
                         Damage(30);
                         break;
                     }
                 case "SleepingGas":
                     {
-                        Poison();
+                        Poison(rogue.poison);
                         StartCoroutine(Stun(1));
                         break;
                     }
@@ -447,7 +451,7 @@ public class Monster : NetworkComponent
                     }
                 case "ThrowingKnife":
                     {
-                        Poison();
+                        Poison(rogue.poison);
                         Damage(5);
                         break;
                     }

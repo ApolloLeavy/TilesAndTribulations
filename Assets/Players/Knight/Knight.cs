@@ -5,19 +5,32 @@ using NETWORK_ENGINE;
 using UnityEngine.InputSystem;
 public class Knight : Player
 {
-
+    public List<Vector2[]> knightLibrary;
+    public bool chestplate;
+    public bool helmet;
     // Start is called before the first frame update
     public override void Start()
     {
         base.Start();
+        knightLibrary = new List<Vector2[]>();
         hp = 40;
         speed = 4;
         acd = 1.5f;
-        qcd = 5;
-        wcd = 5;
-        ecd = 5;
-        rcd = 5;
+        qcd = 7;
+        wcd = 8;
+        ecd = 11;
+        rcd = 15;
         isResisting = true;
+        helmet = false;
+        tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1)});
+        tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(1, 0), new Vector2(0, 1), new Vector2(-1, 0), new Vector2(0, 1)});
+        knightLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(0, 1), new Vector2(-1, 0), new Vector2(0, 1), new Vector2(1, 0), new Vector2(0, 1), new Vector2(1, 0), new Vector2(0, -1), new Vector2(1, 0), new Vector2(0, -1), new Vector2(-1, 0), new Vector2(0, -1), new Vector2(0, -1) });
+
+        knightLibrary.Add(new Vector2[] { new Vector2(0, 1),new Vector2(1, 0),new Vector2(0, -1),new Vector2(-1, 0),
+    new Vector2(-1, 0),new Vector2(-1, 0),new Vector2(0, 1),new Vector2(1, 0),new Vector2(0, 1),
+    new Vector2(1, 0),new Vector2(0, 1),new Vector2(1, 0),new Vector2(0, -1),new Vector2(1, 0),
+    new Vector2(0, -1),new Vector2(1, 0),new Vector2(0, -1),new Vector2(-1, 0),new Vector2(0, -1),
+    new Vector2(-1, 0),new Vector2(0, -1),new Vector2(-1, 0),new Vector2(0, 1),new Vector2(-1, 0)});
     }
     public override void HandleMessage(string flag, string value)
     {
@@ -28,7 +41,17 @@ public class Knight : Player
             {
                 if (canQ)
                 {
-                    PreviewAbility(tileLibrary[tiles[activeTile]], 19);
+                    if(tiles[activeTile] == 5|| tiles[activeTile] == 6)
+                    {
+                        PreviewAbility(knightLibrary[tiles[activeTile - 4]], 19);
+                        StartCoroutine(Move(tileLibrary[tiles[activeTile]]));
+                    }
+                    else
+                    {
+                        PreviewAbility(tileLibrary[tiles[activeTile]], 19);
+                        StartCoroutine(Move(tileLibrary[tiles[activeTile]]));
+                    }
+                    
                     canQ = false;
                     StartCoroutine(Q());
                     SendUpdate("Q", canQ.ToString());
@@ -49,7 +72,17 @@ public class Knight : Player
             {
                 if (canW)
                 {
-                    PreviewAbility(tileLibrary[tiles[activeTile]], 20);
+                    if (tiles[activeTile] == 5)
+                    {
+                        PreviewAbility(knightLibrary[tiles[activeTile] - 4], 20);
+                        StartCoroutine(Move(tileLibrary[tiles[activeTile]]));
+
+                    }
+                    else
+                    {
+                        PreviewAbility(tileLibrary[tiles[activeTile]], 20);
+                        StartCoroutine(Move(tileLibrary[tiles[activeTile]]));
+                    }
                     canW = false;
                     StartCoroutine(W());
                     SendUpdate("W", canW.ToString());
@@ -71,7 +104,14 @@ public class Knight : Player
             {
                 if (canE)
                 {
-                    PreviewAbilityEnd(tileLibrary[tiles[activeTile]], 21);
+                    if (tiles[activeTile] == 5 || tiles[activeTile] == 6)
+                    {
+                        PreviewAbility(knightLibrary[tiles[activeTile - 4]], 21);
+                    }
+                    else
+                    {
+                        PreviewAbility(tileLibrary[tiles[activeTile]], 21);
+                    }
 
                     canE = false;
                     StartCoroutine(E());
@@ -93,7 +133,14 @@ public class Knight : Player
             {
                 if (canR)
                 {
-                    PreviewAbility(tileLibrary[tiles[activeTile]], 22);
+                    if (tiles[activeTile] == 5 || tiles[activeTile] == 6)
+                    {
+                        PreviewAbility(knightLibrary[tiles[activeTile - 4]], 22);
+                    }
+                    else
+                    {
+                        PreviewAbility(tileLibrary[tiles[activeTile]], 22);
+                    }
                     canR = false;
                     StartCoroutine(R());
                     SendUpdate("R", canR.ToString());
@@ -124,19 +171,54 @@ public class Knight : Player
     {
         base.Update();
     }
+    public new IEnumerator TakeDamage(int i)
+    {
+        if (!helmet)
+        {
+            hp -= i;
+            if (hp > 0)
+            {
+                SendUpdate("HP", i.ToString());
+                isInvincible = true;
+                yield return new WaitForSeconds(1);
+                isInvincible = false;
+            }
+            else
+            {
+                StartCoroutine(Die());
+
+            }
+        }
+        else
+        {
+            StartCoroutine(HelmetTimer());
+        }
+    }
+    public IEnumerator HelmetTimer()
+    {
+        helmet = false;
+        yield return new WaitForSeconds(7);
+        helmet = true;
+    }
     public override void OnTriggerEnter(Collider other)
     {
         base.OnTriggerEnter(other);
-        switch (other.tag)
+        if (IsServer)
         {
-            case "Helmet":
-                {
-                    break;
-                }
-            case "Chestplate":
-                {
-                    break;
-                }
+            switch (other.tag)
+            {
+                case "Helmet":
+                    {
+                        helmet = true;
+                        break;
+                    }
+                case "Chestplate":
+                    {
+                        chestplate = true;
+                        break;
+                    }
+            }
         }
+        
     }
 }

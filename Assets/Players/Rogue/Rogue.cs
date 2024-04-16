@@ -5,18 +5,19 @@ using NETWORK_ENGINE;
 using UnityEngine.InputSystem;
 public class Rogue : Player
 {
-
+    public int poison;
     // Start is called before the first frame update
     public override void Start()
     {
         base.Start();
+        poison = 1;
         hp = 30;
         speed = 4;
         acd = 1.5f;
         qcd = 5;
         wcd = 5;
-        ecd = 5;
-        rcd = 5;
+        ecd = 10;
+        rcd = 8;
         tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1) });
 
         tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), new Vector2(1, 0), new Vector2(1, 0), new Vector2(1, 0) });
@@ -124,21 +125,25 @@ public class Rogue : Player
     public override void OnTriggerEnter(Collider other)
     {
         base.OnTriggerEnter(other);
-        switch (other.tag)
+        if (IsServer)
         {
-            case "Boots":
-                {
-                    speed += 1;
-                    qcd -= 1;
-                    wcd -= 1;
-                    ecd -= 1;
-                    rcd -= 1;
-                    break;
-                }
-            case "Vial":
-                {
-                    break;
-                }
+            switch (other.tag)
+            {
+                case "Boots":
+                    {
+                        speed += 1;
+                        qcd -= 1;
+                        wcd -= 1;
+                        ecd -= 1;
+                        rcd -= 1;
+                        break;
+                    }
+                case "Vial":
+                    {
+                        poison = 2;
+                        break;
+                    }
+            }
         }
     }
 }

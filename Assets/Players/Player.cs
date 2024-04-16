@@ -726,19 +726,23 @@ public abstract class Player : NetworkComponent
     }
     public IEnumerator TakeDamage(int i)
     {
-        hp -= i;
-        if(hp > 0)
+        if(!isInvincible && !isDead)
         {
-            SendUpdate("HP", i.ToString());
-            isInvincible = true;
-            yield return new WaitForSeconds(1);
-            isInvincible = false;
+            hp -= i;
+            if (hp > 0)
+            {
+                SendUpdate("HP", i.ToString());
+                isInvincible = true;
+                yield return new WaitForSeconds(1);
+                isInvincible = false;
+            }
+            else
+            {
+                StartCoroutine(Die());
+
+            }
         }
-        else
-        {
-            StartCoroutine(Die());
-            
-        }
+        
         
     }
     public IEnumerator AnimStart(string anim)
@@ -870,7 +874,7 @@ public abstract class Player : NetworkComponent
     }
     public virtual void OnTriggerEnter(Collider other)
     {
-        if (IsServer && !isDead && !isInvincible)
+        if (IsServer)
         {
             switch (other.tag)
             {

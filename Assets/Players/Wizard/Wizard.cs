@@ -16,10 +16,10 @@ public class Wizard : Player
         hp = 25;
         speed = 4;
         acd = 2.5f;
-        qcd = 5;
-        wcd = 5;
-        ecd = 5;
-        rcd = 5;
+        qcd = 8;
+        wcd = 10;
+        ecd = 8;
+        rcd = 15;
         tileLibrary.Add(new Vector2[] { new Vector2(1, -1), new Vector2(1, 1), new Vector2(0, 1), new Vector2(-1, 1), new Vector2(-1, 1), new Vector2(-1, 0), new Vector2(-1, 0), new Vector2(-1, 1) });
 
         tileLibrary.Add(new Vector2[] { new Vector2(1, 1), new Vector2(1, 1), new Vector2(-1, 1), new Vector2(-1, 1), new Vector2(1, 1), new Vector2(1, 1) });
@@ -173,31 +173,34 @@ public class Wizard : Player
     public IEnumerator RingTimer()
     {
         ring = false;
-        yield return new WaitForSeconds(10);
+        yield return new WaitForSeconds(7);
         ring= true;    
     }
     public IEnumerator NecklaceTimer()
     {
         necklace = false;
-        yield return new WaitForSeconds(10);
+        yield return new WaitForSeconds(7);
         necklace = true;
     }
     public override void OnTriggerEnter(Collider other)
     {
         base.OnTriggerEnter(other);
-        switch (other.tag)
+        if (IsServer)
         {
-            case "Ring":
-                {
-                    ring = true;
-                    break;
-                }
-            case "Necklace":
-                {
-                    necklace = false;
-                    
-                    break;
-                }
+            switch (other.tag)
+            {
+                case "Ring":
+                    {
+                        ring = true;
+                        break;
+                    }
+                case "Necklace":
+                    {
+                        necklace = false;
+
+                        break;
+                    }
+            }
         }
     }
 }
