@@ -5,13 +5,13 @@ using UnityEngine;
 public class Fairy : Item
 {
     // Start is called before the first frame update
-    void Start()
+    public override void Start()
     {
         
     }
 
     // Update is called once per frame
-    void Update()
+    public override void Update()
     {
         
     }

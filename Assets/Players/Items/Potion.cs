@@ -30,8 +30,9 @@ public class Potion : Item
     {
         base.Update();
     }
-    public void OnCollisionEnter(Collision collision)
+    public new void OnCollisionEnter(Collision collision)
     {
+        
         if (IsServer)
         {
             switch (collision.gameObject.tag)
