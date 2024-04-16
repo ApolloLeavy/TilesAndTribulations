@@ -7,6 +7,7 @@ public class PlayerNetworkManager : NetworkComponent
 {
     public bool isReady;
     public bool gameStarted;
+    Player player;
     public string playerName = "";
     public InputField NameField;
     public Toggle ReadyButton;
@@ -23,7 +24,8 @@ public class PlayerNetworkManager : NetworkComponent
 
     public override void HandleMessage(string flag, string value)
     {
-        if (flag == "NAME")
+        
+            if (flag == "NAME")
         {
             if (IsServer)
             {
@@ -159,7 +161,11 @@ public class PlayerNetworkManager : NetworkComponent
     {
         gameStarted = true;
         SendUpdate("START", "");
-        MyCore.NetCreateObject(classIndex, Owner, Vector3.zero, Quaternion.identity).GetComponent<Player>().npm = this;
+        player = MyCore.NetCreateObject(classIndex, Owner, Vector3.zero, Quaternion.identity).GetComponent<Player>();
+        player.npm = this;
+        player.pname = playerName;
+        player.SendUpdate("CHRNM",playerName);
+        
     }
     public override void NetworkedStart()
     {

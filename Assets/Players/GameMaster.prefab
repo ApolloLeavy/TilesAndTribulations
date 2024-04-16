@@ -60,7 +60,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -113,10 +113,17 @@ MonoBehaviour:
   MyId: {fileID: 0}
   IsDirty: 0
   canPlay: 0
+  stall: 0
   players: []
   gameCanvas: {fileID: 0}
   classesTaken: 
+  spawnIntensity: 0
   gameOver: 0
+  timerOver: 0
   monsters: []
-  scoreboard: {fileID: 8952970769675844287, guid: e001c23d85c81444ca6c5a78fdc4b3f8, type: 3}
+  items: 
+  Wscoreboard: {fileID: 8952970769675844287, guid: e001c23d85c81444ca6c5a78fdc4b3f8, type: 3}
+  Lscoreboard: {fileID: 8952970769675844287, guid: 287f9e5d971496f46bb1e3631103e8e2, type: 3}
   timer: 0
+  isWin: 0
+  dead: 0

@@ -6,6 +6,7 @@ using NETWORK_ENGINE;
 using UnityEngine.InputSystem;
 public abstract class Player : NetworkComponent
 {
+    public string pname;
     public int hp;
     public int hpM;
     public int tileCount;
@@ -57,6 +58,14 @@ public abstract class Player : NetworkComponent
 
     public override void HandleMessage(string flag, string value)
     {
+        if(flag == "CHRNM")
+        {
+            if (IsClient)
+            {
+                pname = value;
+                nameUI.text = value;
+            }
+        }
         if(flag == "K")
         {
             if (IsClient)
@@ -318,10 +327,6 @@ public abstract class Player : NetworkComponent
             StartCoroutine(Draw());
             StartCoroutine(Healing());
         }
-        if (IsClient)
-        {
-            nameUI.text = name;
-        }
         if(IsClient && !IsLocalPlayer)
         {
             HUDCanvas.SetActive(false);
@@ -342,7 +347,7 @@ public abstract class Player : NetworkComponent
             {
                 if (IsDirty)
                 {
-                    SendUpdate("ATTACK", canAttack.ToString());
+ 
                     SendUpdate("MV", lastInput.x + "," + lastInput.y);
                     SendUpdate("PLACE", canPlace.ToString());
                     SendUpdate("FLIP", isFlipped.ToString());
@@ -353,7 +358,7 @@ public abstract class Player : NetworkComponent
                     IsDirty = false;
                 }
             }
-            if (IsLocalPlayer && !isStunned && !isDead && canPlace)
+            if (IsLocalPlayer)
             {
                 if (lastInput.x < 0)
                 {
@@ -363,6 +368,7 @@ public abstract class Player : NetworkComponent
                 {
                     spriteRender.flipX = false;
                 }
+                if(activeTile >=0 && activeTile < tiles.Count)
                 PreviewMove(tileLibrary[tiles[activeTile]]);
 
             }
@@ -409,7 +415,7 @@ public abstract class Player : NetworkComponent
     {
         if (IsLocalPlayer)
         {
-            Camera.main.transform.position = Vector3.Lerp(transform.position + new Vector3(0, 0, -11), myRig.position, speed / 2 * Time.deltaTime);
+            Camera.main.transform.position = Vector3.Lerp(transform.position + new Vector3(0, 0, -9), myRig.position, speed / 2 * Time.deltaTime);
         }
     }
     public IEnumerator Cooldown(int index, float cooldown, float maxcd)
@@ -423,7 +429,7 @@ public abstract class Player : NetworkComponent
         }
         else
         {
-            cooldownsNum[index].text = maxcd.ToString();
+            cooldownsNum[index].text = "RDY";
         }
         
         

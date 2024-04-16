@@ -33,8 +33,6 @@ public class Teleport : Projectile
     public IEnumerator prevUp()
     {
         yield return new WaitForSeconds(.2f);
-        if(p.activeTile != -1)
-            p.PreviewMove(p.tileLibrary[p.tiles[p.activeTile]]);
     }
     // Start is called before the first frame update
     public override void Start()

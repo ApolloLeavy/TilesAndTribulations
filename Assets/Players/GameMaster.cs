@@ -1,4 +1,4 @@
-using System.Collections;
+ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,7 +15,8 @@ public class GameMaster : NetworkComponent
     public bool timerOver;
     public List<GameObject> monsters;
     public List<int> items;
-    public GameObject scoreboard;
+    public GameObject Wscoreboard;
+    public GameObject Lscoreboard;
     public int timer;
     public bool isWin;
     public bool dead;
@@ -103,6 +104,8 @@ public class GameMaster : NetworkComponent
     }
     public IEnumerator Stall()
     {
+        gameCanvas.GetComponent<Canvas>().enabled = false;
+        GameObject.Find("Disconnect").SetActive(false);
         yield return new WaitForSeconds(30);
     }
 
@@ -117,8 +120,7 @@ public class GameMaster : NetworkComponent
     }
     public IEnumerator Delay()
     {
-        gameCanvas.GetComponent<Canvas>().enabled = false;
-        GameObject.Find("Disconnect").SetActive(false);
+        
         if(IsServer)
             StartCoroutine(SpawnMonster());
         yield return new WaitForSeconds(180);
@@ -183,10 +185,10 @@ public class GameMaster : NetworkComponent
     public IEnumerator EndGame()
     {
         if(isWin)
-            scoreboard = GameObject.Instantiate(scoreboard,gameCanvas.transform);
+            Wscoreboard = GameObject.Instantiate(Wscoreboard,gameCanvas.transform);
         else
         {
-
+            Lscoreboard = GameObject.Instantiate(Lscoreboard, gameCanvas.transform);
         }
         int i = 0;
         foreach(GameObject o in players)
