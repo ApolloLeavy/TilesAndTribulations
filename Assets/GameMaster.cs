@@ -14,7 +14,8 @@ public class GameMaster : NetworkComponent
     public GameObject[] monsters;
     public GameObject scoreboard;
     public int timer;
-
+    public bool isWin;
+    public bool dead;
     public override void HandleMessage(string flag, string value)
     {
         if(flag == "PLAY")
@@ -59,6 +60,22 @@ public class GameMaster : NetworkComponent
         
         while (!gameOver)
         {
+            if(IsServer)
+            {
+                foreach(GameObject p in players)
+                {
+                    if (!p.GetComponent<Player>().isDead)
+                    {
+                        dead = false;
+                        break;
+                    }
+                    else
+                    {
+                        gameOver = true;
+                        IsDirty = true;
+                    }
+                }
+            }
             if (IsDirty)
             {
                 SendUpdate("OVER", gameOver.ToString());
@@ -83,7 +100,7 @@ public class GameMaster : NetworkComponent
 
         gameCanvas.GetComponent<Canvas>().enabled = false;
         GameObject.Find("Disconnect").SetActive(false);
-        yield return new WaitForSeconds(120);
+        yield return new WaitForSeconds(180);
         gameOver = true;
         gameCanvas.GetComponent<Canvas>().enabled = true;
     }
@@ -135,10 +152,12 @@ public class GameMaster : NetworkComponent
     }
     public IEnumerator EndGame()
     {
-        scoreboard = GameObject.Instantiate(scoreboard,gameCanvas.transform);
-        
-        Debug.Log("3");
-        
+        if(isWin)
+            scoreboard = GameObject.Instantiate(scoreboard,gameCanvas.transform);
+        else
+        {
+
+        }
         int i = 0;
         foreach(GameObject o in players)
         {
@@ -160,6 +179,8 @@ public class GameMaster : NetworkComponent
         gameCanvas = GameObject.Find("GameCanvas");
         gameOver = false;
         canPlay = false;
+        isWin = false;
+        dead = false;
     }
 
     // Update is called once per frame

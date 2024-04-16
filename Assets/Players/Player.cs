@@ -42,7 +42,7 @@ public abstract class Player : NetworkComponent
     public int assists;
     public bool isDead;
     public float deathTimer;
-    public GameObject npm;
+    public PlayerNetworkManager npm;
     public bool isStunned;
     public bool isFlipped;
     public Transform point;
@@ -55,8 +55,28 @@ public abstract class Player : NetworkComponent
 
     public override void HandleMessage(string flag, string value)
     {
-        
-        if((flag == "Q"|| flag == "W" || flag == "E" || flag == "R") && !isStunned && !isDead)
+        if(flag == "K")
+        {
+            if (IsClient)
+            {
+                kills = int.Parse(value);
+            }
+        }
+        if (flag == "D")
+        {
+            if (IsClient)
+            {
+                deaths = int.Parse(value);
+            }
+        }
+        if (flag == "A")
+        {
+            if (IsClient)
+            {
+                assists = int.Parse(value);
+            }
+        }
+        if ((flag == "Q"|| flag == "W" || flag == "E" || flag == "R") && !isStunned && !isDead)
         {
             StartCoroutine(AnimStart("isAttack"));
 
@@ -320,6 +340,9 @@ public abstract class Player : NetworkComponent
                     SendUpdate("PLACE", canPlace.ToString());
                     SendUpdate("FLIP", isFlipped.ToString());
                     SendUpdate("CYCLE", activeTile.ToString());
+                    SendUpdate("K", kills.ToString());
+                    SendUpdate("D", deaths.ToString());
+                    SendUpdate("A", assists.ToString());
                     IsDirty = false;
                 }
             }
@@ -757,6 +780,8 @@ public abstract class Player : NetworkComponent
     }
     public IEnumerator Die()
     {
+        deaths++;
+        IsDirty = true;
         myRig.velocity = Vector3.zero;
         isDead = true;
         isStunned = true;
@@ -872,6 +897,7 @@ public abstract class Player : NetworkComponent
             }
         }
     }
+ 
     public virtual void OnTriggerEnter(Collider other)
     {
         if (IsServer)

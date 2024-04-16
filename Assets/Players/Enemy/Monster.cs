@@ -10,7 +10,7 @@ public class Monster : NetworkComponent
     public bool isStunned;
     public bool isInvincible;
     public Player target;
-    public Player[] players;
+    public List<Player> players;
     public bool canAct;
     public bool isAttack;
     public float acd;
@@ -24,7 +24,8 @@ public class Monster : NetworkComponent
     public List<Vector2[]> tileLibrary;
     public SpriteRenderer spriteRender;
     public Rigidbody myRig;
-    public Rogue rogue;
+    public int statusAssist;
+    public List<int> dmgAssist;
     public int attackNum;
     public override void HandleMessage(string flag, string value)
     {
@@ -63,7 +64,7 @@ public class Monster : NetworkComponent
 
     public override void NetworkedStart()
     {
-        rogue = GameObject.FindGameObjectWithTag("Rogue").GetComponent<Rogue>();
+        
         if (IsServer)
             StartCoroutine(TakeAction());
     }
@@ -101,12 +102,21 @@ public class Monster : NetworkComponent
         myAnim = GetComponent<Animator>();
         poisonStacks = 0;
         attackNum = 0;
+        statusAssist = -1;
+        dmgAssist = new List<int>();
+        dmgAssist.Add(0);
+        dmgAssist.Add(0);
+        dmgAssist.Add(0);
+        dmgAssist.Add(0);
         isAttack = false;
         canAct = true;
         tileLibrary = new List<Vector2[]>();
         spriteRender = GetComponent<SpriteRenderer>();
         point = transform.GetChild(0);
-        players = GameObject.FindObjectsOfType<Player>();
+        players.Add(GameObject.FindObjectOfType<Rogue>());
+        players.Add(GameObject.FindObjectOfType<Ranger>());
+        players.Add(GameObject.FindObjectOfType<Wizard>());
+        players.Add(GameObject.FindObjectOfType<Knight>());
         tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), new Vector2(1, 0) });
         tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1) });
         tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(0, 1), new Vector2(1, 0), new Vector2(1, 0) });
@@ -345,7 +355,7 @@ public class Monster : NetworkComponent
         if (poisonStacks > 0)
         {
             yield return new WaitForSeconds(1);
-            hp -= poisonStacks;
+            Damage(poisonStacks, 0);
             poisonStacks -= 1;
             StartCoroutine(Poison());
             StartCoroutine(Slow(1));
@@ -371,13 +381,38 @@ public class Monster : NetworkComponent
         yield return new WaitForSeconds(1);
         myRig.velocity -= dir;
     }
-    public void Damage(int i)
+    public void Damage(int i, int p)
     {
         hp -= i;
+        dmgAssist[p] += i;
         if (hp <= 0)
         {
+            int assistMax = 0;
+            int assistTarget = -1;
             hp = 0;
             SendUpdate("DIE", "");
+            players[p].kills += 1;
+            players[p].IsDirty = true;
+            int j = 0;
+            foreach(int q in dmgAssist)
+            {
+                if(q > assistMax)
+                {
+                    assistMax = q;
+                    assistTarget = j;
+                }
+                j++;
+            }
+            if(assistTarget != -1)
+            {
+                players[assistTarget].assists += 1;
+                players[assistTarget].IsDirty = true;
+            }
+            if(statusAssist != -1)
+            {
+                players[statusAssist].assists += 1;
+                players[statusAssist].IsDirty = true;
+            }
             StartCoroutine(Die());
         }
         else
@@ -387,6 +422,36 @@ public class Monster : NetworkComponent
         }
         
     }
+    public IEnumerator AssistTimer(int p)
+    {
+        yield return new WaitForSeconds(7);
+        if(statusAssist == p)
+        {
+            statusAssist = -1;
+        }
+    }
+    public void Assist(int p)
+    {
+        if(statusAssist != p)
+        {
+            statusAssist = p;
+            StartCoroutine(AssistTimer(p));
+        }
+
+    }
+    public void OnCollisionEnter(Collision collision)
+    {
+        if (IsServer && !isInvincible)
+        { 
+            if(collision.gameObject.tag == "Knight")
+            {
+                if (players[3].GetComponent<Knight>().chestplate)
+                {
+                    Damage(5, 3);
+                }
+            }
+        }
+    }
     public void OnTriggerEnter(Collider other)
     {
         if (IsServer && !isInvincible)
@@ -395,31 +460,34 @@ public class Monster : NetworkComponent
             {
                 case "Fireball":
                     {
-                        Damage(15);
+                        Damage(15, 2);
                         break;
                     }
                 case "IceSpike":
                     {
-                        Damage(10);
+                        Damage(10, 2);
                         StartCoroutine(Slow(1));
+                        Assist(0);
                         break;
                     }
                 case "Caltrops":
                     {
-                        Poison(rogue.poison);
-                        Damage(5);
+                        Poison(players[0].GetComponent<Rogue>().poison);
+                        Damage(5, 0);
+                        Assist(0);
                         StartCoroutine(Slow(3));
                         break;
                     }
                 case "CriticalStrike":
                     {
-                        Poison(rogue.poison);
-                        Damage(30);
+                        Poison(players[0].GetComponent<Rogue>().poison);
+                        Damage(30, 0);
                         break;
                     }
                 case "SleepingGas":
                     {
-                        Poison(rogue.poison);
+                        Poison(players[0].GetComponent<Rogue>().poison);
+                        Assist(0);
                         StartCoroutine(Stun(1));
                         break;
                     }
@@ -430,44 +498,46 @@ public class Monster : NetworkComponent
                     }
                 case "Gale":
                     {
-                        Damage(8);
+                        Damage(8, 1);
                         break;
                     }
                 case "LightningStrike":
                     {
-                        Damage(5);
+                        Damage(5, 1);
                         StartCoroutine(Stun(4));
+                        Assist(1);
                         break;
                     }
                 case "RockSlide":
                     {
                         StartCoroutine(Slow(1));
+                        Assist(1);
                         break;
                     }
-                case "WaterBall":
+                case "Arrow":
                     {
-                        Damage(5);
+                        Damage(5, 1);
                         break;
                     }
-                case "ThrowingKnife":
+                case "Spear":
                     {
-                        Poison(rogue.poison);
-                        Damage(5);
+                        Poison(players[0].GetComponent<Rogue>().poison);
+                        Damage(5, 0);
                         break;
                     }
                 case "LightShot":
                     {
-                        Damage(5);
+                        Damage(5, 2);
                         break;
                     }
                 case "BeyBlade":
                     {
-                        Damage(10);
+                        Damage(10, 3);
                         break;
                     }
                 case "ShieldBash":
                     {
-                        Damage(5);
+                        Damage(5, 3);
                         StartCoroutine(Knockback((transform.position - other.transform.position).normalized));
                         break;
                     }
@@ -475,6 +545,7 @@ public class Monster : NetworkComponent
                     {
                         target = other.gameObject.GetComponent<Shout>().player;
                         StartCoroutine(Taunt(7));
+                        Assist(3);
                         break;
                     }
             }

@@ -159,7 +159,7 @@ public class PlayerNetworkManager : NetworkComponent
     {
         gameStarted = true;
         SendUpdate("START", "");
-        MyCore.NetCreateObject(classIndex, Owner, Vector3.zero, Quaternion.identity).GetComponent<Player>();
+        MyCore.NetCreateObject(classIndex, Owner, Vector3.zero, Quaternion.identity).GetComponent<Player>().npm = this;
     }
     public override void NetworkedStart()
     {
