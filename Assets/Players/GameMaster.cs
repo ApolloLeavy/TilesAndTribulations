@@ -63,7 +63,10 @@ public class GameMaster : NetworkComponent
         {
             yield return new WaitForSeconds(MyId.UpdateFrequency);
         }
+
+        timer = 0;
         StartCoroutine(Delay());
+        
         while (!gameOver)
         {
             if(IsServer)
@@ -104,9 +107,25 @@ public class GameMaster : NetworkComponent
     }
     public IEnumerator Stall()
     {
+        if(IsServer)
+            StartCoroutine(StallTimer());
         gameCanvas.GetComponent<Canvas>().enabled = false;
         GameObject.Find("Disconnect").SetActive(false);
         yield return new WaitForSeconds(30);
+        stall = false;
+    }
+    public IEnumerator StallTimer()
+    {
+        yield return new WaitForSeconds(1);
+        timer++;
+        if (timer == 60)
+            timer = 0;
+        foreach (GameObject p in players)
+        {
+            p.GetComponent<PlayerNetworkManager>().player.SendUpdate("TIME","0:"+timer);
+        }
+        if(stall)
+            StartCoroutine(StallTimer());
     }
 
     public IEnumerator SpawnMonster()
@@ -125,7 +144,9 @@ public class GameMaster : NetworkComponent
         {
             StartCoroutine(SpawnIntensity());
             StartCoroutine(SpawnMonster());
+            StartCoroutine(Time());
         }
+        
         yield return new WaitForSeconds(180);
         timerOver = true;
         gameCanvas.GetComponent<Canvas>().enabled = true;
@@ -133,11 +154,21 @@ public class GameMaster : NetworkComponent
     }
     public IEnumerator SpawnIntensity()
     {
-
-        
         yield return new WaitForSeconds(60);
         spawnIntensity++;
         StartCoroutine(SpawnIntensity());
+    }
+    public IEnumerator Time()
+    {
+        yield return new WaitForSeconds(1);
+        timer++;
+        if (timer >= 60)
+            timer -= 60;
+        foreach (GameObject p in players)
+        {
+            p.GetComponent<PlayerNetworkManager>().player.SendUpdate("TIME", spawnIntensity + ":" + timer);
+        }
+            StartCoroutine(Time());
     }
     public IEnumerator TriggerEnd()
     {
@@ -225,6 +256,7 @@ public class GameMaster : NetworkComponent
         canPlay = false;
         isWin = false;
         dead = false;
+        timer = 0;
         timerOver = false;
         spawnIntensity = 1;
         items = new List<int>();

@@ -319,6 +319,10 @@ public abstract class Player : NetworkComponent
                 StartCoroutine(Die());
             }
         }
+        if(flag == "TIME")
+        {
+            HUDCanvas.GetComponent<RectTransform>().GetChild(0).GetChild(0).GetComponent<Text>().text = value;
+        }
 
     }
     public override void NetworkedStart()
@@ -370,8 +374,16 @@ public abstract class Player : NetworkComponent
                 {
                     spriteRender.flipX = false;
                 }
-                if(activeTile >=0 && activeTile < tiles.Count)
-                PreviewMove(tileLibrary[tiles[activeTile]]);
+                if (activeTile >= 0 && activeTile < tiles.Count && canPlace)
+                    PreviewMove(tileLibrary[tiles[activeTile]]);
+                else
+                {
+                    foreach (GameObject o in indicatorList)
+                    {
+                        GameObject.Destroy(o);
+                    }
+                    indicatorList.Clear();
+                }
 
             }
             if ((isDead || canPlace) && !isStunned)

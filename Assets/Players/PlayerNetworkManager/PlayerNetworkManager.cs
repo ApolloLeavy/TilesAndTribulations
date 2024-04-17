@@ -7,7 +7,7 @@ public class PlayerNetworkManager : NetworkComponent
 {
     public bool isReady;
     public bool gameStarted;
-    Player player;
+    public Player player;
     public string playerName = "";
     public InputField NameField;
     public Toggle ReadyButton;
