@@ -14,6 +14,7 @@ public class Wizard : Player
         ring = false;
         necklace = false;
         hp = 25;
+        hpM = 25;
         speed = 4;
         acd = 2.5f;
         qcd = 8;
@@ -157,9 +158,9 @@ public class Wizard : Player
 
     public override void Attack2()
     {
-        GameObject o = MyCore.NetCreateObject(33,Owner,myRig.position+new Vector3(lastInput.x,lastInput.y,0));
+        GameObject o = MyCore.NetCreateObject(33,Owner,myRig.position+new Vector3(lastInput.x,lastInput.y,0), Quaternion.Euler(0, 0, lastInput.y * 90));
         o.GetComponent<Rigidbody>().velocity = new Vector3(lastInput.x, lastInput.y,0).normalized*3.5f;
-        
+
     }
     public override void NetworkedStart()
     {

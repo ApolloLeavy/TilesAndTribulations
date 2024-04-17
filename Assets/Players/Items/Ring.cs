@@ -30,4 +30,18 @@ public class Ring : Item
     {
         base.Update();
     }
+    public void OnTriggerEnter(Collider other)
+    {
+        if (IsServer)
+        {
+            switch (other.tag)
+            {
+                case "Wizard":
+                    {
+                        MyCore.NetDestroyObject(MyId.NetId);
+                        break;
+                    }
+            }
+        }
+    }
 }

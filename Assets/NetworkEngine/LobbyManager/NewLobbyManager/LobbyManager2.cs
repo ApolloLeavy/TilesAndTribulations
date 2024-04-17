@@ -29,7 +29,7 @@ public class LobbyManager2 : NetworkCore
     public GameObject StartingScreen;
     public GameObject LobbyScreen;
 
-    
+
     protected override void Start()
     {
         base.Start();
@@ -50,11 +50,11 @@ public class LobbyManager2 : NetworkCore
                     string[] temp = a.Split('_');
                     int port = int.Parse(temp[1]);
                     localGameID = temp[3];
-                    gameCore.PortNumber = port+portMininimum;
+                    gameCore.PortNumber = port + portMininimum;
                     IP = privateIPAddress;
                     gameCore.IP = IP;
                     StartCoroutine(StartClient());
-                    
+
                     StartCoroutine(SlowStart());
                 }
             }
@@ -70,10 +70,10 @@ public class LobbyManager2 : NetworkCore
             }
 
         }
-/*#if UNITY_EDITOR
-        IP = privateIPAddress;
-        StartServer();
-#endif*/
+        /*#if UNITY_EDITOR
+                IP = privateIPAddress;
+                StartServer();
+        #endif*/
         if (!IsConnected)
         {
             StartCoroutine(SlowAgentStart());
@@ -90,7 +90,7 @@ public class LobbyManager2 : NetworkCore
         yield return new WaitUntil(() => gameCore.IsServer);
         isGameServer = true;
     }
-    
+
     public IEnumerator SlowAgentStart()
     {
 
@@ -126,7 +126,7 @@ public class LobbyManager2 : NetworkCore
                 System.Diagnostics.Process proc = new System.Diagnostics.Process();
                 proc.StartInfo.UseShellExecute = true;
                 string[] args = System.Environment.GetCommandLineArgs();
-                
+
 #if UNITY_EDITOR
                 //You will need to change this to your executable name if you want to run a server in the editor.
                 proc.StartInfo.FileName = "C:\\LobbyManager2\\My project\\WindowsBuild\\NewLobbyManager.exe";
@@ -144,14 +144,14 @@ public class LobbyManager2 : NetworkCore
                 Debug.Log("EXCEPTION - in creating a game!!! - " + e.ToString());
             }
 #endif
-            }
+        }
     }
 
     public void UI_CreateGame()
     {
-        foreach(LobbyAgentManager lb in FindObjectsOfType<LobbyAgentManager>())
+        foreach (LobbyAgentManager lb in FindObjectsOfType<LobbyAgentManager>())
         {
-            if(lb.IsLocalPlayer)
+            if (lb.IsLocalPlayer)
             {
                 if (StartingScreen != null)
                 {
@@ -159,7 +159,7 @@ public class LobbyManager2 : NetworkCore
                 }
                 lb.hostGameName = gameNameInput.text;
                 lb.SendCommand("STARTGAME", gameNameInput.text);
-                
+
                 //start coroutine to wait for the game to be made.
             }
         }
@@ -187,7 +187,7 @@ public class LobbyManager2 : NetworkCore
     }
     public override void OnClientDisconnectCleanup(int id)
     {
-        if(!gameCore.IsConnected && !IsServer && !isGameServer)
+        if (!gameCore.IsConnected && !IsServer && !isGameServer)
         {
             SceneManager.LoadScene(0);
         }
@@ -201,7 +201,7 @@ public class LobbyManager2 : NetworkCore
     {
         if (IsClient)
         {
-            yield return new WaitUntil( () => (gameCore.IsConnected && gameCore.IsClient)) ;
+            yield return new WaitUntil(() => (gameCore.IsConnected && gameCore.IsClient));
             Disconnect(0);
         }
     }
@@ -213,8 +213,8 @@ public class LobbyManager2 : NetworkCore
         {
             gameCore.UI_Quit();
         }
-        
-        
+
+
     }
     public void OnApplicationQuit()
     {

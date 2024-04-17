@@ -216,6 +216,7 @@ public abstract class Player : NetworkComponent
                 }
             }
         }
+        
         if (flag == "FLIP" && activeTile != -1 && !isDead)
         {
             if (IsServer)
@@ -338,10 +339,10 @@ public abstract class Player : NetworkComponent
         }
         if (IsLocalPlayer)
         {
-            cooldownsNum[0].text = qcd.ToString();
-            cooldownsNum[1].text = wcd.ToString();
-            cooldownsNum[2].text = ecd.ToString();
-            cooldownsNum[3].text = rcd.ToString();
+            cooldownsNum[0].text = "R";
+            cooldownsNum[1].text = "R";
+            cooldownsNum[2].text = "R";
+            cooldownsNum[3].text = "R";
         }
     }
     public override IEnumerator SlowUpdate()
@@ -412,10 +413,10 @@ public abstract class Player : NetworkComponent
         tcd = 2;
         tileLibrary = new List<Vector2[]>();
         tiles.Add(0);
-        tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), new Vector2(1, 0) });
-        tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1) });
-        tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(0, 1), new Vector2(1, 0), new Vector2(1, 0) });
-        tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(0, 1), new Vector2(1, 0), new Vector2(0, 1) });
+        tileLibrary.Add(new Vector2[] { new Vector2(0, 1.25f), new Vector2(0, 1.25f), new Vector2(0, 1.25f), new Vector2(1.25f, 0) });
+        tileLibrary.Add(new Vector2[] { new Vector2(0, 1.25f), new Vector2(0, 1.25f), new Vector2(0, 1.25f), new Vector2(0, 1.25f) });
+        tileLibrary.Add(new Vector2[] { new Vector2(0, 1.25f), new Vector2(0, 1.25f), new Vector2(1.25f, 0), new Vector2(1.25f, 0) });
+        tileLibrary.Add(new Vector2[] { new Vector2(0, 1.25f), new Vector2(0, 1.25f), new Vector2(1.25f, 0), new Vector2(0, 1.25f) });
         activeTile = 0;
         isResisting = false;
         isFlipped = false;

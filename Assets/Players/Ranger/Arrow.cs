@@ -7,7 +7,7 @@ public class Arrow : HeroProjectile
 
     public override void HandleMessage(string flag, string value)
     {
-
+        base.HandleMessage(flag, value);
     }
 
     public override void NetworkedStart()

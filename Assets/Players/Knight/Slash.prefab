@@ -33,7 +33,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 9.460983, y: -25.828522, z: 0}
-  m_LocalScale: {x: 2.3523, y: 2.3523, z: 2.3523}
+  m_LocalScale: {x: 7.4, y: 7.4, z: 7.4}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -136,7 +136,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 56
+  m_Constraints: 8
   m_CollisionDetection: 0
 --- !u!65 &1732524138771944731
 BoxCollider:
@@ -157,8 +157,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.48, y: 0.48, z: 0.2}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 0.21794596, y: 0.22336389, z: 0.2}
+  m_Center: {x: -0.033360656, y: 0.024547549, z: 0}
 --- !u!114 &1083900209807719568
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -216,3 +216,4 @@ MonoBehaviour:
   IsDirty: 0
   myRig: {fileID: 0}
   myAnim: {fileID: 0}
+  lastInput: {x: 0, y: 0}

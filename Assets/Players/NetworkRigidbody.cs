@@ -65,7 +65,7 @@ public class NetworkRigidbody : NetworkComponent
                 syncRotation = NetworkCore.Vector3FromString(value);
                 if ((syncRotation - MyRig.rotation.eulerAngles).magnitude > eThreshold && useAdapt)
                 {
-
+                   
                 }
             }
         }
@@ -134,6 +134,7 @@ public class NetworkRigidbody : NetworkComponent
         {
             MyRig.velocity = syncVelocity;
             MyRig.angularVelocity = syncAngVelocity;
+            MyRig.rotation = Quaternion.Euler(syncRotation);
         }
             
         

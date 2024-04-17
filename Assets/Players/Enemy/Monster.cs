@@ -10,7 +10,7 @@ public class Monster : NetworkComponent
     public bool isStunned;
     public bool isInvincible;
     public Player target;
-    public List<Player> players;
+    public Player[] players;
     public bool canAct;
     public bool isAttack;
     public float acd;
@@ -113,10 +113,15 @@ public class Monster : NetworkComponent
         tileLibrary = new List<Vector2[]>();
         spriteRender = GetComponent<SpriteRenderer>();
         point = transform.GetChild(0);
-        players.Add(GameObject.FindObjectOfType<Rogue>());
-        players.Add(GameObject.FindObjectOfType<Ranger>());
-        players.Add(GameObject.FindObjectOfType<Wizard>());
-        players.Add(GameObject.FindObjectOfType<Knight>());
+        players = new Player[4];
+        if (GameObject.FindGameObjectWithTag("Rogue") != null)
+            players[0] = GameObject.FindGameObjectWithTag("Rogue").GetComponent<Player>();
+        if (GameObject.FindGameObjectWithTag("Ranger") != null)
+            players[1] = GameObject.FindGameObjectWithTag("Ranger").GetComponent<Player>();
+        if (GameObject.FindGameObjectWithTag("Wizard") != null)
+            players[2] = GameObject.FindGameObjectWithTag("Wizard").GetComponent<Player>();
+        if (GameObject.FindGameObjectWithTag("Knight") != null)
+            players[3] = GameObject.FindGameObjectWithTag("Knight").GetComponent<Player>();
         tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), new Vector2(1, 0) });
         tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1) });
         tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(0, 1), new Vector2(1, 0), new Vector2(1, 0) });
@@ -135,12 +140,15 @@ public class Monster : NetworkComponent
                 distance = Vector3.zero;
                 foreach (Player p in players)
                 {
-                    if(!p.isDead)
+                    if(p != null)
                     {
-                        if (distance == Vector3.zero || (myRig.position - p.myRig.position).magnitude < distance.magnitude)
+                        if (!p.isDead)
                         {
-                            distance = myRig.position - p.myRig.position;
-                            target = p;
+                            if (distance == Vector3.zero || (myRig.position - p.myRig.position).magnitude < distance.magnitude)
+                            {
+                                distance = myRig.position - p.myRig.position;
+                                target = p;
+                            }
                         }
                     }
                 }
@@ -344,14 +352,18 @@ public class Monster : NetworkComponent
     {
         GameMaster gm = GameObject.FindGameObjectWithTag("GameMaster").GetComponent<GameMaster>();
         gm.monsters.Remove(gameObject);
-        int i = Random.Range(37, 46);
-        
-        if (gm.items.Remove(i))
+        if(Random.Range(0,9) > 7)
         {
-            MyCore.NetCreateObject(i, gm.Owner, myRig.position, Quaternion.identity);
+            int i = Random.Range(37, 46);
+
+            if (gm.items.Remove(i))
+            {
+                MyCore.NetCreateObject(i, gm.Owner, myRig.position, Quaternion.identity);
+            }
+            else
+                MyCore.NetCreateObject(37, gm.Owner, myRig.position, Quaternion.identity);
         }
-        else
-            MyCore.NetCreateObject(37, gm.Owner, myRig.position, Quaternion.identity);
+        
         hp = 0;
         StartCoroutine(AnimStart("isDead", attackNum));
         yield return new WaitForSeconds(1);
@@ -473,11 +485,11 @@ public class Monster : NetworkComponent
                         Damage(15, 2);
                         break;
                     }
-                case "IceSpike":
+                case "Icespike":
                     {
                         Damage(10, 2);
                         StartCoroutine(Slow(1));
-                        Assist(0);
+                        Assist(2);
                         break;
                     }
                 case "Caltrops":

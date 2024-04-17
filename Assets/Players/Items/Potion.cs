@@ -30,12 +30,12 @@ public class Potion : Item
     {
         base.Update();
     }
-    public new void OnCollisionEnter(Collision collision)
+    public void OnTriggerEnter(Collider other)
     {
         
         if (IsServer)
         {
-            switch (collision.gameObject.tag)
+            switch (other.tag)
             {
                 case "Knight":
                 case "Rogue":

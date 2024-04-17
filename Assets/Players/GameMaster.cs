@@ -73,7 +73,7 @@ public class GameMaster : NetworkComponent
             {
                 foreach(GameObject p in players)
                 {
-                    if (!p.GetComponent<Player>().isDead)
+                    if (!p.GetComponent<PlayerNetworkManager>().player.isDead)
                     {
                         dead = false;
                         break;
@@ -97,6 +97,7 @@ public class GameMaster : NetworkComponent
             yield return new WaitForSeconds(MyId.UpdateFrequency);
         }
 
+
         StartCoroutine(EndGame());
         while (gameOver)
         {
@@ -111,7 +112,7 @@ public class GameMaster : NetworkComponent
             StartCoroutine(StallTimer());
         gameCanvas.GetComponent<Canvas>().enabled = false;
         GameObject.Find("Disconnect").SetActive(false);
-        yield return new WaitForSeconds(30);
+        yield return new WaitForSeconds(5);
         stall = false;
     }
     public IEnumerator StallTimer()
@@ -130,10 +131,14 @@ public class GameMaster : NetworkComponent
 
     public IEnumerator SpawnMonster()
     {
-        monsters.Add(MyCore.NetCreateObject(Random.Range(28,32), Owner, new Vector3(20, 0, 0), Quaternion.identity));
-        monsters.Add(MyCore.NetCreateObject(Random.Range(28, 32), Owner, new Vector3(-20, 0, 0), Quaternion.identity));
-        monsters.Add(MyCore.NetCreateObject(Random.Range(28, 32), Owner, new Vector3(0, 15, 0), Quaternion.identity));
-        monsters.Add(MyCore.NetCreateObject(Random.Range(28, 32), Owner, new Vector3(0, -15, 0), Quaternion.identity));
+        monsters.Add(MyCore.NetCreateObject(Random.Range(28,32), Owner, new Vector3(20, 2, 0), Quaternion.identity));
+        monsters.Add(MyCore.NetCreateObject(Random.Range(28,32), Owner, new Vector3(-20, 2, 0), Quaternion.identity));
+        monsters.Add(MyCore.NetCreateObject(Random.Range(28, 32), Owner, new Vector3(2, 15, 0), Quaternion.identity));
+        monsters.Add(MyCore.NetCreateObject(Random.Range(28, 32), Owner, new Vector3(2, -15, 0), Quaternion.identity));
+        monsters.Add(MyCore.NetCreateObject(Random.Range(28, 32), Owner, new Vector3(20, -2, 0), Quaternion.identity));
+        monsters.Add(MyCore.NetCreateObject(Random.Range(28, 32), Owner, new Vector3(-20, -2, 0), Quaternion.identity));
+        monsters.Add(MyCore.NetCreateObject(Random.Range(28, 32), Owner, new Vector3(-2, 15, 0), Quaternion.identity));
+        monsters.Add(MyCore.NetCreateObject(Random.Range(28, 32), Owner, new Vector3(-2, -15, 0), Quaternion.identity));
         yield return new WaitForSeconds(20 / spawnIntensity);
         StartCoroutine(SpawnMonster());
     }
@@ -149,7 +154,7 @@ public class GameMaster : NetworkComponent
         
         yield return new WaitForSeconds(180);
         timerOver = true;
-        gameCanvas.GetComponent<Canvas>().enabled = true;
+        
         StartCoroutine(TriggerEnd());
     }
     public IEnumerator SpawnIntensity()
@@ -226,7 +231,8 @@ public class GameMaster : NetworkComponent
     }
     public IEnumerator EndGame()
     {
-        if(isWin)
+        gameCanvas.GetComponent<Canvas>().enabled = true;
+        if (isWin)
             Wscoreboard = GameObject.Instantiate(Wscoreboard,gameCanvas.transform);
         else
         {

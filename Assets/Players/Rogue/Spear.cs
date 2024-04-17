@@ -7,7 +7,7 @@ public class Spear : HeroProjectile
     public Player player;
     public override void HandleMessage(string flag, string value)
     {
-
+        base.HandleMessage(flag, value);
     }
 
     public override void NetworkedStart()

@@ -12,6 +12,7 @@ public class Rogue : Player
         base.Start();
         poison = 1;
         hp = 30;
+        hpM = 30;
         speed = 4;
         acd = 1.5f;
         qcd = 5;
@@ -109,9 +110,8 @@ public class Rogue : Player
     }
     public override void Attack2()
     {
-        GameObject o = MyCore.NetCreateObject(34, Owner, myRig.position + new Vector3(lastInput.x, lastInput.y, 0));
+        GameObject o = MyCore.NetCreateObject(34, Owner, myRig.position + new Vector3(lastInput.x, lastInput.y, 0), Quaternion.Euler(0,0, lastInput.y * 90));
         o.GetComponent<Rigidbody>().velocity = new Vector3(lastInput.x, lastInput.y, 0).normalized * 2.5f;
-
     }
     public override void NetworkedStart()
     {

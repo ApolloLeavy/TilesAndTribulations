@@ -14,6 +14,7 @@ public class Knight : Player
         base.Start();
         knightLibrary = new List<Vector2[]>();
         hp = 40;
+        hpM = 40;
         speed = 4;
         acd = 1.5f;
         qcd = 7;
@@ -41,7 +42,7 @@ public class Knight : Player
             {
                 if (canQ)
                 {
-                    if(tiles[activeTile] == 5|| tiles[activeTile] == 6)
+                    if(tiles[activeTile] == 4 || tiles[activeTile] == 6)
                     {
                         PreviewAbility(knightLibrary[tiles[activeTile - 4]], 19);
                         StartCoroutine(Move(tileLibrary[tiles[activeTile]]));
@@ -158,7 +159,7 @@ public class Knight : Player
     }
     public override void Attack2()
     {
-        GameObject o = MyCore.NetCreateObject(35, Owner, myRig.position + new Vector3(lastInput.x, lastInput.y, 0));
+        GameObject o = MyCore.NetCreateObject(35, Owner, myRig.position + new Vector3(lastInput.x, lastInput.y, 0), Quaternion.Euler(-lastInput.x * 90, 0, 0));
         o.GetComponent<Rigidbody>().velocity = new Vector3(lastInput.x, lastInput.y, 0).normalized * 1.5f;
 
     }

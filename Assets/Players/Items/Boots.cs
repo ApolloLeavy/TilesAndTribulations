@@ -30,4 +30,18 @@ public class Boots : Item
     {
         base.Update();
     }
+    public void OnTriggerEnter(Collider other)
+    {
+        if (IsServer)
+        {
+            switch (other.tag)
+            {
+                case "Rogue":
+                    {
+                        MyCore.NetDestroyObject(MyId.NetId);
+                        break;
+                    }
+            }
+        }
+    }
 }

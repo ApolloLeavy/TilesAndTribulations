@@ -4,14 +4,16 @@ using UnityEngine;
 using NETWORK_ENGINE;
 public class HeroProjectile : Projectile
 {
+    public Vector2 lastInput;
     public override void HandleMessage(string flag, string value)
     {
-
+        base.HandleMessage(flag, value);
+        
     }
 
     public override void NetworkedStart()
     {
-
+        transform.right = myRig.velocity;
     }
 
     public override IEnumerator SlowUpdate()
@@ -23,12 +25,13 @@ public class HeroProjectile : Projectile
     public override void Start()
     {
         base.Start();
+        transform.right = myRig.velocity;
     }
 
     // Update is called once per frame
     public override void Update()
     {
-
+        transform.right = myRig.velocity;
     }
     public void OnCollisionEnter(Collision collision)
     {

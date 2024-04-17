@@ -15,23 +15,7 @@ public class Item : NetworkComponent
     {
         
     }
-    public void OnCollisionEnter(Collision collision)
-    {
-        if (IsServer)
-        {
-            switch (collision.gameObject.tag)
-            {
-                case "Knight":
-                case "Rogue":
-                case "Wizard":
-                case "Ranger":
-                    {
-                        MyCore.NetDestroyObject(MyId.NetId);
-                        break;
-                    }
-            }
-        }
-    }
+    
 
     public override IEnumerator SlowUpdate()
     {
