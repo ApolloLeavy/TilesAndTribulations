@@ -314,7 +314,7 @@ public class Monster : NetworkComponent
     public virtual void Move()
     {
         StartCoroutine(AnimStart("isRun", attackNum));
-        Vector2[] piece = tileLibrary[Random.Range(0, (tileLibrary.Count - 1))];
+        Vector2[] piece = tileLibrary[Random.Range(0, (tileLibrary.Count))];
         StartCoroutine(Move(piece));
 
     }
@@ -344,7 +344,7 @@ public class Monster : NetworkComponent
     {
         GameMaster gm = GameObject.FindGameObjectWithTag("GameMaster").GetComponent<GameMaster>();
         gm.monsters.Remove(gameObject);
-        int i = Random.Range(37, 45);
+        int i = Random.Range(37, 46);
         
         if (gm.items.Remove(i))
         {

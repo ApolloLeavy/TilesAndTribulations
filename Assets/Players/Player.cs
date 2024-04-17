@@ -287,7 +287,8 @@ public abstract class Player : NetworkComponent
             if (IsLocalPlayer)
             {
                 activeTile = int.Parse(value);
-                PreviewMove(tileLibrary[tiles[activeTile]]);
+                if (activeTile >= 0 && activeTile < tiles.Count)
+                    PreviewMove(tileLibrary[tiles[activeTile]]);
             }
         }
         if(flag == "STUN" && !isDead)
@@ -349,6 +350,7 @@ public abstract class Player : NetworkComponent
                 {
  
                     SendUpdate("MV", lastInput.x + "," + lastInput.y);
+                    SendUpdate("CHRNM", pname);
                     SendUpdate("PLACE", canPlace.ToString());
                     SendUpdate("FLIP", isFlipped.ToString());
                     SendUpdate("CYCLE", activeTile.ToString());
@@ -407,7 +409,7 @@ public abstract class Player : NetworkComponent
         isFlipped = false;
         point = transform.GetChild(0);
         ring = false;
-
+        HUDCanvas.GetComponent<Canvas>().worldCamera = Camera.main;
 
         List<GameObject> indicatorList = new List<GameObject>();
     }
@@ -415,7 +417,7 @@ public abstract class Player : NetworkComponent
     {
         if (IsLocalPlayer)
         {
-            Camera.main.transform.position = Vector3.Lerp(transform.position + new Vector3(0, 0, -9), myRig.position, speed / 2 * Time.deltaTime);
+            Camera.main.transform.position = myRig.position + new Vector3(0,0,-9);
         }
     }
     public IEnumerator Cooldown(int index, float cooldown, float maxcd)
@@ -439,7 +441,7 @@ public abstract class Player : NetworkComponent
         
         if (tileCount < maxTiles)
         {
-            int i = Random.Range(0, (tileLibrary.Count - 1));
+            int i = Random.Range(0, (tileLibrary.Count));
             while (tiles.Contains(i))
             {
                 

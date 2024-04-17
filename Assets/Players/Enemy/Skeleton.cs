@@ -31,7 +31,7 @@ public class Skeleton : Monster
     public override void Attack()
     {
         base.Attack();
-        Vector2[] piece = tileLibrary[Random.Range(0, (tileLibrary.Count - 1))];
+        Vector2[] piece = tileLibrary[Random.Range(0, (tileLibrary.Count ))];
         PreviewAbility(piece, 26);
 
     }

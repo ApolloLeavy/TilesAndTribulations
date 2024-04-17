@@ -43,7 +43,7 @@ public class GobBomb : EnemyProjectile
         tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), new Vector2(1, 0) });
         tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), new Vector2(-1, 0) });
         speed = 1;
-        StartCoroutine(Move(tileLibrary[Random.Range(0,1)]));
+        StartCoroutine(Move(tileLibrary[Random.Range(0,2)]));
     }
 
     // Update is called once per frame
