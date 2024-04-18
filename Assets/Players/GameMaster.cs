@@ -111,7 +111,7 @@ public class GameMaster : NetworkComponent
         if(IsServer)
             StartCoroutine(StallTimer());
         gameCanvas.GetComponent<Canvas>().enabled = false;
-        GameObject.Find("Disconnect").SetActive(false);
+        //GameObject.Find("Disconnect").SetActive(false);
         yield return new WaitForSeconds(5);
         stall = false;
     }
