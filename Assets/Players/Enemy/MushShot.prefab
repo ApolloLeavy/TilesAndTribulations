@@ -92,7 +92,7 @@ SpriteRenderer:
   m_SpriteSortPoint: 0
 --- !u!95 &1235647380641780473
 Animator:
-  serializedVersion: 5
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -106,6 +106,7 @@ Animator:
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
@@ -157,8 +158,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.082497574, y: 0.09527835, z: 0.2}
-  m_Center: {x: 0.008520393, y: -0.010650638, z: 0}
+  m_Size: {x: 0.15916467, y: 0.16780129, z: 0.19999997}
+  m_Center: {x: 0.005412273, y: -0.017902972, z: 0}
 --- !u!114 &6659086197797521807
 MonoBehaviour:
   m_ObjectHideFlags: 0

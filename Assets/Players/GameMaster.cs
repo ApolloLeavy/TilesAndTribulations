@@ -15,8 +15,7 @@ public class GameMaster : NetworkComponent
     public bool timerOver;
     public List<GameObject> monsters;
     public List<int> items;
-    public GameObject Wscoreboard;
-    public GameObject Lscoreboard;
+    public GameObject scoreboard;
     public int timer;
     public bool isWin;
     public bool dead;
@@ -86,6 +85,7 @@ public class GameMaster : NetworkComponent
                 if (dead)
                 {
                     gameOver = true;
+                    SendUpdate("OVER", gameOver.ToString());
                     IsDirty = true;
                 }
             }
@@ -232,11 +232,12 @@ public class GameMaster : NetworkComponent
     public IEnumerator EndGame()
     {
         gameCanvas.GetComponent<Canvas>().enabled = true;
+        scoreboard = GameObject.Instantiate(scoreboard, gameCanvas.transform);
         if (isWin)
-            Wscoreboard = GameObject.Instantiate(Wscoreboard,gameCanvas.transform);
+            scoreboard.GetComponent<RectTransform>().GetChild(0).GetComponent<Text>().text = "Victory";
         else
         {
-            Lscoreboard = GameObject.Instantiate(Lscoreboard, gameCanvas.transform);
+            scoreboard.GetComponent<RectTransform>().GetChild(0).GetComponent<Text>().text = "Defeat";
         }
         int i = 0;
         foreach(GameObject o in players)
@@ -244,10 +245,10 @@ public class GameMaster : NetworkComponent
             i++;
             GameObject t;
             t = GameObject.Find("P"+i+"Entry");
-            t.transform.GetChild(0).GetComponent<Text>().text = o.GetComponent<PlayerNetworkManager>().playerName;
-            t.transform.GetChild(1).GetComponent<Text>().text = o.GetComponent<PlayerNetworkManager>().kills.ToString();
-            t.transform.GetChild(2).GetComponent<Text>().text = o.GetComponent<PlayerNetworkManager>().deaths.ToString();
-            t.transform.GetChild(3).GetComponent<Text>().text = o.GetComponent<PlayerNetworkManager>().assists.ToString();
+            t.GetComponent<RectTransform>().GetChild(0).GetComponent<Text>().text = o.GetComponent<PlayerNetworkManager>().playerName;
+            t.GetComponent<RectTransform>().GetChild(1).GetComponent<Text>().text = o.GetComponent<PlayerNetworkManager>().kills.ToString();
+            t.GetComponent<RectTransform>().GetChild(2).GetComponent<Text>().text = o.GetComponent<PlayerNetworkManager>().deaths.ToString();
+            t.GetComponent<RectTransform>().GetChild(3).GetComponent<Text>().text = o.GetComponent<PlayerNetworkManager>().assists.ToString();
             yield return new WaitForSeconds(.1f);
         }
         yield return new WaitForSeconds(10);

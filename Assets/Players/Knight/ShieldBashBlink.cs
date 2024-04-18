@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using NETWORK_ENGINE;
-public class Tumble : Projectile
+public class ShieldBashBlink : Projectile
 {
     public Player p;
     public override void HandleMessage(string flag, string value)
@@ -12,8 +12,8 @@ public class Tumble : Projectile
 
     public override void NetworkedStart()
     {
-        
-        p = GameObject.FindGameObjectWithTag("Rogue").GetComponent<Player>();
+
+        p = GameObject.FindGameObjectWithTag("Knight").GetComponent<Player>();
         p.myRig.position = transform.position;
         StartCoroutine(Timer());
 
@@ -33,7 +33,6 @@ public class Tumble : Projectile
     {
         base.Start();
     }
-
     // Update is called once per frame
     public override void Update()
     {

@@ -23,7 +23,7 @@ public class MushShot : EnemyProjectile
     }
     public IEnumerator Timer()
     {
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(1.5f);
         MyCore.NetDestroyObject(NetId);
     }
 

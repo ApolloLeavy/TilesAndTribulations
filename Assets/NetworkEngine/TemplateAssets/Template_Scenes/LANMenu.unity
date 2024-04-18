@@ -67,9 +67,6 @@ LightmapSettings:
     m_LightmapParameters: {fileID: 0}
     m_LightmapsBakeMode: 1
     m_TextureCompression: 1
-    m_FinalGather: 0
-    m_FinalGatherFiltering: 1
-    m_FinalGatherRayCount: 256
     m_ReflectionCompression: 2
     m_MixedBakeMode: 2
     m_BakeBackend: 1
@@ -530,6 +527,7 @@ MonoBehaviour:
   - {fileID: 7715530414471590713, guid: 5f3df532b6c1ce743848c5cfa2a65fd9, type: 3}
   - {fileID: 7715530414471590713, guid: 2c218c98db965e047bd553cf445ca80d, type: 3}
   - {fileID: 7715530414471590713, guid: 07fe163bff007bf4bb57fba25da1dc4a, type: 3}
+  - {fileID: 6314006284140143255, guid: d483f17936fd3aa42838a9d3b3528c84, type: 3}
   NetworkPlayerManager: {fileID: 1629511964002254459, guid: c4e1b666fce46e24797c8931d62d1669, type: 3}
   DefaultReturnScene: 0
 --- !u!4 &408156394

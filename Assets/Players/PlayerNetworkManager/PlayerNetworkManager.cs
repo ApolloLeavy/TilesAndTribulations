@@ -25,7 +25,7 @@ public class PlayerNetworkManager : NetworkComponent
     public override void HandleMessage(string flag, string value)
     {
         
-            if (flag == "NAME")
+        if (flag == "NAME")
         {
             if (IsServer)
             {
@@ -156,6 +156,18 @@ public class PlayerNetworkManager : NetworkComponent
                 classIndex = -1;
             }
         }
+        if(flag == "K")
+        {
+            kills = int.Parse(value);
+        }
+        if(flag == "D")
+        {
+            deaths = int.Parse(value);
+        }
+        if (flag == "A")
+        {
+            assists = int.Parse(value);
+        }
     }
     public void SpawnCharacter()
     {
@@ -258,7 +270,7 @@ public class PlayerNetworkManager : NetworkComponent
         gameMaster.players.Add(this.gameObject);
         ReadyButton.interactable = false;
         gameCanvas = GameObject.Find("GameCanvas");
-        LanCanvas = GameObject.Find("WANNetworkManager").transform.GetChild(0).gameObject;
+        LanCanvas = GameObject.Find("LanNetworkManager").transform.GetChild(0).gameObject;
         classIndex = -1;
         
     }

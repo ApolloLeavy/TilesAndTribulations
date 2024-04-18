@@ -16,7 +16,7 @@ public class Wizard : Player
         hp = 25;
         hpM = 25;
         speed = 4;
-        acd = 2.5f;
+        acd = 1.5f;
         qcd = 8;
         wcd = 10;
         ecd = 8;

@@ -16,7 +16,7 @@ public class Ranger : Player
         hp = 25;
         hpM = 25;
         speed = 4;
-        acd = 2.5f;
+        acd = 1.5f;
         qcd = 7;
         wcd = 7;
         ecd = 8;
@@ -132,6 +132,7 @@ public class Ranger : Player
             {
                 if (canR)
                 {
+                    assists++;
                     PreviewAbility(tileLibrary[tiles[activeTile]], 14);
                     isFlipped = !isFlipped;
                     if (!gatito)

@@ -16,7 +16,6 @@ public class Teleport : Projectile
         p = GameObject.FindGameObjectWithTag("Wizard").GetComponent<Player>();
         p.myRig.position = transform.position;
         StartCoroutine(Timer());
-        StartCoroutine(prevUp());
     }
 
     public override IEnumerator SlowUpdate()
@@ -29,10 +28,6 @@ public class Teleport : Projectile
     {
         yield return new WaitForSeconds(1);
         MyCore.NetDestroyObject(NetId);
-    }
-    public IEnumerator prevUp()
-    {
-        yield return new WaitForSeconds(.2f);
     }
     // Start is called before the first frame update
     public override void Start()

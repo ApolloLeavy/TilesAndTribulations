@@ -6,6 +6,7 @@ using NETWORK_ENGINE;
 using UnityEngine.InputSystem;
 public abstract class Player : NetworkComponent
 {
+    public Vector2 mousePos;
     public string pname;
     public int hp;
     public int hpM;
@@ -143,7 +144,8 @@ public abstract class Player : NetworkComponent
                     lastInput.x = 0;
                     lastInput.y = 1;
                 }
-                PreviewMove(tileLibrary[tiles[activeTile]]);
+                if(IsLocalPlayer)
+                    PreviewMove(tileLibrary[tiles[activeTile]]);
             }
         }
         if(flag == "PLACE" && activeTile != -1 && !isStunned && !isDead)
@@ -362,6 +364,9 @@ public abstract class Player : NetworkComponent
                     SendUpdate("K", kills.ToString());
                     SendUpdate("D", deaths.ToString());
                     SendUpdate("A", assists.ToString());
+                    npm.SendUpdate("K", kills.ToString());
+                    npm.SendUpdate("D", deaths.ToString());
+                    npm.SendUpdate("A", assists.ToString());
                     IsDirty = false;
                 }
             }
@@ -519,10 +524,23 @@ public abstract class Player : NetworkComponent
     {
         if (IsLocalPlayer)
         {
-            if (ev.started)
+            if (ev.started || ev.performed)
             {
                 Vector2 tempCmd = ev.ReadValue<Vector2>();
-
+                tempCmd = new Vector2(tempCmd.x - (Screen.width/2), tempCmd.y - (Screen.height/2));
+                mousePos = tempCmd;
+                if (Mathf.Abs(tempCmd.x / 16) > Mathf.Abs(tempCmd.y / 9))
+                {
+                    tempCmd = tempCmd.normalized;
+                    tempCmd.y = 0;
+                }
+                else
+                {
+                    tempCmd = tempCmd.normalized;
+                    tempCmd.x = 0;
+                }
+                    
+                
                 SendCommand("MV", tempCmd.x + "," + tempCmd.y);
 
             }
@@ -965,12 +983,17 @@ public abstract class Player : NetworkComponent
                     }
                 case "Haste":
                     {
+                        npm.gameMaster.players[2].GetComponent<PlayerNetworkManager>().player.assists++;
                         StartCoroutine(Haste());
                         break;
                     }
                 case "Fortify":
                     {
-                        StartCoroutine(Fortify());
+                        if (!isResisting) 
+                        { 
+                            StartCoroutine(Fortify());
+                            npm.gameMaster.players[3].GetComponent<PlayerNetworkManager>().player.assists++;
+                        }
                         break;
                     }
 

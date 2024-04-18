@@ -24,7 +24,7 @@ public class Monster : NetworkComponent
     public List<Vector2[]> tileLibrary;
     public SpriteRenderer spriteRender;
     public Rigidbody myRig;
-    public int statusAssist;
+    public List<int> statusAssist;
     public List<int> dmgAssist;
     public int attackNum;
     public override void HandleMessage(string flag, string value)
@@ -102,7 +102,7 @@ public class Monster : NetworkComponent
         myAnim = GetComponent<Animator>();
         poisonStacks = 0;
         attackNum = 0;
-        statusAssist = -1;
+        statusAssist = new List<int>();
         dmgAssist = new List<int>();
         dmgAssist.Add(0);
         dmgAssist.Add(0);
@@ -366,7 +366,7 @@ public class Monster : NetworkComponent
         
         hp = 0;
         StartCoroutine(AnimStart("isDead", attackNum));
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(.67f);
         if(IsServer)
         {
             MyCore.NetDestroyObject(MyId.NetId);
@@ -405,10 +405,14 @@ public class Monster : NetworkComponent
     }
     public void Damage(int i, int p)
     {
+        
         hp -= i;
         dmgAssist[p] += i;
         if (hp <= 0)
         {
+            isInvincible = true;
+            isStunned = true;
+            myRig.velocity = Vector3.zero;
             int assistMax = 0;
             int assistTarget = -1;
             hp = 0;
@@ -418,10 +422,15 @@ public class Monster : NetworkComponent
             int j = 0;
             foreach(int q in dmgAssist)
             {
-                if(q > assistMax)
+                if(q > assistMax && j != p)
                 {
                     assistMax = q;
                     assistTarget = j;
+                }
+                if (statusAssist.Contains(j) && j != p)
+                {
+                    players[j].assists++;
+                    players[j].IsDirty = true;
                 }
                 j++;
             }
@@ -430,36 +439,28 @@ public class Monster : NetworkComponent
                 players[assistTarget].assists += 1;
                 players[assistTarget].IsDirty = true;
             }
-            if(statusAssist != -1)
-            {
-                players[statusAssist].assists += 1;
-                players[statusAssist].IsDirty = true;
-            }
             StartCoroutine(Die());
         }
         else
         {
-            StartCoroutine(Hit());
             SendUpdate("DMG", i.ToString());
+            StartCoroutine(Hit());
         }
         
     }
     public IEnumerator AssistTimer(int p)
     {
         yield return new WaitForSeconds(7);
-        if(statusAssist == p)
+        if(statusAssist.Contains(p))
         {
-            statusAssist = -1;
+            statusAssist.Remove(p);
         }
     }
     public void Assist(int p)
     {
-        if(statusAssist != p)
-        {
-            statusAssist = p;
-            StartCoroutine(AssistTimer(p));
-        }
-
+        
+        statusAssist.Add(p);
+        StartCoroutine(AssistTimer(p));
     }
     public void OnCollisionEnter(Collision collision)
     {

@@ -16,14 +16,14 @@ public class Knight : Player
         hp = 40;
         hpM = 40;
         speed = 4;
-        acd = 1.5f;
+        acd = 1.25f;
         qcd = 7;
         wcd = 8;
         ecd = 11;
         rcd = 15;
         isResisting = true;
         helmet = false;
-        tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1)});
+        tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), new Vector2(1, 0), new Vector2(-1, 0), new Vector2(-1, 0) });
         tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(1, 0), new Vector2(0, 1), new Vector2(-1, 0), new Vector2(0, 1)});
         knightLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(0, 1), new Vector2(-1, 0), new Vector2(0, 1), new Vector2(1, 0), new Vector2(0, 1), new Vector2(1, 0), new Vector2(0, -1), new Vector2(1, 0), new Vector2(0, -1), new Vector2(-1, 0), new Vector2(0, -1), new Vector2(0, -1) });
 
@@ -42,15 +42,13 @@ public class Knight : Player
             {
                 if (canQ)
                 {
-                    if(tiles[activeTile] == 4 || tiles[activeTile] == 6)
+                    if(tiles[activeTile] == 4 || tiles[activeTile] == 5)
                     {
-                        PreviewAbility(knightLibrary[tiles[activeTile - 4]], 19);
-                        StartCoroutine(Move(tileLibrary[tiles[activeTile]]));
+                        PreviewAbility(knightLibrary[tiles[activeTile] - 4], 19);
                     }
                     else
                     {
                         PreviewAbility(tileLibrary[tiles[activeTile]], 19);
-                        StartCoroutine(Move(tileLibrary[tiles[activeTile]]));
                     }
                     
                     canQ = false;
@@ -73,16 +71,15 @@ public class Knight : Player
             {
                 if (canW)
                 {
-                    if (tiles[activeTile] == 5)
+                    if (tiles[activeTile] == 5 || tiles[activeTile] == 6)
                     {
+                        PreviewAbilityEnd(tileLibrary[tiles[activeTile]], 46);
                         PreviewAbility(knightLibrary[tiles[activeTile] - 4], 20);
-                        StartCoroutine(Move(tileLibrary[tiles[activeTile]]));
-
                     }
                     else
                     {
+                        PreviewAbilityEnd(tileLibrary[tiles[activeTile]], 46);
                         PreviewAbility(tileLibrary[tiles[activeTile]], 20);
-                        StartCoroutine(Move(tileLibrary[tiles[activeTile]]));
                     }
                     canW = false;
                     StartCoroutine(W());

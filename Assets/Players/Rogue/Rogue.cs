@@ -14,7 +14,7 @@ public class Rogue : Player
         hp = 30;
         hpM = 30;
         speed = 4;
-        acd = 1.5f;
+        acd = .75f;
         qcd = 5;
         wcd = 5;
         ecd = 10;
