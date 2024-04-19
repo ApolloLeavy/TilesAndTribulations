@@ -93,6 +93,7 @@ public class Rogue : Player
             {
                 if (canR)
                 {
+                    assists++;
                     PreviewAbility(tileLibrary[tiles[activeTile]], 10);
                     canR = false;
                     StartCoroutine(R());

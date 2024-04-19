@@ -25,7 +25,7 @@ public class Knight : Player
         isResisting = true;
         helmet = false;
         tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), new Vector2(1, 0), new Vector2(-1, 0), new Vector2(-1, 0) });
-        tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(1, 0), new Vector2(0, 1), new Vector2(-1, 0), new Vector2(0, 1)});
+        tileLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), new Vector2(1, 0), new Vector2(-1, 0), new Vector2(-1, 0)});
         knightLibrary.Add(new Vector2[] { new Vector2(0, 1), new Vector2(0, 1), new Vector2(-1, 0), new Vector2(0, 1), new Vector2(1, 0), new Vector2(0, 1), new Vector2(1, 0), new Vector2(0, -1), new Vector2(1, 0), new Vector2(0, -1), new Vector2(-1, 0), new Vector2(0, -1), new Vector2(0, -1) });
 
         knightLibrary.Add(new Vector2[] { new Vector2(0, 1),new Vector2(1, 0),new Vector2(0, -1),new Vector2(-1, 0),
@@ -103,6 +103,7 @@ public class Knight : Player
             {
                 if (canE)
                 {
+                    assists++;
                     if (tiles[activeTile] == 5 || tiles[activeTile] == 6)
                     {
                         PreviewAbility(knightLibrary[tiles[activeTile - 4]], 21);
@@ -132,6 +133,7 @@ public class Knight : Player
             {
                 if (canR)
                 {
+                    assists++;
                     if (tiles[activeTile] == 5 || tiles[activeTile] == 6)
                     {
                         PreviewAbility(knightLibrary[tiles[activeTile - 4]], 22);

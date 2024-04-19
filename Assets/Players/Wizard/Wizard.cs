@@ -129,7 +129,7 @@ public class Wizard : Player
             {
                 if (canR)
                 {
-                    
+                    assists++;
                     PreviewAbility(tileLibrary[tiles[activeTile]], 18);
                     if(necklace)
                     {

@@ -4,7 +4,8 @@ using UnityEngine;
 using NETWORK_ENGINE;
 public class GobBombExplosion : Projectile
 {
-
+    public AudioSource audioS;
+    public AudioClip expS;
     public override void HandleMessage(string flag, string value)
     {
 
@@ -12,6 +13,7 @@ public class GobBombExplosion : Projectile
 
     public override void NetworkedStart()
     {
+        audioS = GetComponent<AudioSource>();
         StartCoroutine(Timer());
     }
 
@@ -23,6 +25,8 @@ public class GobBombExplosion : Projectile
     }
     public IEnumerator Timer()
     {
+        audioS.clip = expS;
+        audioS.Play();
         yield return new WaitForSeconds(1);
         MyCore.NetDestroyObject(NetId);
     }

@@ -27,6 +27,9 @@ public class Monster : NetworkComponent
     public List<int> statusAssist;
     public List<int> dmgAssist;
     public int attackNum;
+    public AudioSource audioS;
+    public AudioClip attackS;
+    public AudioClip hitS;
     public override void HandleMessage(string flag, string value)
     {
         if(flag == "DMG")
@@ -36,6 +39,8 @@ public class Monster : NetworkComponent
                 hp -= int.Parse(value);
                 
                 StartCoroutine(AnimStart("isHit", attackNum));
+                audioS.clip = hitS;
+                    audioS.Play();
             }
         }
         if(tag == "DIE")
@@ -50,6 +55,8 @@ public class Monster : NetworkComponent
             if (IsClient)
             {
                 StartCoroutine(AnimStart("isAttack", int.Parse(value)));
+                audioS.clip = attackS;
+                audioS.Play();
             }
         }
         if (tag == "MOVE")
@@ -94,6 +101,7 @@ public class Monster : NetworkComponent
     }
     public virtual void Start()
     {
+        audioS = GetComponent<AudioSource>();
         isSlowed = false;
         isStunned = false;
         isInvincible = false;
