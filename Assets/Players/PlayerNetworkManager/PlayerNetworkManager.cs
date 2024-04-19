@@ -270,7 +270,7 @@ public class PlayerNetworkManager : NetworkComponent
         gameMaster.players.Add(this.gameObject);
         ReadyButton.interactable = false;
         gameCanvas = GameObject.Find("GameCanvas");
-        LanCanvas = GameObject.Find("WANNetworkManager").transform.GetChild(0).gameObject;
+        LanCanvas = GameObject.Find("LanNetworkManager").transform.GetChild(0).gameObject;
         classIndex = -1;
         
     }

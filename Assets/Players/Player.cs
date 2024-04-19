@@ -49,7 +49,7 @@ public abstract class Player : NetworkComponent
     public bool isFlipped;
     public Transform point;
     public GameObject previewBlock;
-    public GameObject hpBar;
+    public RectTransform hpBar;
     public Text nameUI;
     public bool isResisting;
     public int healingSpirit;
@@ -62,7 +62,9 @@ public abstract class Player : NetworkComponent
     public AudioClip rs;
     public AudioClip attackS;
     public AudioClip itemGet;
+    public AudioClip walkS;
     public AudioClip hitS;
+    public GameObject[] pieceHud;
     public override void HandleMessage(string flag, string value)
     {
         if(flag == "ITEM")
@@ -176,6 +178,7 @@ public abstract class Player : NetworkComponent
             }
             if (IsClient)
             {
+                
                 string[] tmp = value.Split(',');
                 lastInput = new Vector2(float.Parse(tmp[0]), float.Parse(tmp[1]));
                 if ((lastInput.x > 0 || lastInput.x < 0) && (lastInput.y > 0 || lastInput.y < 0))
@@ -210,11 +213,15 @@ public abstract class Player : NetworkComponent
                 canPlace = bool.Parse(value);
                 if(canPlace)
                 {
+                    audioS.clip = walkS;
+                    audioS.Play();
                     myAnim.SetBool("isRun", false);
                     PreviewMove(tileLibrary[tiles[activeTile]]);
                 }
                 else
                 {
+                    if(audioS.clip == walkS)
+                        audioS.Stop();
                     myAnim.SetBool("isRun", true);
                 }
                     
@@ -248,19 +255,14 @@ public abstract class Player : NetworkComponent
                 }
 
             }
-            if (IsLocalPlayer)
-            {
-                canAttack = bool.Parse(value);
-                if(!canAttack)
-                {
-                    StartCoroutine(AnimStart("isAttack"));
-                    
-                }
-            }
+            
             if(IsClient && !canAttack)
             {
+                canAttack = bool.Parse(value);
                 audioS.clip = attackS;
                 audioS.Play();
+                if(IsLocalPlayer)
+                    StartCoroutine(AnimStart("isAttack"));
             }
 
         }
@@ -347,7 +349,7 @@ public abstract class Player : NetworkComponent
                 isStunned = bool.Parse(value);
             }
         }
-        if (flag == "HP" && !isDead)
+        if (flag == "HP")
         {
             if (IsClient)
             {
@@ -360,7 +362,7 @@ public abstract class Player : NetworkComponent
                     audioS.Play();
                 }
                 hp = t;
-                hpBar.GetComponent<RectTransform>().localScale.Set(5.461f * hp / hpM, 5.461f, 1);
+                hpBar.localScale = new Vector3((5.461f * hp/hpM), 5.461f, 2.184f);
             }
         }
         if (flag == "DIE" && !isDead)
@@ -454,7 +456,8 @@ public abstract class Player : NetworkComponent
         myRig = GetComponent<Rigidbody>();
         myAnim = GetComponent<Animator>();
         spriteRender = GetComponent<SpriteRenderer>();
-        maxTiles = 5;
+
+        maxTiles = 4;
         tileCount = 1;
         tileGainSec = 2;
         canAttack = true;
@@ -850,7 +853,7 @@ public abstract class Player : NetworkComponent
             hp -= i;
             if (hp > 0)
             {
-                SendUpdate("HP", i.ToString());
+                SendUpdate("HP", hp.ToString());
                 isInvincible = true;
                 yield return new WaitForSeconds(1);
                 isInvincible = false;
@@ -1005,6 +1008,7 @@ public abstract class Player : NetworkComponent
                 case "EyeShot":
                     {
                         StartCoroutine(TakeDamage(8));
+                        
                         break;
                     }
                 case "GobBomb":
@@ -1033,7 +1037,7 @@ public abstract class Player : NetworkComponent
                     }
                 case "Haste":
                     {
-                        npm.gameMaster.players[2].GetComponent<PlayerNetworkManager>().player.assists++;
+                        
                         StartCoroutine(Haste());
                         break;
                     }
@@ -1042,7 +1046,7 @@ public abstract class Player : NetworkComponent
                         if (!isResisting) 
                         { 
                             StartCoroutine(Fortify());
-                            npm.gameMaster.players[3].GetComponent<PlayerNetworkManager>().player.assists++;
+                            
                         }
                         break;
                     }

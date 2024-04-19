@@ -6,7 +6,7 @@ public class GobBomb : EnemyProjectile
 {
     public Vector2 lastInput;
     public List<Vector2[]> tileLibrary;
-    
+
     public int speed;
     public override void HandleMessage(string flag, string value)
     {
