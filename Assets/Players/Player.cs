@@ -54,11 +54,25 @@ public abstract class Player : NetworkComponent
     public bool isResisting;
     public int healingSpirit;
     public bool ring;
-
     public bool haste;
-
+    public AudioSource audioS;
+    public AudioClip qs;
+    public AudioClip ws;
+    public AudioClip es;
+    public AudioClip rs;
+    public AudioClip attackS;
+    public AudioClip itemGet;
+    public AudioClip hitS;
     public override void HandleMessage(string flag, string value)
     {
+        if(flag == "ITEM")
+        {
+            if (IsClient)
+            {
+                audioS.clip = itemGet;
+                audioS.Play();
+            }
+        }
         if(flag == "CHRNM")
         {
             if (IsClient)
@@ -98,6 +112,13 @@ public abstract class Player : NetworkComponent
             if (IsServer)
             {
                 SendUpdate("CD", "0," + qcd.ToString());
+                SendUpdate("Q", "");
+
+            }
+            if(IsClient)
+            {
+                audioS.clip = qs;
+                audioS.Play();
             }
         }
         if (flag == "W" && canW && !ring)
@@ -105,6 +126,12 @@ public abstract class Player : NetworkComponent
             if (IsServer)
             {
                 SendUpdate("CD", "1," + wcd.ToString());
+                SendUpdate("W", "");
+            }
+            if (IsClient)
+            {
+                audioS.clip =ws;
+                    audioS.Play();
             }
         }
         if (flag == "E" && canE && !ring)
@@ -112,6 +139,12 @@ public abstract class Player : NetworkComponent
             if (IsServer)
             {
                 SendUpdate("CD", "2," + ecd.ToString());
+                SendUpdate("E", "");
+            }
+            if (IsClient)
+            {
+                audioS.clip = es;
+                audioS.Play();
             }
         }
         if (flag == "R" && canR && !ring)
@@ -119,6 +152,12 @@ public abstract class Player : NetworkComponent
             if (IsServer)
             {
                 SendUpdate("CD", "3," + rcd.ToString());
+                SendUpdate("R", "");
+            }
+            if (IsClient)
+            {
+                audioS.clip = rs;
+                    audioS.Play();
             }
         }
         if (flag == "MV" && activeTile != -1 && !isStunned && !isDead)
@@ -215,8 +254,15 @@ public abstract class Player : NetworkComponent
                 if(!canAttack)
                 {
                     StartCoroutine(AnimStart("isAttack"));
+                    
                 }
             }
+            if(IsClient && !canAttack)
+            {
+                audioS.clip = attackS;
+                audioS.Play();
+            }
+
         }
         
         if (flag == "FLIP" && activeTile != -1 && !isDead)
@@ -308,10 +354,13 @@ public abstract class Player : NetworkComponent
                 int t= int.Parse(value);
                 if(t < hp)
                 {
+
                     StartCoroutine(AnimStart("isHit"));
+                    audioS.clip = hitS;
+                    audioS.Play();
                 }
                 hp = t;
-                hpBar.transform.localScale.Set(2.5f * hp / hpM,2.5f,1);
+                hpBar.GetComponent<RectTransform>().localScale.Set(5.461f * hp / hpM, 5.461f, 1);
             }
         }
         if (flag == "DIE" && !isDead)
@@ -428,6 +477,7 @@ public abstract class Player : NetworkComponent
         point = transform.GetChild(0);
         ring = false;
         HUDCanvas.GetComponent<Canvas>().worldCamera = Camera.main;
+        audioS = GetComponent<AudioSource>();
 
         List<GameObject> indicatorList = new List<GameObject>();
     }

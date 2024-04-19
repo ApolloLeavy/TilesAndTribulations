@@ -5,6 +5,7 @@ using NETWORK_ENGINE;
 using UnityEngine.InputSystem;
 public class Knight : Player
 {
+    
     public List<Vector2[]> knightLibrary;
     public bool chestplate;
     public bool helmet;
@@ -207,11 +208,13 @@ public class Knight : Player
             {
                 case "Helmet":
                     {
+                        SendUpdate("ITEM", "");
                         helmet = true;
                         break;
                     }
                 case "Chestplate":
                     {
+                        SendUpdate("ITEM", "");
                         chestplate = true;
                         break;
                     }

@@ -5,7 +5,8 @@ using NETWORK_ENGINE;
 using UnityEngine.InputSystem;
 public class Wizard : Player
 {
-    
+
+
     public bool necklace;
     // Start is called before the first frame update
     public override void Start()
@@ -193,12 +194,13 @@ public class Wizard : Player
                 case "Ring":
                     {
                         ring = true;
+                        SendUpdate("ITEM", "");
                         break;
                     }
                 case "Necklace":
                     {
                         necklace = false;
-
+                        SendUpdate("ITEM", "");
                         break;
                     }
             }

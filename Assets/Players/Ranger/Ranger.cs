@@ -7,6 +7,7 @@ public class Ranger : Player
 {
     public bool gatito;
     public bool fairy;
+
     // Start is called before the first frame update
     public override void Start()
     {
@@ -191,11 +192,13 @@ public class Ranger : Player
             {
                 case "Gatito":
                     {
+                        SendUpdate("ITEM", "");
                         gatito = true;
                         break;
                     }
                 case "Fairy":
                     {
+                        SendUpdate("ITEM", "");
                         rcd = 10;
                         fairy = true;
                         break;

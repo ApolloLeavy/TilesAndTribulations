@@ -5,6 +5,7 @@ using NETWORK_ENGINE;
 using UnityEngine.InputSystem;
 public class Rogue : Player
 {
+
     public int poison;
     // Start is called before the first frame update
     public override void Start()
@@ -131,6 +132,7 @@ public class Rogue : Player
             {
                 case "Boots":
                     {
+                        SendUpdate("ITEM", "");
                         speed += 1;
                         qcd -= 1;
                         wcd -= 1;
@@ -140,6 +142,7 @@ public class Rogue : Player
                     }
                 case "Vial":
                     {
+                        SendUpdate("ITEM", "");
                         poison = 2;
                         break;
                     }
