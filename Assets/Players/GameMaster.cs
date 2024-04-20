@@ -35,7 +35,22 @@ public class GameMaster : NetworkComponent
                 gameOver = bool.Parse(value);
             }
         }
-        
+        if (flag == "ENDWIN")
+        {
+            if (IsClient)
+            {
+                gameOver = true;
+                isWin = true;
+            }
+        }
+
+        if (flag == "TIMER")
+        {
+            if (IsClient)
+            {
+                timerOver = true;
+            }
+        }
     }
 
     public override void NetworkedStart()
@@ -112,7 +127,7 @@ public class GameMaster : NetworkComponent
             StartCoroutine(StallTimer());
         gameCanvas.GetComponent<Canvas>().enabled = false;
         //GameObject.Find("Disconnect").SetActive(false);
-        yield return new WaitForSeconds(5);
+        yield return new WaitForSeconds(20);
         stall = false;
     }
     public IEnumerator StallTimer()
@@ -140,7 +155,8 @@ public class GameMaster : NetworkComponent
         monsters.Add(MyCore.NetCreateObject(Random.Range(28, 32), Owner, new Vector3(-26.5f, -0.5f, 0), Quaternion.identity));
         monsters.Add(MyCore.NetCreateObject(Random.Range(28, 32), Owner, new Vector3(2.5f, -25.5f, 0), Quaternion.identity));
         yield return new WaitForSeconds(20 / spawnIntensity);
-        StartCoroutine(SpawnMonster());
+        if(!timerOver)
+            StartCoroutine(SpawnMonster());
     }
     public IEnumerator Delay()
     {
@@ -150,12 +166,14 @@ public class GameMaster : NetworkComponent
             StartCoroutine(SpawnIntensity());
             StartCoroutine(SpawnMonster());
             StartCoroutine(Time());
+            StartCoroutine(TriggerEnd());
         }
         
         yield return new WaitForSeconds(180);
         timerOver = true;
+        SendUpdate("TIMER", "");
         
-        StartCoroutine(TriggerEnd());
+        
     }
     public IEnumerator SpawnIntensity()
     {
@@ -180,8 +198,11 @@ public class GameMaster : NetworkComponent
         if(monsters.Count == 0)
         {
             gameOver = true;
+            isWin = true;
+            SendUpdate("ENDWIN", "");
         }
         yield return new WaitForSeconds(1);
+        StartCoroutine(TriggerEnd());
     }
     public void ReadyCheck()
     {
