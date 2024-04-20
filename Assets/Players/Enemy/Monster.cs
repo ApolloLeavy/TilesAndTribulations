@@ -137,7 +137,7 @@ public class Monster : NetworkComponent
     }
     public virtual void Update()
     {
-
+        
     }
     public IEnumerator TakeAction()
     {
@@ -295,8 +295,10 @@ public class Monster : NetworkComponent
     public IEnumerator Slow(float t)
     {
         isSlowed = true;
+        speed /= 2;
         yield return new WaitForSeconds(t);
         isSlowed = false;
+        speed *= 2;
     }
     public IEnumerator Taunt(float t)
     {
@@ -483,6 +485,17 @@ public class Monster : NetworkComponent
             }
         }
     }
+    public void OnTriggerStay(Collider other)
+    {
+        if(IsServer)
+        {
+            if(other.tag == "Water" && !isSlowed)
+            {
+                
+                Slow(1);
+            }
+        }
+    }
     public void OnTriggerEnter(Collider other)
     {
         if (IsServer && !isInvincible)
@@ -579,6 +592,7 @@ public class Monster : NetworkComponent
                         Assist(3);
                         break;
                     }
+                
             }
         }
     }

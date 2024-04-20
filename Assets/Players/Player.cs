@@ -25,6 +25,7 @@ public abstract class Player : NetworkComponent
     public Rigidbody myRig;
     public SpriteRenderer spriteRender;
     public float speed;
+    public float maxSpeed;
     public Vector2 lastInput;
     public bool canPlace;
     public bool canAttack;
@@ -381,6 +382,7 @@ public abstract class Player : NetworkComponent
     }
     public override void NetworkedStart()
     {
+        maxSpeed = speed;
         if (IsServer)
         {
             StartCoroutine(Draw());
@@ -964,6 +966,7 @@ public abstract class Player : NetworkComponent
                         healingSpirit = 2;
                         break;
                     }
+                
             }
         }
     }
@@ -997,7 +1000,20 @@ public abstract class Player : NetworkComponent
             }
         }
     }
- 
+    public void OnTriggerExit(Collider other)
+    {
+        if (IsServer)
+        {
+            switch (other.tag)
+            {
+                case "Water":
+                    {
+                        speed = maxSpeed;
+                        break;
+                    }
+            }
+        }
+    }
     public virtual void OnTriggerEnter(Collider other)
     {
         if (IsServer)
@@ -1058,7 +1074,12 @@ public abstract class Player : NetworkComponent
                             hp = hpM;
                         SendUpdate("HP", hp.ToString());
                         break;
-                    }                
+                    }
+                case "Water":
+                    {
+                        speed /= 2;
+                        break;
+                    }
             }
         }
         

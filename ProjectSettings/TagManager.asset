@@ -49,6 +49,7 @@ TagManager:
   - Vial
   - Necklace
   - Ring
+  - Water
   layers:
   - Default
   - TransparentFX
