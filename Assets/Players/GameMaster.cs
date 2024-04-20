@@ -134,11 +134,11 @@ public class GameMaster : NetworkComponent
         monsters.Add(MyCore.NetCreateObject(Random.Range(28,32), Owner, new Vector3(-26.5f, 26.5f, 0), Quaternion.identity));
         monsters.Add(MyCore.NetCreateObject(Random.Range(28,32), Owner, new Vector3(1.5f, 26.5f, 0), Quaternion.identity));
         monsters.Add(MyCore.NetCreateObject(Random.Range(28, 32), Owner, new Vector3(26.5f, 26.5f, 0), Quaternion.identity));
-        monsters.Add(MyCore.NetCreateObject(Random.Range(28, 32), Owner, new Vector3(26.5, -25.5, 0), Quaternion.identity));
-        monsters.Add(MyCore.NetCreateObject(Random.Range(28, 32), Owner, new Vector3(-26.5, -25.5, 0), Quaternion.identity));
-        monsters.Add(MyCore.NetCreateObject(Random.Range(28, 32), Owner, new Vector3(26.5, -1.5, 0), Quaternion.identity));
-        monsters.Add(MyCore.NetCreateObject(Random.Range(28, 32), Owner, new Vector3(-26.5, -0.5, 0), Quaternion.identity));
-        monsters.Add(MyCore.NetCreateObject(Random.Range(28, 32), Owner, new Vector3(2.5, -25.5, 0), Quaternion.identity));
+        monsters.Add(MyCore.NetCreateObject(Random.Range(28, 32), Owner, new Vector3(26.5f, -25.5f, 0), Quaternion.identity));
+        monsters.Add(MyCore.NetCreateObject(Random.Range(28, 32), Owner, new Vector3(-26.5f, -25.5f, 0), Quaternion.identity));
+        monsters.Add(MyCore.NetCreateObject(Random.Range(28, 32), Owner, new Vector3(26.5f, -1.5f, 0), Quaternion.identity));
+        monsters.Add(MyCore.NetCreateObject(Random.Range(28, 32), Owner, new Vector3(-26.5f, -0.5f, 0), Quaternion.identity));
+        monsters.Add(MyCore.NetCreateObject(Random.Range(28, 32), Owner, new Vector3(2.5f, -25.5f, 0), Quaternion.identity));
         yield return new WaitForSeconds(20 / spawnIntensity);
         StartCoroutine(SpawnMonster());
     }

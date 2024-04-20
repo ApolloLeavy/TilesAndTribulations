@@ -330,17 +330,6 @@
                 },
                 {
                     "name": "",
-                    "id": "332e7d7a-1874-4d52-b79d-d143cc0fc27f",
-                    "path": "<Keyboard>/space",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Fire",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "6a311cb9-305e-43cb-ba03-16bd2e425db3",
                     "path": "<Keyboard>/q",
                     "interactions": "",
@@ -402,6 +391,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Place",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "332e7d7a-1874-4d52-b79d-d143cc0fc27f",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Flip",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
